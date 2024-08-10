@@ -1,9 +1,10 @@
+import 'package:chat/src/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:chat/src/auth/presentation/cubit/hide_password_login/hide_password_cubit.dart';
 import 'package:chat/src/auth/presentation/widgets/social_icon.dart';
-import 'package:chat/src/utils/color/color.dart';
-import 'package:chat/src/utils/constant/auth_constant.dart';
-import 'package:chat/src/utils/icons/assetsicons.dart';
-import 'package:chat/src/utils/validator/validator.dart';
+import 'package:chat/utils/color/color.dart';
+import 'package:chat/utils/constant/auth_constant.dart';
+import 'package:chat/utils/icons/assetsicons.dart';
+import 'package:chat/utils/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -80,6 +81,10 @@ class LoginForm extends HookWidget {
             child: FilledButton(
               onPressed: () async {
                 if (!formKey.currentState!.validate()) return;
+                context.read<AuthBloc>().add(EmailLogin(
+                      emailController.text,
+                      passwordController.text,
+                    ));
               },
               style: FilledButton.styleFrom(
                 minimumSize: const Size(200, 50),
@@ -100,12 +105,16 @@ class LoginForm extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TSocialMediaButton(
-                onPressed: () async {},
+                onPressed: () async {
+                  context.read<AuthBloc>().add(GoogleLogin());
+                },
                 icon: TIcons.google,
               ),
               const SizedBox(width: 20),
               TSocialMediaButton(
-                onPressed: () async {},
+                onPressed: () async {
+                  context.read<AuthBloc>().add(FacebookLogin());
+                },
                 icon: TIcons.facebook,
                 iconColor: TColors.primary,
               ),

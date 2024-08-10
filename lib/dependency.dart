@@ -22,6 +22,19 @@ import 'package:chat/src/chat/domain/usecase/send_file.dart';
 import 'package:chat/src/chat/domain/usecase/send_image.dart';
 import 'package:chat/src/chat/domain/usecase/send_text.dart';
 import 'package:chat/src/chat/domain/usecase/send_video.dart';
+import 'package:chat/src/home/data/datasource/home_remote_data_source.dart';
+import 'package:chat/src/home/data/repository/home_repository_imp.dart';
+import 'package:chat/src/home/domain/repository/home_repository.dart';
+import 'package:chat/src/home/domain/usecases/create_user.dart';
+import 'package:chat/src/home/domain/usecases/delete_user.dart';
+import 'package:chat/src/home/domain/usecases/get_all_user.dart';
+import 'package:chat/src/home/domain/usecases/get_current_user.dart';
+import 'package:chat/src/home/domain/usecases/get_user_by_id.dart';
+import 'package:chat/src/home/domain/usecases/search_user.dart';
+import 'package:chat/src/home/domain/usecases/update_profile_image.dart';
+import 'package:chat/src/home/domain/usecases/update_show_online_status.dart';
+import 'package:chat/src/home/domain/usecases/update_user.dart';
+import 'package:chat/src/home/presentation/bloc/home_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -59,6 +72,31 @@ void initDependency() {
               serviceLocater(),
             ))
         ..registerFactory(() => HidePasswordLoginCubit())
+        ..registerFactory<HomeRemoteDataSource>(
+            () => HomeRemoteDataSourceImpl(serviceLocater()))
+        ..registerFactory<HomeRepository>(
+            () => HomeRepositoryImp(serviceLocater()))
+        ..registerFactory(() => CreateUserUseCase(serviceLocater()))
+        ..registerFactory(() => DeleteUserUseCase(serviceLocater()))
+        ..registerFactory(() => GetAllUserUseCase(serviceLocater()))
+        ..registerFactory(() => GetCurrentUserUseCase(serviceLocater()))
+        ..registerFactory(() => GetUserByIdUseCase(serviceLocater()))
+        ..registerFactory(() => SearchUserUseCase(serviceLocater()))
+        ..registerFactory(() => UpdateProfileImageUseCase(serviceLocater()))
+        ..registerFactory(() => UpdateShowOnlineStatusUseCase(serviceLocater()))
+        ..registerFactory(() => UpdateUserUseCase(serviceLocater()))
+        ..registerFactory(
+          () => HomeBloc(
+            serviceLocater(),
+            serviceLocater(),
+            serviceLocater(),
+            serviceLocater(),
+            serviceLocater(),
+            serviceLocater(),
+            serviceLocater(),
+            serviceLocater(),
+          ),
+        )
         ..registerFactory<ChatRemoteDataSource>(() => ChatRemoteDataSourceImp())
         ..registerFactory<ChatRepository>(
             () => ChatRepositoryImp(serviceLocater()))

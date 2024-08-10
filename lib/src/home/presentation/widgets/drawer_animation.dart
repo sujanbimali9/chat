@@ -1,4 +1,4 @@
-import 'package:chat/src/utils/color/color.dart';
+import 'package:chat/utils/color/color.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawerWidgets extends StatefulWidget {

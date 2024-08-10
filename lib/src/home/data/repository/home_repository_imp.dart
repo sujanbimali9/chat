@@ -11,13 +11,12 @@ import 'package:fpdart/fpdart.dart';
 class HomeRepositoryImp implements HomeRepository {
   final HomeRemoteDataSource _homeRemoteDataSource;
 
-  HomeRepositoryImp({required HomeRemoteDataSource homeRemoteDataSource})
+  HomeRepositoryImp(HomeRemoteDataSource homeRemoteDataSource)
       : _homeRemoteDataSource = homeRemoteDataSource;
   @override
-  Future<Either<Failure, UserModel>> createUser(User user) async {
+  Future<Either<Failure, UserModel>> createUser() async {
     try {
-      final res =
-          await _homeRemoteDataSource.createUser(UserModel.fromUser(user));
+      final res = await _homeRemoteDataSource.createUser();
       return right(res);
     } on ServerException catch (e) {
       return left(Failure(e.message));

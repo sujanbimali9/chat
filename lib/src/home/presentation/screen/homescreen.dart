@@ -3,13 +3,13 @@ import 'package:chat/src/home/presentation/widgets/app_bar.dart';
 import 'package:chat/src/home/presentation/widgets/bottom_navigation.dart';
 import 'package:chat/src/home/presentation/widgets/current_user_profile_image.dart';
 import 'package:chat/src/home/presentation/widgets/user_tile.dart';
-import 'package:chat/src/utils/constant/constant.dart';
+import 'package:chat/utils/constant/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class UserScreen extends StatelessWidget {
-  const UserScreen({
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({
     super.key,
   });
 

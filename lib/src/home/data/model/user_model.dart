@@ -55,7 +55,28 @@ class UserModel extends User {
         pushToken: user.pushToken,
         username: user.username);
   }
-  toJson() {
+  factory UserModel.fromSupabaseUser(Map<String, dynamic> json) {
+    return UserModel(
+      about: json['about'] ?? '',
+      id: json['id'],
+      fullName: json['user_metadata']['name'],
+      email: json['email'],
+      profileImage: json['user_metadata']['avatar_url'] ??
+          json['user_metadata']['picture'] ??
+          '',
+      blocked: const [],
+      createdAt: json['created_at'],
+      dateofBirth: '',
+      friends: const [],
+      isOnline: true,
+      lastActive: DateTime.now().millisecondsSinceEpoch.toString(),
+      showOnlineStatus: true,
+      phone: json['phone'],
+      pushToken: '',
+      username: json['user_metadata']['name'],
+    );
+  }
+  Map<String, dynamic> toJson() {
     return {
       'about': super.about,
       'id': super.id,
@@ -73,5 +94,42 @@ class UserModel extends User {
       'pushToken': super.pushToken,
       'username': super.username,
     };
+  }
+
+  @override
+  UserModel copyWith({
+    String? about,
+    String? id,
+    String? fullName,
+    String? email,
+    String? profileImage,
+    List<String>? blocked,
+    String? createdAt,
+    String? dateofBirth,
+    List<String>? friends,
+    bool? isOnline,
+    String? lastActive,
+    bool? showOnlineStatus,
+    String? phone,
+    String? pushToken,
+    String? username,
+  }) {
+    return UserModel(
+      about: about ?? super.about,
+      id: id ?? super.id,
+      fullName: fullName ?? super.fullName,
+      email: email ?? super.email,
+      profileImage: profileImage ?? super.profileImage,
+      blocked: blocked ?? super.blocked,
+      createdAt: createdAt ?? super.createdAt,
+      dateofBirth: dateofBirth ?? super.dateofBirth,
+      friends: friends ?? super.friends,
+      isOnline: isOnline ?? super.isOnline,
+      lastActive: lastActive ?? super.lastActive,
+      showOnlineStatus: showOnlineStatus ?? super.showOnlineStatus,
+      phone: phone ?? super.phone,
+      pushToken: pushToken ?? super.pushToken,
+      username: username ?? super.username,
+    );
   }
 }

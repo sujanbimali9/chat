@@ -7,7 +7,7 @@ import 'package:fpdart/fpdart.dart';
 class GetAllUserUseCase implements UseCase<Map<String, User>, GetUserParms> {
   final HomeRepository _homeRepository;
 
-  GetAllUserUseCase({required HomeRepository homeRepository})
+  GetAllUserUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
   @override
   Future<Either<Failure, Map<String, User>>> call(GetUserParms parm) async {

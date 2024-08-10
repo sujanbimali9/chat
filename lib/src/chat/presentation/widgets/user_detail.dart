@@ -1,6 +1,6 @@
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/chat/presentation/widgets/profile_image.dart';
-import 'package:chat/src/utils/color/color.dart';
+import 'package:chat/utils/color/color.dart';
 import 'package:flutter/material.dart';
 
 class UserDetail extends StatelessWidget {

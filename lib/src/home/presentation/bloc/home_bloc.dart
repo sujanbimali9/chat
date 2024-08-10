@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat/core/common/model/user.dart';
+import 'package:chat/src/auth/domain/usecases/logout.dart';
 import 'package:chat/src/home/domain/usecases/create_user.dart';
 import 'package:chat/src/home/domain/usecases/delete_user.dart';
 import 'package:chat/src/home/domain/usecases/get_all_user.dart';
@@ -26,15 +27,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final UpdateShowOnlineStatusUseCase _updateShowOnlineStatusUseCase;
 
   HomeBloc(
-      {required GetAllUserUseCase getAllUserUseCase,
-      required GetUserByIdUseCase getUserByIdUseCase,
-      required SearchUserUseCase searchUserUseCase,
-      required CreateUserUseCase createUserUseCase,
-      required UpdateUserUseCase updateUserUseCase,
-      required DeleteUserUseCase deleteUserUseCase,
-      required UpdateProfileImageUseCase updateImageUseCase,
-      required UpdateShowOnlineStatusUseCase updateShowOnlineStatusUseCase})
-      : _getAllUserUseCase = getAllUserUseCase,
+    GetAllUserUseCase getAllUserUseCase,
+    GetUserByIdUseCase getUserByIdUseCase,
+    SearchUserUseCase searchUserUseCase,
+    CreateUserUseCase createUserUseCase,
+    UpdateUserUseCase updateUserUseCase,
+    DeleteUserUseCase deleteUserUseCase,
+    UpdateProfileImageUseCase updateImageUseCase,
+    UpdateShowOnlineStatusUseCase updateShowOnlineStatusUseCase,
+  )   : _getAllUserUseCase = getAllUserUseCase,
         _getUserByIdUseCase = getUserByIdUseCase,
         _searchUserUseCase = searchUserUseCase,
         _createUserUseCase = createUserUseCase,
@@ -44,6 +45,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _updateShowOnlineStatusUseCase = updateShowOnlineStatusUseCase,
         super(const HomeState(users: {}, isLoading: true)) {
     on<GetUsersEvent>(_getUsers);
+    on<CreateUser>(_createUser);
     on<DeleteUserEvent>(_deleteUser);
     on<UpdateUserEvent>(_updateUser);
     on<GetUserByIdEvent>(_getUserById);
@@ -97,5 +99,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         currentUser:
             state.currentUser?.copyWith(isOnline: event.showOnlineStatus)));
     await _updateShowOnlineStatusUseCase(event.showOnlineStatus);
+  }
+
+  FutureOr<void> _createUser(CreateUser event, Emitter<HomeState> emit) async {
+    final result = await _createUserUseCase(NoParams());
+    result.fold(
+      (l) => emit(state.copyWith(isLoading: false)),
+      (r) => emit(state.copyWith(currentUser: r, isLoading: false)),
+    );
   }
 }

@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 class DeleteUserUseCase implements UseCase<void, String> {
   final HomeRepository _homeRepository;
 
-  DeleteUserUseCase({required HomeRepository homeRepository})
+  DeleteUserUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
 
   @override

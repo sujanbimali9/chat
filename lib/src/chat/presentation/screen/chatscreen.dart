@@ -6,7 +6,7 @@ import 'package:chat/src/chat/presentation/widgets/app_bar.dart';
 import 'package:chat/src/chat/presentation/widgets/chat_container.dart';
 import 'package:chat/src/chat/presentation/widgets/message_field.dart';
 import 'package:chat/src/chat/presentation/widgets/profile_image.dart';
-import 'package:chat/src/utils/dateformat/date_formatter.dart';
+import 'package:chat/utils/dateformat/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

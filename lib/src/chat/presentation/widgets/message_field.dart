@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/chat/presentation/widgets/message_field_icon.dart';
-import 'package:chat/src/utils/color/color.dart';
+import 'package:chat/utils/color/color.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

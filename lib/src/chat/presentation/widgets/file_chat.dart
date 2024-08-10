@@ -1,7 +1,7 @@
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/src/chat/presentation/widgets/circular_container.dart';
 import 'package:chat/src/chat/presentation/widgets/text_chat.dart';
-import 'package:chat/src/utils/color/color.dart';
+import 'package:chat/utils/color/color.dart';
 import 'package:flutter/material.dart';
 
 class FileChat extends StatelessWidget {

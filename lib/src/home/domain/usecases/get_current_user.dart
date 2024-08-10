@@ -8,7 +8,7 @@ import 'package:fpdart/src/either.dart';
 class GetCurrentUserUseCase implements UseCase<User, NoParams> {
   final HomeRepository _homeRepository;
 
-  GetCurrentUserUseCase({required HomeRepository homeRepository})
+  GetCurrentUserUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
 
   @override

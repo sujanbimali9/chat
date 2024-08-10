@@ -63,3 +63,7 @@ class UpdateShowOnlineStatusEvent extends HomeEvent {
   @override
   List<Object> get props => [showOnlineStatus];
 }
+
+class CreateUser extends HomeEvent {
+  const CreateUser();
+}

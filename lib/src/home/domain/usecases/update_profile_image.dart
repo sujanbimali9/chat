@@ -8,7 +8,7 @@ import 'package:fpdart/fpdart.dart';
 class UpdateProfileImageUseCase implements UseCase<void, File> {
   final HomeRepository _homeRepository;
 
-  UpdateProfileImageUseCase({required HomeRepository homeRepository})
+  UpdateProfileImageUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
 
   @override

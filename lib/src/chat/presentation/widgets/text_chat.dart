@@ -1,5 +1,5 @@
 import 'package:chat/core/common/model/chat.dart';
-import 'package:chat/src/utils/color/color.dart';
+import 'package:chat/utils/color/color.dart';
 import 'package:flutter/material.dart';
 
 class TextChat extends StatelessWidget {

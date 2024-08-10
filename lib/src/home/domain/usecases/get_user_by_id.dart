@@ -7,7 +7,7 @@ import 'package:fpdart/fpdart.dart';
 class GetUserByIdUseCase implements UseCase<User, String> {
   final HomeRepository _homeRepository;
 
-  GetUserByIdUseCase({required HomeRepository homeRepository})
+  GetUserByIdUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
   @override
   Future<Either<Failure, User>> call(String id) async {

@@ -7,7 +7,7 @@ import 'package:fpdart/fpdart.dart';
 class SearchUserUseCase implements UseCase<Map<String, User>, String> {
   final HomeRepository _homeRepository;
 
-  SearchUserUseCase({required HomeRepository homeRepository})
+  SearchUserUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
   @override
   Future<Either<Failure, Map<String, User>>> call(String query) async {

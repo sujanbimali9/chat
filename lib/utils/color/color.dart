@@ -18,6 +18,7 @@ class TColors {
 
   static const darkScaffoldBackgroundColor = Color.fromARGB(255, 18, 18, 18);
   static const darkNavigationBarColor = Color.fromARGB(255, 24, 24, 24);
+  static const dark = Color.fromARGB(255, 15, 15, 15);
   static const darkPrimary = Color.fromARGB(255, 38, 130, 236);
   static const darkSecondary = Color.fromARGB(121, 59, 56, 56);
   static const darkError = Color.fromARGB(255, 240, 151, 151);

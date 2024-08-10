@@ -12,7 +12,7 @@ abstract interface class HomeRepository {
   Future<Either<Failure, User>> getCurretUser();
   Future<Either<Failure, User>> updateUser(User user);
   Future<Either<Failure, void>> deleteUser(String id);
-  Future<Either<Failure, User>> createUser(User user);
+  Future<Either<Failure, User>> createUser();
   Future<Either<Failure, Map<String, User>>> searchUser(String query);
 
   // Future<Either<Failure, void>> sendFriendRequest(int id);

@@ -7,7 +7,7 @@ import 'package:fpdart/src/either.dart';
 class UpdateUserUseCase implements UseCase<User, User> {
   final HomeRepository _homeRepository;
 
-  UpdateUserUseCase({required HomeRepository homeRepository})
+  UpdateUserUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
 
   @override

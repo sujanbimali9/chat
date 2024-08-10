@@ -1,7 +1,7 @@
-import 'package:chat/src/utils/color/color.dart';
-import 'package:chat/src/utils/theme/button/filledbutton.dart';
-import 'package:chat/src/utils/theme/text_theme/text_theme.dart';
-import 'package:chat/src/utils/theme/textfield/textfieldtheme.dart';
+import 'package:chat/utils/color/color.dart';
+import 'package:chat/utils/theme/button/filledbutton.dart';
+import 'package:chat/utils/theme/text_theme/text_theme.dart';
+import 'package:chat/utils/theme/textfield/textfieldtheme.dart';
 import 'package:flutter/material.dart';
 
 class TTheme {

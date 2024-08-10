@@ -1,7 +1,7 @@
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/home/presentation/widgets/profile_image.dart';
-import 'package:chat/src/utils/dateformat/date_formatter.dart';
-import 'package:chat/src/utils/icons/assetsicons.dart';
+import 'package:chat/utils/dateformat/date_formatter.dart';
+import 'package:chat/utils/icons/assetsicons.dart';
 import 'package:flutter/material.dart';
 
 class UserTile extends StatelessWidget {

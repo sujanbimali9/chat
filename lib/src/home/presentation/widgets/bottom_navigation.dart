@@ -1,4 +1,4 @@
-import 'package:chat/src/utils/icons/assetsicons.dart';
+import 'package:chat/utils/icons/assetsicons.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenBottomNavigation extends StatelessWidget {

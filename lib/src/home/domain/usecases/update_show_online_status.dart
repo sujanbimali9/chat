@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 class UpdateShowOnlineStatusUseCase implements UseCase<void, bool> {
   final HomeRepository _homeRepository;
 
-  UpdateShowOnlineStatusUseCase({required HomeRepository homeRepository})
+  UpdateShowOnlineStatusUseCase(HomeRepository homeRepository)
       : _homeRepository = homeRepository;
 
   @override
