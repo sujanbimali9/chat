@@ -2,6 +2,7 @@ import 'package:chat/dependency.dart';
 import 'package:chat/src/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:chat/src/auth/presentation/cubit/hide_password_login/hide_password_cubit.dart';
 import 'package:chat/src/auth/presentation/screen/loginscreen.dart';
+import 'package:chat/src/home/presentation/bloc/home_bloc.dart';
 import 'package:chat/src/home/presentation/screen/homescreen.dart';
 import 'package:chat/utils/constant/routes.dart';
 import 'package:chat/utils/theme/theme.dart';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
           create: (context) => serviceLocater<AuthBloc>(),
         ),
         BlocProvider(
-            create: (context) => serviceLocater<HidePasswordLoginCubit>())
+            create: (context) => serviceLocater<HidePasswordLoginCubit>()),
+        BlocProvider(create: (context) => serviceLocater<HomeBloc>())
       ],
       child: MaterialApp(
         theme: TTheme.theme,
@@ -61,7 +63,7 @@ class AppRoutes {
     //   final email = ModalRoute.of(context)?.settings.arguments as String;
     //   return SignUpVerifyScreen(email: email);
     // },
-    
+
     Routes.home: (context) => const HomeScreen(),
     // Routes.reauthenticateScreen: (context) => const ReauthenticateUserScreen(),
   };

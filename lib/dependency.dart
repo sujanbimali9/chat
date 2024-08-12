@@ -41,7 +41,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final serviceLocater = GetIt.instance;
 
 void initDependency() {
-  serviceLocater.registerLazySingleton(() => Supabase.instance);
+  serviceLocater.registerLazySingleton(() => Supabase.instance.client);
   serviceLocater
         ..registerFactory<AuthRemoteDataSource>(
             () => AuthRemoteDataSourceImp(serviceLocater()))
