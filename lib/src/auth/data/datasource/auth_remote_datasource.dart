@@ -118,10 +118,10 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
         throw const AuthException('login failed try again later');
       }
       const webClientId =
-          '597184653112-ki2sgnulcf6n7u6ra9p8osj6me8mos4o.apps.googleusercontent.com';
+          '654846559142-nne36pdu13ma5e5780t61nmlg204j67v.apps.googleusercontent.com';
 
       const iosClientId =
-          '597184653112-ca6mkq9fv4ihn6h2bpnd9o00d69b0ncv.apps.googleusercontent.com';
+          '654846559142-fbaor0r30q6r02if3e77tuho6h9cl5l3.apps.googleusercontent.com';
 
       final GoogleSignInAccount? signInAccount = await GoogleSignIn(
         clientId: iosClientId,

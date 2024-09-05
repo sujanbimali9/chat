@@ -28,13 +28,8 @@ class UserDetail extends StatelessWidget {
           )),
           const SizedBox(height: 10),
           Text(
-            user.username,
+            user.userName,
             style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Lives in Jhapa,Nepal',
-            style: Theme.of(context).textTheme.labelLarge,
           ),
           const SizedBox(height: 4),
           FilledButton(

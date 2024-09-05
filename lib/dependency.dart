@@ -17,6 +17,9 @@ import 'package:chat/src/auth/presentation/cubit/hide_password_login/hide_passwo
 import 'package:chat/src/chat/data/data_source/chat_remote_data_source.dart';
 import 'package:chat/src/chat/data/repository/chat_repository_imp.dart';
 import 'package:chat/src/chat/domain/repository/chat_repository.dart';
+import 'package:chat/src/chat/domain/usecase/get_chat.dart';
+import 'package:chat/src/chat/domain/usecase/get_chat_stream.dart';
+import 'package:chat/src/chat/domain/usecase/remove_chat.dart';
 import 'package:chat/src/chat/domain/usecase/send_audio.dart';
 import 'package:chat/src/chat/domain/usecase/send_file.dart';
 import 'package:chat/src/chat/domain/usecase/send_image.dart';
@@ -95,11 +98,16 @@ void initDependency() {
             serviceLocater(),
             serviceLocater(),
             serviceLocater(),
+            serviceLocater(),
           ),
         )
-        ..registerFactory<ChatRemoteDataSource>(() => ChatRemoteDataSourceImp())
+        ..registerFactory<ChatRemoteDataSource>(
+            () => ChatRemoteDataSourceImp(serviceLocater()))
         ..registerFactory<ChatRepository>(
             () => ChatRepositoryImp(serviceLocater()))
+        ..registerFactory(() => GetChatStreamUseCase(serviceLocater()))
+        ..registerFactory(() => GetChatUseCase(serviceLocater()))
+        ..registerFactory(() => RemoveChatUseCase(serviceLocater()))
         ..registerFactory(() => SendVideoUseCase(serviceLocater()))
         ..registerFactory(() => SendAudioUseCase(serviceLocater()))
         ..registerFactory(() => SendTextUseCase(serviceLocater()))

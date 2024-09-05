@@ -50,7 +50,7 @@ class ImageChat extends StatelessWidget {
           borderRadius: borderRadius,
           image: image,
           onPressed: () {
-            if (!(chat.status?.isSent ?? false)) return;
+            if (!(chat.status.isSent)) return;
 
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ImageFullScreen(chat: chat)));
@@ -91,32 +91,32 @@ class ChatImageBuilder extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: ClipRRect(
-        borderRadius: borderRadius,
-        child: image.startsWith('https://')
-            ? CachedNetworkImage(
-                imageUrl: image,
+          borderRadius: borderRadius,
+          child: chat.status.isSending
+              ? Container(
+                  color: Colors.grey,
+                )
+              :chat.status.isFailed?
+              Image.file(
+                File(image),
                 fit: BoxFit.contain,
-                errorListener: (value) {},
-                errorWidget: (context, url, error) => Container(
+                errorBuilder: (context, url, error) => Container(
                     color: Colors.grey,
                     child: const Icon(Icons.error, color: Colors.red)),
-                progressIndicatorBuilder: (context, url, progress) {
-                  return progressBuilder(progress.progress);
-                },
-              )
-            : Image(
-                image: FileImage(File(image)),
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return progressBuilder(
-                      loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null);
-                },
-                fit: BoxFit.cover,
-              ),
-      ),
+                frameBuilder: (context,child,progress,complete)=>progressBuilder(progress?.toDouble()),
+
+              ):
+          CachedNetworkImage(
+                  imageUrl: image,
+                  fit: BoxFit.contain,
+                  errorListener: (value) {},
+                  errorWidget: (context, url, error) => Container(
+                      color: Colors.grey,
+                      child: const Icon(Icons.error, color: Colors.red)),
+                  progressIndicatorBuilder: (context, url, progress) {
+                    return progressBuilder(progress.progress);
+                  },
+                )),
     );
   }
 }

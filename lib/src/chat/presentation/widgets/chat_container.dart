@@ -12,7 +12,6 @@ import 'text_chat.dart';
 class ChatContainer extends StatelessWidget {
   const ChatContainer({
     super.key,
-    this.isLast = false,
     required this.chat,
     required this.currentUser,
     required this.user,
@@ -22,7 +21,6 @@ class ChatContainer extends StatelessWidget {
     required this.isBeforeDateSeparator,
   });
   final Chat chat;
-  final bool isLast;
   final User currentUser;
   final User user;
   final Chat? nextChat;
@@ -41,7 +39,8 @@ class ChatContainer extends StatelessWidget {
       isNextSameAuthor = true;
     }
     final isUser = chat.fromId == currentUser.id;
-
+    print('chat.status: ${chat.status}');
+    print('chat.type: ${chat}');
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment:
@@ -73,8 +72,8 @@ class ChatContainer extends StatelessWidget {
                   previousMessage: previousChat,
                   isPreviousSameAuthor: isPreviousSameAuthor,
                   isNextSameAuthor: isNextSameAuthor,
-                ),
-              if (chat.type.isImage)
+                )
+              else if (chat.type.isImage)
                 ImageChat(
                   chat: chat,
                   isUser: isUser,
@@ -84,8 +83,8 @@ class ChatContainer extends StatelessWidget {
                   previousMessage: previousChat,
                   isPreviousSameAuthor: isPreviousSameAuthor,
                   isNextSameAuthor: isNextSameAuthor,
-                ),
-              if (chat.type.isFile)
+                )
+              else if (chat.type.isFile)
                 FileChat(
                   chat: chat,
                   isUser: isUser,
@@ -95,8 +94,8 @@ class ChatContainer extends StatelessWidget {
                   previousMessage: previousChat,
                   isPreviousSameAuthor: isPreviousSameAuthor,
                   isNextSameAuthor: isNextSameAuthor,
-                ),
-              if (chat.type.isVideo)
+                )
+              else if (chat.type.isVideo)
                 VideoChat(
                   chat: chat,
                   isUser: isUser,
@@ -107,13 +106,14 @@ class ChatContainer extends StatelessWidget {
                   isPreviousSameAuthor: isPreviousSameAuthor,
                   isNextSameAuthor: isNextSameAuthor,
                 ),
-              if (chat.status!.isSending)
+              if (!chat.status.isSent) const SizedBox(height: 5),
+              if (chat.status.isSending)
                 const SizedBox(
                     height: 10,
                     width: 10,
-                    child: CircularProgressIndicator(strokeWidth: 1)),
-              if (chat.status!.isFailed)
-                const Icon(Icons.error, color: Colors.red),
+                    child: CircularProgressIndicator(strokeWidth: 1))
+              else if (chat.status.isFailed)
+                const Icon(Icons.error, color: Colors.red, size: 15),
               const SizedBox(height: 4),
               if (!isNextSameAuthor || isBeforeDateSeparator)
                 const SizedBox(height: 10),

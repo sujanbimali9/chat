@@ -9,28 +9,22 @@ import 'package:chat/src/chat/presentation/widgets/profile_image.dart';
 import 'package:chat/utils/dateformat/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Chatscreen extends HookWidget {
-  const Chatscreen({super.key, required this.user, required this.currentUser});
+class Chatscreen extends StatelessWidget {
+  const Chatscreen({
+    super.key,
+    required this.user,
+    required this.currentUser,
+  });
   final User user;
   final User currentUser;
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final scrollController = useScrollController();
-    useEffect(() {
-      scrollController.addListener(() async {
-        if (scrollController.position.atEdge) {
-          if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent) {}
-        }
-      });
-      return () {};
-    }, [scrollController]);
 
-    return BlocProvider(
+    return BlocProvider<ChatBloc>(
       create: (context) => ChatBloc(
         userId: user.id,
         currentUserId: currentUser.id,
@@ -45,88 +39,18 @@ class Chatscreen extends HookWidget {
       ),
       child: Scaffold(
         body: PopScope(
-          onPopInvoked: (didPop) {},
+          onPopInvokedWithResult: (didPop, _) {},
           child: Stack(
             children: [
               Positioned(
-                top: 0,
-                bottom: 40,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  child: BlocBuilder<ChatBloc, ChatState>(
-                    builder: (context, state) {
-                      final chats = state.chats.values;
-                      return ListView.builder(
-                        controller: scrollController,
-                        reverse: true,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: chats.length,
-                        itemBuilder: (context, index) {
-                          final Chat? previousMessage = index < chats.length - 1
-                              ? chats.elementAt(index + 1)
-                              : null;
-                          final Chat? nextMessage =
-                              index > 0 ? chats.elementAt(index - 1) : null;
-                          final Chat message = chats.elementAt(index);
-                          final bool isAfterDateSeparator =
-                              _shouldShowDateSeparator(previousMessage, message,
-                                  separatorFrequency:
-                                      DateTime.now().millisecondsSinceEpoch -
-                                                  message.sentTime >
-                                              86400000
-                                          ? SeparatorFrequency.days
-                                          : SeparatorFrequency.hours);
-                          bool isBeforeDateSeparator = false;
-                          if (nextMessage != null) {
-                            isBeforeDateSeparator = _shouldShowDateSeparator(
-                                message, nextMessage,
-                                separatorFrequency:
-                                    DateTime.now().millisecondsSinceEpoch -
-                                                message.sentTime >
-                                            86400000
-                                        ? SeparatorFrequency.days
-                                        : SeparatorFrequency.hours);
-                          }
-
-                          return Column(
-                            children: [
-                              const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Center(
-                                      child: CircularProgressIndicator())),
-                              if (isAfterDateSeparator)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                  child: Text(
-                                    DateFormatter.formatDateSeparator(
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                            message.sentTime)),
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ),
-                              ChatContainer(
-                                nextChat: nextMessage,
-                                previousChat: previousMessage,
-                                isAfterDateSeparator: isAfterDateSeparator,
-                                isBeforeDateSeparator: isBeforeDateSeparator,
-                                currentUser: currentUser,
-                                user: user,
-                                chat: chats.elementAt(index),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
+                  top: 0,
+                  bottom: 40,
+                  left: 0,
+                  right: 0,
+                  child: ChatBody(
+                    user: user,
+                    currentUser: currentUser,
+                  )),
               const Positioned(
                 bottom: 0,
                 child: SizedBox(
@@ -143,7 +67,7 @@ class Chatscreen extends HookWidget {
         ),
         appBar: TAppBar(
           showLeading: true,
-          toolbarHeight: 70,
+          toolbarHeight: 80.h,
           leadingWidth: screenSize.width * 0.5,
           leading: Row(
             children: [
@@ -168,7 +92,7 @@ class Chatscreen extends HookWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        user.username.split(' ').first,
+                        user.userName.split(' ').first,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
@@ -186,13 +110,50 @@ class Chatscreen extends HookWidget {
             ],
           ),
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.video_call)),
             IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
           ],
         ),
       ),
     );
+  }
+}
+
+enum SeparatorFrequency { days, hours }
+
+class ChatBody extends StatefulWidget {
+  final User user;
+  final User currentUser;
+  const ChatBody({super.key, required this.user, required this.currentUser});
+
+  @override
+  State<ChatBody> createState() => _ChatBodyState();
+}
+
+class _ChatBodyState extends State<ChatBody> {
+  late final ScrollController scrollController;
+  late final ChatBloc chatBloc;
+  @override
+  void initState() {
+    scrollController = ScrollController();
+    chatBloc = context.read<ChatBloc>();
+
+    scrollController.addListener(scrollListener);
+    super.initState();
+  }
+
+  void scrollListener() {
+    if (scrollController.position.atEdge) {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        chatBloc.add(const FetchMessagesEvent(limit: 20));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   bool _shouldShowDateSeparator(Chat? previousMessage, Chat message,
@@ -205,35 +166,86 @@ class Chatscreen extends HookWidget {
     final messageTime = DateTime.fromMillisecondsSinceEpoch(message.sentTime);
     switch (separatorFrequency) {
       case SeparatorFrequency.days:
-        final DateTime previousDate = DateTime(
-          previousMessageTime.year,
-          previousMessageTime.month,
-          previousMessageTime.day,
-        );
-        final DateTime messageDate = DateTime(
-          messageTime.year,
-          messageTime.month,
-          messageTime.day,
-        );
+        final DateTime previousDate = previousMessageTime;
+        final DateTime messageDate = messageTime;
         return previousDate.difference(messageDate).inDays.abs() > 0;
       case SeparatorFrequency.hours:
-        final DateTime previousDate = DateTime(
-          previousMessageTime.year,
-          previousMessageTime.month,
-          previousMessageTime.day,
-          previousMessageTime.hour,
-        );
-        final DateTime messageDate = DateTime(
-          messageTime.year,
-          messageTime.month,
-          messageTime.day,
-          messageTime.hour,
-        );
+        final DateTime previousDate = previousMessageTime;
+        final DateTime messageDate = messageTime;
         return previousDate.difference(messageDate).inHours.abs() > 0;
       default:
         return false;
     }
   }
-}
 
-enum SeparatorFrequency { days, hours }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: BlocBuilder<ChatBloc, ChatState>(
+        builder: (context, state) {
+          final chats = state.chats.values;
+          return ListView.builder(
+            controller: scrollController,
+            reverse: true,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: chats.length,
+            itemBuilder: (context, index) {
+              final Chat? previousMessage =
+                  index < chats.length - 1 ? chats.elementAt(index + 1) : null;
+              final Chat? nextMessage =
+                  index > 0 ? chats.elementAt(index - 1) : null;
+              final Chat message = chats.elementAt(index);
+              final bool isAfterDateSeparator = _shouldShowDateSeparator(
+                  previousMessage, message,
+                  separatorFrequency:
+                      DateTime.now().millisecondsSinceEpoch - message.sentTime >
+                              86400000
+                          ? SeparatorFrequency.days
+                          : SeparatorFrequency.hours);
+              bool isBeforeDateSeparator = false;
+              if (nextMessage != null) {
+                isBeforeDateSeparator = _shouldShowDateSeparator(
+                    message, nextMessage,
+                    separatorFrequency: DateTime.now().millisecondsSinceEpoch -
+                                message.sentTime >
+                            86400000
+                        ? SeparatorFrequency.days
+                        : SeparatorFrequency.hours);
+              }
+
+              return Column(
+                children: [
+                  if (state.fetchingMore && state.chats.length == index + 1)
+                    const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Center(child: CircularProgressIndicator())),
+                  if (isAfterDateSeparator)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      child: Text(
+                        DateFormatter.formatDateSeparator(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                message.sentTime)),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ChatContainer(
+                    nextChat: nextMessage,
+                    previousChat: previousMessage,
+                    isAfterDateSeparator: isAfterDateSeparator,
+                    isBeforeDateSeparator: isBeforeDateSeparator,
+                    currentUser: widget.currentUser,
+                    user: widget.user,
+                    chat: chats.elementAt(index),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

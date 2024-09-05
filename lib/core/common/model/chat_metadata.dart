@@ -18,4 +18,22 @@ class ChatMetaData extends Equatable {
 
   @override
   get props => [aspectRatio, thumbnail, height, width, duration, title];
+
+  ChatMetaData copyWith({
+    double? aspectRatio,
+    String? thumbnail,
+    double? height,
+    double? width,
+    int? duration,
+    String? title,
+  }) {
+    return ChatMetaData(
+      aspectRatio: aspectRatio ?? this.aspectRatio,
+      thumbnail: thumbnail ?? this.thumbnail,
+      height: height ?? this.height,
+      width: width ?? this.width,
+      duration: duration ?? this.duration,
+      title: title ?? this.title,
+    );
+  }
 }

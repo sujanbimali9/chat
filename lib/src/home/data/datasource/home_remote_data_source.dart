@@ -36,9 +36,18 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<UserModel> createUser() async {
     try {
+      final previousUser = await _client
+          .from('users')
+          .select()
+          .eq('id', _client.auth.currentUser!.id)
+          .limit(1);
+      if (previousUser.isNotEmpty) {
+        return UserModel.fromJson(previousUser.first);
+      }
       final user =
           UserModel.fromSupabaseUser(_client.auth.currentUser!.toJson());
-      final response = await _client.from('users').insert(user).single();
+      final response =
+          await _client.from('users').insert(user).select().single();
       return UserModel.fromJson(response);
     } on SocketException catch (e) {
       log('CreateUser error: SocketException $e');
@@ -96,7 +105,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       final res = _client
           .from('users')
           .select()
-          .neq('id', _client.auth.currentUser!.id)
+          .eq('id', _client.auth.currentUser!.id)
           .single();
       final resonse = await res;
       return UserModel.fromJson(resonse);

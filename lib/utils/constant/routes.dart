@@ -6,4 +6,5 @@ class Routes {
   static const signUpVerify = 'signUpVerify';
   static const resetPassword = 'resetPassword';
   static const reauthenticateScreen = 'reauthenticateScreen';
+  static const chat = 'chat';
 }

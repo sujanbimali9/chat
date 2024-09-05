@@ -16,25 +16,25 @@ class UserModel extends User {
     required super.showOnlineStatus,
     required super.phone,
     required super.pushToken,
-    required super.username,
+    required super.userName,
   });
-  factory UserModel.fromJson(Map json) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       about: json['about'],
       id: json['id'],
-      fullName: json['fullName'],
+      fullName: json['full_name'],
       email: json['email'],
-      profileImage: json['profileImage'],
-      blocked: json['blocked'],
-      createdAt: json['createdAt'],
-      dateofBirth: json['dateofBirth'],
-      friends: json['friends'],
-      isOnline: json['isOnline'],
-      lastActive: json['lastActive'],
-      showOnlineStatus: json['showOnlineStatus'],
+      profileImage: json['profile_image'],
+      blocked: List<String>.from(json['blocked']),
+      createdAt: json['created_at'],
+      dateofBirth: json['date_of_birth'],
+      friends: List<String>.from(json['friends']),
+      isOnline: json['is_online'],
+      lastActive: json['last_active'],
+      showOnlineStatus: json['show_online_status'],
       phone: json['phone'],
-      pushToken: json['pushToken'],
-      username: json['username'],
+      pushToken: json['push_token'],
+      userName: json['user_name'],
     );
   }
   factory UserModel.fromUser(User user) {
@@ -53,7 +53,7 @@ class UserModel extends User {
         showOnlineStatus: user.showOnlineStatus,
         phone: user.phone,
         pushToken: user.pushToken,
-        username: user.username);
+        userName: user.userName);
   }
   factory UserModel.fromSupabaseUser(Map<String, dynamic> json) {
     return UserModel(
@@ -73,26 +73,26 @@ class UserModel extends User {
       showOnlineStatus: true,
       phone: json['phone'],
       pushToken: '',
-      username: json['user_metadata']['name'],
+      userName: json['user_metadata']['name'],
     );
   }
   Map<String, dynamic> toJson() {
     return {
       'about': super.about,
       'id': super.id,
-      'fullName': super.fullName,
+      'full_name': super.fullName,
       'email': super.email,
-      'profileImage': super.profileImage,
+      'profile_image': super.profileImage,
       'blocked': super.blocked,
-      'createdAt': super.createdAt,
-      'dateofBirth': super.dateofBirth,
+      'created_at': super.createdAt,
+      'date_of_birth': super.dateofBirth,
       'friends': super.friends,
-      'isOnline': super.isOnline,
-      'lastActive': super.lastActive,
-      'showOnlineStatus': super.showOnlineStatus,
+      'is_online': super.isOnline,
+      'last_active': super.lastActive,
+      'show_online_status': super.showOnlineStatus,
       'phone': super.phone,
-      'pushToken': super.pushToken,
-      'username': super.username,
+      'push_token': super.pushToken,
+      'user_name': super.userName,
     };
   }
 
@@ -112,7 +112,7 @@ class UserModel extends User {
     bool? showOnlineStatus,
     String? phone,
     String? pushToken,
-    String? username,
+    String? userName,
   }) {
     return UserModel(
       about: about ?? super.about,
@@ -129,7 +129,7 @@ class UserModel extends User {
       showOnlineStatus: showOnlineStatus ?? super.showOnlineStatus,
       phone: phone ?? super.phone,
       pushToken: pushToken ?? super.pushToken,
-      username: username ?? super.username,
+      userName: userName ?? super.userName,
     );
   }
 }

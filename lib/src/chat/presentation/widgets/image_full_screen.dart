@@ -11,14 +11,6 @@ class ImageFullScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
-              top: 30,
-              left: 10,
-              child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.close))),
           Center(
             child: AspectRatio(
               aspectRatio: chat.metadata!.aspectRatio!,
@@ -30,6 +22,14 @@ class ImageFullScreen extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+              top: 30,
+              left: 10,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close))),
         ],
       ),
     );

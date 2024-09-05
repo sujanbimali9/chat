@@ -17,6 +17,7 @@ class LoginScreen extends StatelessWidget {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state is AuthError) {}
         if (state is AuthLoading) {
           LoadingScreen.instance().show(context: context);
         } else {

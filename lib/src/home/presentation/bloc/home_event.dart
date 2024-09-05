@@ -9,6 +9,8 @@ sealed class HomeEvent extends Equatable {
 
 class GetUsersEvent extends HomeEvent {}
 
+class GetCurrentUserEvent extends HomeEvent {}
+
 class DeleteUserEvent extends HomeEvent {
   final String id;
 

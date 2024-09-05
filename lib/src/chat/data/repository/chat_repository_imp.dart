@@ -1,4 +1,5 @@
 import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/core/exception/server_exception.dart';
 import 'package:chat/core/failure/failure.dart';
 import 'package:chat/src/chat/data/data_source/chat_remote_data_source.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
@@ -15,6 +16,8 @@ class ChatRepositoryImp implements ChatRepository {
     try {
       final result = await _chatRemoteDataSource.sendAudio(chat);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -25,6 +28,8 @@ class ChatRepositoryImp implements ChatRepository {
     try {
       final result = await _chatRemoteDataSource.sendImage(chat);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -35,6 +40,8 @@ class ChatRepositoryImp implements ChatRepository {
     try {
       final result = await _chatRemoteDataSource.sendText(chat);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -45,6 +52,8 @@ class ChatRepositoryImp implements ChatRepository {
     try {
       final result = await _chatRemoteDataSource.sendVideo(chat);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -55,6 +64,8 @@ class ChatRepositoryImp implements ChatRepository {
     try {
       final result = await _chatRemoteDataSource.removeChat(chat);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -67,6 +78,8 @@ class ChatRepositoryImp implements ChatRepository {
       final result = _chatRemoteDataSource.getChatsStream(chatId,
           limit: limit, offset: offset);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -77,6 +90,8 @@ class ChatRepositoryImp implements ChatRepository {
     try {
       final result = await _chatRemoteDataSource.sendFile(chat);
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -92,6 +107,8 @@ class ChatRepositoryImp implements ChatRepository {
         offset: offset,
       );
       return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }

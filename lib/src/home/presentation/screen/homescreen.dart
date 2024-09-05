@@ -1,3 +1,4 @@
+import 'package:chat/main.dart';
 import 'package:chat/src/home/presentation/bloc/home_bloc.dart';
 import 'package:chat/src/home/presentation/widgets/app_bar.dart';
 import 'package:chat/src/home/presentation/widgets/bottom_navigation.dart';
@@ -7,11 +8,24 @@ import 'package:chat/utils/constant/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulHookWidget {
   const HomeScreen({
     super.key,
   });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    context.read<HomeBloc>().add(GetUsersEvent());
+    context.read<HomeBloc>().add(GetCurrentUserEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +44,7 @@ class HomeScreen extends StatelessWidget {
     }, [scrollController]);
     return Scaffold(
       appBar: TAppBar(
-        toolbarHeight: 65,
+        toolbarHeight: 75.h,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           const SizedBox(width: 8),
@@ -43,7 +57,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             final users = state.users.values;

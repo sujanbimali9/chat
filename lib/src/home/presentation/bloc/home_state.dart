@@ -15,7 +15,12 @@ class HomeState extends Equatable {
   });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        users,
+        currentUser ?? '',
+        isLoading,
+        isFetchingMore,
+      ];
 
   HomeState copyWith({
     Map<String, User>? users,

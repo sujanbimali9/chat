@@ -6,7 +6,7 @@ class User extends Equatable {
   final bool showOnlineStatus;
   final List<String> blocked;
   final String fullName;
-  final String username;
+  final String userName;
   final String phone;
   final String about;
   final String createdAt;
@@ -23,7 +23,7 @@ class User extends Equatable {
     required this.showOnlineStatus,
     required this.blocked,
     required this.fullName,
-    required this.username,
+    required this.userName,
     required this.phone,
     required this.about,
     required this.createdAt,
@@ -42,7 +42,7 @@ class User extends Equatable {
         showOnlineStatus,
         blocked,
         fullName,
-        username,
+        userName,
         phone,
         about,
         createdAt,
@@ -60,7 +60,7 @@ class User extends Equatable {
     bool? showOnlineStatus,
     List<String>? blocked,
     String? fullName,
-    String? username,
+    String? userName,
     String? phone,
     String? about,
     String? createdAt,
@@ -77,7 +77,7 @@ class User extends Equatable {
       showOnlineStatus: showOnlineStatus ?? this.showOnlineStatus,
       blocked: blocked ?? this.blocked,
       fullName: fullName ?? this.fullName,
-      username: username ?? this.username,
+      userName: userName ?? this.userName,
       phone: phone ?? this.phone,
       about: about ?? this.about,
       createdAt: createdAt ?? this.createdAt,

@@ -9,8 +9,8 @@ class ChatState extends Equatable {
 
   const ChatState({
     required this.chats,
-    this.isLoading = false,
-    this.fetchingMore = false,
+    this.isLoading = true,
+    this.fetchingMore = true,
     this.error,
     this.pendingChats,
   });

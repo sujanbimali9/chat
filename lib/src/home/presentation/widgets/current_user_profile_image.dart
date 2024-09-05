@@ -5,6 +5,7 @@ import 'package:chat/src/home/presentation/widgets/profile_image.dart';
 import 'package:chat/utils/icons/assetsicons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CurrentUserProfileImage extends StatelessWidget {
   const CurrentUserProfileImage({
@@ -19,13 +20,17 @@ class CurrentUserProfileImage extends StatelessWidget {
       },
       builder: (context, state) {
         if (state == null) {
-          return const TCircularContainer(
-              height: 40, width: 40, backgroundColor: Colors.grey);
+          return TCircularContainer(
+              borderRadius: 20.r,
+              height: 40.h,
+              width: 40.h,
+              backgroundColor: Colors.grey);
         }
         return ProfileImage(
           onTap: () async {},
-          height: 40,
-          width: 40,
+          height: 40.h,
+          width: 40.h,
+          borderRadius: 60,
           showActive: state.isOnline,
           isNetwork: state.profileImage.isNotEmpty,
           fit: BoxFit.cover,

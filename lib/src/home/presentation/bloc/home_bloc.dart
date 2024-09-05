@@ -6,6 +6,7 @@ import 'package:chat/src/auth/domain/usecases/logout.dart';
 import 'package:chat/src/home/domain/usecases/create_user.dart';
 import 'package:chat/src/home/domain/usecases/delete_user.dart';
 import 'package:chat/src/home/domain/usecases/get_all_user.dart';
+import 'package:chat/src/home/domain/usecases/get_current_user.dart';
 import 'package:chat/src/home/domain/usecases/get_user_by_id.dart';
 import 'package:chat/src/home/domain/usecases/search_user.dart';
 import 'package:chat/src/home/domain/usecases/update_profile_image.dart';
@@ -19,6 +20,7 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetAllUserUseCase _getAllUserUseCase;
   final GetUserByIdUseCase _getUserByIdUseCase;
+  final GetCurrentUserUseCase _getCurrentUserUseCase;
   final SearchUserUseCase _searchUserUseCase;
   final CreateUserUseCase _createUserUseCase;
   final UpdateUserUseCase _updateUserUseCase;
@@ -30,6 +32,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     GetAllUserUseCase getAllUserUseCase,
     GetUserByIdUseCase getUserByIdUseCase,
     SearchUserUseCase searchUserUseCase,
+    GetCurrentUserUseCase getCurrentUserUseCase,
     CreateUserUseCase createUserUseCase,
     UpdateUserUseCase updateUserUseCase,
     DeleteUserUseCase deleteUserUseCase,
@@ -39,6 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _getUserByIdUseCase = getUserByIdUseCase,
         _searchUserUseCase = searchUserUseCase,
         _createUserUseCase = createUserUseCase,
+        _getCurrentUserUseCase = getCurrentUserUseCase,
         _updateUserUseCase = updateUserUseCase,
         _deleteUserUseCase = deleteUserUseCase,
         _updateImageUseCase = updateImageUseCase,
@@ -46,6 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         super(const HomeState(users: {}, isLoading: true)) {
     on<GetUsersEvent>(_getUsers);
     on<CreateUser>(_createUser);
+    on<GetCurrentUserEvent>(_getCurrentUser);
     on<DeleteUserEvent>(_deleteUser);
     on<UpdateUserEvent>(_updateUser);
     on<GetUserByIdEvent>(_getUserById);
@@ -103,6 +108,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> _createUser(CreateUser event, Emitter<HomeState> emit) async {
     final result = await _createUserUseCase(NoParams());
+    result.fold(
+      (l) => emit(state.copyWith(isLoading: false)),
+      (r) => emit(state.copyWith(currentUser: r, isLoading: false)),
+    );
+  }
+
+  FutureOr<void> _getCurrentUser(
+      GetCurrentUserEvent event, Emitter<HomeState> emit) async {
+    final result = await _getCurrentUserUseCase(NoParams());
     result.fold(
       (l) => emit(state.copyWith(isLoading: false)),
       (r) => emit(state.copyWith(currentUser: r, isLoading: false)),
