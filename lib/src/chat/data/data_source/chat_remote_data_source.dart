@@ -249,7 +249,9 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
   Future<String> _uploadImage(String path, String supabasePath) async {
     final compressedImage = await _compressImage(path);
     try {
-      _client.storage.from('chats').uploadBinary(supabasePath, compressedImage);
+      await _client.storage
+          .from('chats')
+          .uploadBinary(supabasePath, compressedImage);
       return _client.storage.from('chats').getPublicUrl(supabasePath);
     } catch (e) {
       return _client.storage.from('chats').getPublicUrl(supabasePath);
