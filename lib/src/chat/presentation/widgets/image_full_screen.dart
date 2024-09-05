@@ -12,13 +12,16 @@ class ImageFullScreen extends StatelessWidget {
       body: Stack(
         children: [
           Center(
-            child: AspectRatio(
-              aspectRatio: chat.metadata!.aspectRatio!,
-              child: SizedBox(
-                height: double.infinity,
-                width: double.infinity,
-                child: InteractiveViewer(
-                    child: CachedNetworkImage(imageUrl: chat.msg)),
+            child: Hero(
+              tag: chat.msg,
+              child: AspectRatio(
+                aspectRatio: chat.metadata!.aspectRatio!,
+                child: SizedBox(
+                  height: double.infinity,
+                  width: double.infinity,
+                  child: InteractiveViewer(
+                      child: CachedNetworkImage(imageUrl: chat.msg)),
+                ),
               ),
             ),
           ),

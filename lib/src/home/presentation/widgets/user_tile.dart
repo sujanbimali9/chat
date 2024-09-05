@@ -1,4 +1,6 @@
+import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
+import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/src/home/presentation/bloc/home_bloc.dart';
 import 'package:chat/src/home/presentation/widgets/profile_image.dart';
 import 'package:chat/utils/constant/routes.dart';
@@ -10,10 +12,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class UserTile extends StatelessWidget {
   const UserTile({
     super.key,
+    this.lastChat,
     required this.user,
   });
 
   final User user;
+  final Chat? lastChat;
+
+  String get lastMessage {
+    if (lastChat == null) {
+      return '';
+    }
+    if (lastChat!.type.isText) {
+      return lastChat!.msg;
+    }
+    return lastChat!.type.name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +44,10 @@ class UserTile extends StatelessWidget {
             user.isOnline ? Text(DateFormatter.format(user.lastActive)) : null,
         title:
             Text(user.fullName, style: Theme.of(context).textTheme.bodyLarge),
+        subtitle: Text(lastChat?.msg ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyMedium),
         leading: ProfileImage(
           showActive: user.isOnline && user.showOnlineStatus,
           fit: BoxFit.cover,

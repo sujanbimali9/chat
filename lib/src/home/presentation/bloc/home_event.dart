@@ -57,10 +57,10 @@ class UpdateProfileImageEvent extends HomeEvent {
   List<Object> get props => [id, image];
 }
 
-class UpdateShowOnlineStatusEvent extends HomeEvent {
+class UpdateOnlineStatusEvent extends HomeEvent {
   final bool showOnlineStatus;
 
-  const UpdateShowOnlineStatusEvent({required this.showOnlineStatus});
+  const UpdateOnlineStatusEvent({required this.showOnlineStatus});
 
   @override
   List<Object> get props => [showOnlineStatus];
@@ -68,4 +68,19 @@ class UpdateShowOnlineStatusEvent extends HomeEvent {
 
 class CreateUser extends HomeEvent {
   const CreateUser();
+}
+
+class GetLastChatEvent extends HomeEvent {
+  final List<String> chatIds;
+
+  const GetLastChatEvent({required this.chatIds});
+
+  @override
+  List<Object> get props => [chatIds];
+}
+
+class _StateEmitterEvent extends HomeEvent {
+  final HomeState state;
+
+  const _StateEmitterEvent(this.state);
 }

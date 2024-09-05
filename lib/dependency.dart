@@ -32,6 +32,7 @@ import 'package:chat/src/home/domain/usecases/create_user.dart';
 import 'package:chat/src/home/domain/usecases/delete_user.dart';
 import 'package:chat/src/home/domain/usecases/get_all_user.dart';
 import 'package:chat/src/home/domain/usecases/get_current_user.dart';
+import 'package:chat/src/home/domain/usecases/get_last_chats.dart';
 import 'package:chat/src/home/domain/usecases/get_user_by_id.dart';
 import 'package:chat/src/home/domain/usecases/search_user.dart';
 import 'package:chat/src/home/domain/usecases/update_profile_image.dart';
@@ -86,10 +87,12 @@ void initDependency() {
         ..registerFactory(() => GetUserByIdUseCase(serviceLocater()))
         ..registerFactory(() => SearchUserUseCase(serviceLocater()))
         ..registerFactory(() => UpdateProfileImageUseCase(serviceLocater()))
-        ..registerFactory(() => UpdateShowOnlineStatusUseCase(serviceLocater()))
+        ..registerFactory(() => UpdateOnlineStatusUseCase(serviceLocater()))
         ..registerFactory(() => UpdateUserUseCase(serviceLocater()))
+        ..registerFactory(() => GetLastChatsUseCase(serviceLocater()))
         ..registerFactory(
           () => HomeBloc(
+            serviceLocater(),
             serviceLocater(),
             serviceLocater(),
             serviceLocater(),

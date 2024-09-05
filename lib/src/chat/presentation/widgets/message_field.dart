@@ -5,10 +5,10 @@ import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/chat/presentation/bloc/chat_bloc.dart';
 import 'package:chat/src/chat/presentation/widgets/message_field_icon.dart';
 import 'package:chat/utils/color/color.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MessageField extends StatefulWidget {
@@ -27,50 +27,72 @@ class MessageField extends StatefulWidget {
 
 class _MessageFieldState extends State<MessageField> {
   late final TextEditingController controller;
-  late final StreamSubscription<bool> subscription;
 
   @override
   void initState() {
     controller = TextEditingController();
-    subscription = KeyboardVisibilityController().onChange.listen((visible) {});
     super.initState();
   }
 
   @override
   void dispose() {
-    subscription.cancel();
     controller.dispose();
     super.dispose();
+  }
+
+  Future<bool> handlePermission(Permission permission) async {
+    final status = await permission.status;
+    if (status.isGranted) {
+      return true;
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+      return false;
+    } else {
+      final result = await permission.request();
+      return result.isGranted;
+    }
+  }
+
+  Future<bool> checkPermission(FileType type) async {
+    final deviceInfo = await DeviceInfoPlugin().deviceInfo;
+    if (deviceInfo is AndroidDeviceInfo && deviceInfo.version.sdkInt >= 32) {
+      switch (type) {
+        case FileType.image:
+          return handlePermission(Permission.photos);
+        case FileType.video:
+          return handlePermission(Permission.videos);
+        case FileType.audio:
+          return handlePermission(Permission.audio);
+        case FileType.any:
+          return handlePermission(Permission.manageExternalStorage);
+        default:
+          return handlePermission(Permission.manageExternalStorage);
+      }
+    }
+    return handlePermission(Permission.storage);
   }
 
   final border = const OutlineInputBorder(
       borderSide: BorderSide.none,
       borderRadius: BorderRadius.all(Radius.circular(40)));
   Future<String?> pickFile(FileType type) async {
-    final status = await Permission.storage.status;
+    final bool permission = await checkPermission(type);
+    if (!permission) return null;
     try {
-      if (status.isGranted) {
-        if (type == FileType.image) {
-          final picker = FilePicker.platform;
-          final result = await picker.pickFiles(
-              type: FileType.image, allowMultiple: false);
-          return result?.files.first.path;
-        } else if (type == FileType.video) {
-          final picker = FilePicker.platform;
-          final result = await picker.pickFiles(
-              type: FileType.video, allowMultiple: false);
-          return result?.files.first.path;
-        } else {
-          final picker =
-              await FilePicker.platform.pickFiles(allowMultiple: false);
-          return picker?.files.first.path;
-        }
-      } else if (status.isPermanentlyDenied) {
-        openAppSettings();
-        return null;
+      if (type == FileType.image) {
+        final picker = FilePicker.platform;
+        final result =
+            await picker.pickFiles(type: FileType.image, allowMultiple: false);
+        return result?.files.first.path;
+      } else if (type == FileType.video) {
+        final picker = FilePicker.platform;
+        final result =
+            await picker.pickFiles(type: FileType.video, allowMultiple: false);
+        return result?.files.first.path;
       } else {
-        await Permission.storage.request();
-        return pickFile(type);
+        final picker =
+            await FilePicker.platform.pickFiles(allowMultiple: false);
+        return picker?.files.first.path;
       }
     } catch (e) {
       log(e.toString());
@@ -81,8 +103,8 @@ class _MessageFieldState extends State<MessageField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      margin: const EdgeInsets.only(bottom: 7),
+      height: 50,
+      margin: const EdgeInsets.only(bottom: 7, top: 7),
       padding: const EdgeInsets.only(top: 5),
       child: Row(
         children: [

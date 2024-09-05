@@ -14,4 +14,5 @@ abstract interface class ChatRepository {
       {int? limit, int? offset});
   Future<Either<Failure, void>> removeChat(ChatModel chat);
   Future<Either<Failure, Chat>> sendFile(ChatModel chat);
+  Future<Either<Failure, void>> updateReadStatus(String chatId);
 }

@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:chat/core/exception/server_exception.dart';
+import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
+import 'package:chat/utils/generator/id_generator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class HomeRemoteDataSource {
@@ -13,20 +15,9 @@ abstract interface class HomeRemoteDataSource {
   Future<void> deleteUser(String id);
   Future<UserModel> createUser();
   Future<Map<String, UserModel>> searchUser(String query);
-  // Future<void> sendFriendRequest(int id);
-  // Future<void> acceptFriendRequest(int id);
-  // Future<void> rejectFriendRequest(int id);
-  // Future<void> cancelFriendRequest(int id);
-  // Future<void> removeFriend(int id);
-  // Future<void> blockUser(int id);
-  // Future<void> unblockUser(int id);
-  // Future<List<UserModel>> getFriends();
-  // Future<List<UserModel>> getBlockedUsers();
-  // Future<List<UserModel>> getFriendRequests();
-  // Future<List<UserModel>> getPendingRequests();
-  // Future<List<UserModel>> getSentRequests();
+  Stream<Map<String, ChatModel>> getLastChat(List<String> chatIds);
   Future<void> updateProfileImage(File file);
-  Future<void> updateShowOnlineStatus(bool show);
+  Future<void> updateOnlineStatus(bool show);
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -163,10 +154,11 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<void> updateShowOnlineStatus(bool show) async {
+  Future<void> updateOnlineStatus(bool show) async {
     try {
-      await _client.from('users').update({'showOnlineStatus': show}).eq(
-          'id', _client.auth.currentUser!.id);
+      await _client
+          .from('users')
+          .update({'is_online': show}).eq('id', _client.auth.currentUser!.id);
     } on SocketException catch (e) {
       log('UpdateShowOnlineStatus error: SocketException $e');
       throw ServerException(message: e.message);
@@ -197,6 +189,34 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       throw ServerException(message: e.message);
     } catch (e) {
       log('UpdateUser error: $e');
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Stream<Map<String, ChatModel>> getLastChat(List<String> chatIds) {
+    final currentUserId = _client.auth.currentUser!.id;
+    final chatids = chatIds
+        .map((e) => IdGenerator.getConversionId(e, currentUserId))
+        .toList();
+    try {
+      return _client
+          .from('chats')
+          .stream(primaryKey: ['chat_id'])
+          .inFilter('chat_id', chatids)
+          .map((e) {
+            return {
+              for (var i in e) i['chat_id'] as String: ChatModel.fromJson(i)
+            };
+          });
+    } on SocketException catch (e) {
+      log('GetLastChat error: SocketException $e');
+      throw ServerException(message: e.message);
+    } on PostgrestException catch (e) {
+      log('GetLastChat error: PostgrestException $e');
+      throw ServerException(message: e.message);
+    } catch (e) {
+      log('GetLastChat error: $e');
       throw ServerException(message: e.toString());
     }
   }

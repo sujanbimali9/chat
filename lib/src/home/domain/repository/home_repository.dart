@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/core/failure/failure.dart';
 import 'package:fpdart/fpdart.dart';
@@ -14,19 +15,8 @@ abstract interface class HomeRepository {
   Future<Either<Failure, void>> deleteUser(String id);
   Future<Either<Failure, User>> createUser();
   Future<Either<Failure, Map<String, User>>> searchUser(String query);
-
-  // Future<Either<Failure, void>> sendFriendRequest(int id);
-  // Future<Either<Failure, void>> acceptFriendRequest(int id);
-  // Future<Either<Failure, void>> cancelFriendRequest(int id);
-  // Future<Either<Failure, void>> removeFriend(int id);
-  // Future<Either<Failure, void>> blockUser(int id);
-  // Future<Either<Failure, void>> unblockUser(int id);
-  // Future<Either<Failure, List<User>>> getFriends();
-  // Future<Either<Failure, List<User>>> getBlocedUsers();
-  // Future<Either<Failure, List<User>>> getFriendRequests();
-  // Future<Either<Failure, List<User>>> getPendingRequests();
-  // Future<Either<Failure, List<User>>> getSentRequests();
+  Either<Failure, Stream<Map<String, Chat>>> getLastChat(List<String> chatIds);
 
   Future<Either<Failure, void>> updateProfileImage(File file);
-  Future<Either<Failure, void>> updateShowOnlineStatus(bool show);
+  Future<Either<Failure, void>> updateOnlineStatus(bool show);
 }

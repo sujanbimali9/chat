@@ -18,6 +18,7 @@ import 'package:chat/utils/generator/list/extensions.dart';
 import 'package:chat/utils/generator/media/image_metadata.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -126,6 +127,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
     fetchingMore = false;
   }
+
   Future<void> _onSendFile(SendFileEvent event, Emitter<ChatState> emit) async {
     final fileType = _fileType(event.path);
     if (fileType.isImage) {
@@ -382,10 +384,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             chatSubscription = success.listen(
               (chat) {
                 if (isClosed) return;
+                final newChat = <int, Chat>{};
+                final updatedChats = <int, Chat>{};
 
+                chat.forEach((key, value) {
+                  if (state.chats[key] != null) {
+                    updatedChats[key] = value;
+                  } else {
+                    newChat[key] = value;
+                  }
+                });
+
+                // for (final entry in chat.entries) {
+                //   final chat = entry.value;
+                //   if (state.chats[entry.key] != null) {
+                //     updatedChats[entry.key] = chat;
+                //   } else {
+                //     newChat[entry.key] = chat;
+                //   }
+                // }
                 add(_StateEmitter(
                     state: state.copyWith(
-                  chats: {...chat, ...state.chats},
+                  chats: {...newChat, ...state.chats, ...updatedChats},
                 )));
               },
             );
@@ -440,7 +460,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await Isolate.spawn(_getVideoThumbnailIsolate, receivePort.sendPort);
     final sendPort = await receivePort.first as SendPort;
     final resultPort = ReceivePort();
-    sendPort.send([path, resultPort.sendPort]);
+    final rootToken = RootIsolateToken.instance!;
+    sendPort.send([path, resultPort.sendPort, rootToken]);
     final thumbnail = await resultPort.first as String?;
     if (thumbnail == null) {
       throw Exception('Failed to get video thumbnail');
@@ -454,6 +475,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final List message = await receivePort.first;
     final String path = message[0];
     final SendPort responsePort = message[1];
+    final rootToken = message[2];
+    BackgroundIsolateBinaryMessenger.ensureInitialized(rootToken);
     try {
       final thumbnail = await VideoThumbnail.thumbnailFile(
         video: path,

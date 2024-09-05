@@ -7,19 +7,37 @@ import 'package:chat/utils/icons/assetsicons.dart';
 import 'package:chat/utils/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
-class LoginForm extends HookWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final emailController = useTextEditingController();
-    final passwordController = useTextEditingController();
-    final formKey = GlobalKey<FormState>();
+  State<LoginForm> createState() => _LoginFormState();
+}
 
+class _LoginFormState extends State<LoginForm> {
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Form(
       key: formKey,
       child: Column(

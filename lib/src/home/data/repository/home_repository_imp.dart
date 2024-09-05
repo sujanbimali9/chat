@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/core/exception/server_exception.dart';
 import 'package:chat/core/failure/failure.dart';
@@ -89,9 +90,9 @@ class HomeRepositoryImp implements HomeRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateShowOnlineStatus(bool show) async {
+  Future<Either<Failure, void>> updateOnlineStatus(bool show) async {
     try {
-      final res = await _homeRemoteDataSource.updateShowOnlineStatus(show);
+      final res = await _homeRemoteDataSource.updateOnlineStatus(show);
       return right(res);
     } on ServerException catch (e) {
       return left(Failure(e.message));
@@ -117,6 +118,18 @@ class HomeRepositoryImp implements HomeRepository {
   Future<Either<Failure, User>> getCurretUser() async {
     try {
       final res = await _homeRemoteDataSource.getCurrentUser();
+      return right(res);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Either<Failure, Stream<Map<String, Chat>>> getLastChat(List<String> chatIds) {
+    try {
+      final res = _homeRemoteDataSource.getLastChat(chatIds);
       return right(res);
     } on ServerException catch (e) {
       return left(Failure(e.message));

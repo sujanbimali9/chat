@@ -12,6 +12,10 @@ class VideoFullScreen extends StatefulWidget {
 
 class _VideoFullScreenState extends State<VideoFullScreen> {
   late final VideoPlayerController controller;
+  bool isPlaying = false;
+  bool isBuffering = false;
+  bool isCompleted = false;
+
   @override
   void initState() {
     controller = VideoPlayerController.networkUrl(Uri.parse(widget.chat.msg))
@@ -30,9 +34,12 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
   }
 
   listener() {
-    if (controller.value.isCompleted || controller.value.isBuffering) {
+    isPlaying = controller.value.isPlaying;
+    isCompleted = controller.value.isCompleted;
+    if (isCompleted || controller.value.isBuffering != isBuffering) {
       setState(() {});
     }
+    isBuffering = controller.value.isBuffering;
   }
 
   @override
@@ -47,22 +54,19 @@ class _VideoFullScreenState extends State<VideoFullScreen> {
                 child: VideoPlayer(controller),
               ),
             ),
-          if (controller.value.isBuffering || (!controller.value.isInitialized))
+          if (isBuffering || (!controller.value.isInitialized))
             const Center(child: CircularProgressIndicator())
           else
             Center(
               child: Visibility(
-                visible: !controller.value.isPlaying,
+                visible: !isPlaying,
                 child: IconButton(
                   onPressed: () {
                     if (!controller.value.isInitialized) return;
-                    controller.value.isPlaying
-                        ? controller.pause()
-                        : controller.play();
+                    isPlaying ? controller.pause() : controller.play();
                     setState(() {});
                   },
-                  icon: (!controller.value.isInitialized) ||
-                          controller.value.isCompleted
+                  icon: (!controller.value.isInitialized) || isCompleted
                       ? const Icon(Icons.play_arrow)
                       : const Icon(Icons.pause),
                 ),

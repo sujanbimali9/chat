@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/auth/domain/usecases/logout.dart';
 import 'package:chat/src/home/domain/usecases/create_user.dart';
 import 'package:chat/src/home/domain/usecases/delete_user.dart';
 import 'package:chat/src/home/domain/usecases/get_all_user.dart';
 import 'package:chat/src/home/domain/usecases/get_current_user.dart';
+import 'package:chat/src/home/domain/usecases/get_last_chats.dart';
 import 'package:chat/src/home/domain/usecases/get_user_by_id.dart';
 import 'package:chat/src/home/domain/usecases/search_user.dart';
 import 'package:chat/src/home/domain/usecases/update_profile_image.dart';
@@ -26,7 +29,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final UpdateUserUseCase _updateUserUseCase;
   final DeleteUserUseCase _deleteUserUseCase;
   final UpdateProfileImageUseCase _updateImageUseCase;
-  final UpdateShowOnlineStatusUseCase _updateShowOnlineStatusUseCase;
+  final UpdateOnlineStatusUseCase _updateStatusUseCase;
+  final GetLastChatsUseCase _getLastChatsUseCase;
 
   HomeBloc(
     GetAllUserUseCase getAllUserUseCase,
@@ -37,7 +41,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     UpdateUserUseCase updateUserUseCase,
     DeleteUserUseCase deleteUserUseCase,
     UpdateProfileImageUseCase updateImageUseCase,
-    UpdateShowOnlineStatusUseCase updateShowOnlineStatusUseCase,
+    UpdateOnlineStatusUseCase updateOnlineStatusUseCase,
+    GetLastChatsUseCase getLastChatsUseCase,
   )   : _getAllUserUseCase = getAllUserUseCase,
         _getUserByIdUseCase = getUserByIdUseCase,
         _searchUserUseCase = searchUserUseCase,
@@ -46,8 +51,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _updateUserUseCase = updateUserUseCase,
         _deleteUserUseCase = deleteUserUseCase,
         _updateImageUseCase = updateImageUseCase,
-        _updateShowOnlineStatusUseCase = updateShowOnlineStatusUseCase,
-        super(const HomeState(users: {}, isLoading: true)) {
+        _updateStatusUseCase = updateOnlineStatusUseCase,
+        _getLastChatsUseCase = getLastChatsUseCase,
+        super(const HomeState(users: {}, isLoading: true, lastChats: {})) {
     on<GetUsersEvent>(_getUsers);
     on<CreateUser>(_createUser);
     on<GetCurrentUserEvent>(_getCurrentUser);
@@ -56,7 +62,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetUserByIdEvent>(_getUserById);
     on<SearchUserEvent>(_searchUser);
     on<UpdateProfileImageEvent>(_updateImage);
-    on<UpdateShowOnlineStatusEvent>(_updateShowOnlineStatus);
+    on<UpdateOnlineStatusEvent>(_updateShowOnlineStatus);
+    on<GetLastChatEvent>(_getLastChats);
+
+    on<_StateEmitterEvent>(
+      (event, emit) {
+        emit(event.state);
+      },
+    );
   }
 
   FutureOr<void> _getUsers(GetUsersEvent event, Emitter<HomeState> emit) async {
@@ -66,7 +79,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     result.fold(
       (l) => emit(state.copyWith(isLoading: false)),
-      (r) => emit(state.copyWith(users: r, isLoading: false)),
+      (r) {
+        add(GetLastChatEvent(chatIds: r.values.map((e) => e.id).toList()));
+        emit(state.copyWith(users: r, isLoading: false));
+      },
     );
   }
 
@@ -99,11 +115,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   FutureOr<void> _updateShowOnlineStatus(
-      UpdateShowOnlineStatusEvent event, Emitter<HomeState> emit) async {
+      UpdateOnlineStatusEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
         currentUser:
             state.currentUser?.copyWith(isOnline: event.showOnlineStatus)));
-    await _updateShowOnlineStatusUseCase(event.showOnlineStatus);
+    await _updateStatusUseCase(event.showOnlineStatus);
   }
 
   FutureOr<void> _createUser(CreateUser event, Emitter<HomeState> emit) async {
@@ -121,5 +137,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       (l) => emit(state.copyWith(isLoading: false)),
       (r) => emit(state.copyWith(currentUser: r, isLoading: false)),
     );
+  }
+
+  FutureOr<void> _getLastChats(
+      GetLastChatEvent event, Emitter<HomeState> emit) async {
+    final result = _getLastChatsUseCase(event.chatIds);
+    result.fold((l) => emit(state.copyWith(isLoading: false)), (r) {
+      final chatStream = r;
+      chatStream.listen((event) {
+        log('ChatStream: $event');
+        add(_StateEmitterEvent(state.copyWith(lastChats: event)));
+      });
+    });
   }
 }

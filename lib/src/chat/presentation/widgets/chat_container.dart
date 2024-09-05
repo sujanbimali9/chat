@@ -39,8 +39,6 @@ class ChatContainer extends StatelessWidget {
       isNextSameAuthor = true;
     }
     final isUser = chat.fromId == currentUser.id;
-    print('chat.status: ${chat.status}');
-    print('chat.type: ${chat}');
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment:

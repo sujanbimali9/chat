@@ -3,11 +3,13 @@ part of 'home_bloc.dart';
 
 class HomeState extends Equatable {
   final Map<String, User> users;
+  final Map<String, Chat> lastChats;
   final User? currentUser;
   final bool isLoading;
   final bool isFetchingMore;
 
   const HomeState({
+    required this.lastChats,
     required this.users,
     this.currentUser,
     this.isLoading = false,
@@ -20,6 +22,7 @@ class HomeState extends Equatable {
         currentUser ?? '',
         isLoading,
         isFetchingMore,
+        lastChats,
       ];
 
   HomeState copyWith({
@@ -27,12 +30,14 @@ class HomeState extends Equatable {
     User? currentUser,
     bool? isLoading,
     bool? isFetchingMore,
+    Map<String, Chat>? lastChats,
   }) {
     return HomeState(
       users: users ?? this.users,
       currentUser: currentUser ?? this.currentUser,
       isLoading: isLoading ?? this.isLoading,
       isFetchingMore: isFetchingMore ?? this.isFetchingMore,
+      lastChats: lastChats ?? this.lastChats,
     );
   }
 }

@@ -6,6 +6,8 @@ import 'dart:typed_data';
 import 'package:chat/core/exception/server_exception.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/utils/generator/media/image_metadata.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -26,6 +28,7 @@ abstract interface class ChatRemoteDataSource {
     int? offset,
   });
   Future<void> removeChat(ChatModel chat);
+  Future<void> updateReadStatus(String chatId);
 }
 
 class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
@@ -176,7 +179,6 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
   @override
   Future<ChatModel> sendVideo(ChatModel chat) async {
     try {
-      log('sendVideo');
       final videoUrl = await _uploadFile(chat.msg, '${chat.chatId}/video');
 
       final thumbnailUrl = await _uploadFile(
@@ -206,7 +208,7 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
 
   Future<String> _uploadFile(String path, String supabasePath) async {
     try {
-      _client.storage.from('chats').upload(supabasePath, File(path));
+      await _client.storage.from('chats').upload(supabasePath, File(path));
       return _client.storage.from('chats').getPublicUrl(supabasePath);
     } catch (e) {
       return _client.storage.from('chats').getPublicUrl(supabasePath);
@@ -218,7 +220,8 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
     await Isolate.spawn(_imageCompressionIsolate, receivePort.sendPort);
     final sendPort = await receivePort.first as SendPort;
     final resultPort = ReceivePort();
-    sendPort.send([path, resultPort.sendPort]);
+    final rootToken = RootIsolateToken.instance!;
+    sendPort.send([path, resultPort.sendPort, rootToken]);
     final image = await resultPort.first;
     if (image == null) {
       throw Exception('Failed to compress image');
@@ -228,11 +231,14 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
 
   static Future<void> _imageCompressionIsolate(SendPort sendPort) async {
     final receivePort = ReceivePort();
+
     sendPort.send(receivePort.sendPort);
 
     final List message = await receivePort.first;
     final String path = message[0];
     final SendPort responsePort = message[1];
+    final rootToken = message[2];
+    BackgroundIsolateBinaryMessenger.ensureInitialized(rootToken);
 
     try {
       final compressedImage = await ImageMetadata.compressImage(path);
@@ -255,6 +261,22 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
       return _client.storage.from('chats').getPublicUrl(supabasePath);
     } catch (e) {
       return _client.storage.from('chats').getPublicUrl(supabasePath);
+    }
+  }
+
+  @override
+  Future<void> updateReadStatus(String chatId) async {
+    try {
+      await _client.from('chats').update({'read': true}).eq('chat_id', chatId);
+    } on SocketException catch (e) {
+      log('UpdateReadStatus error: SocketException $e');
+      throw ServerException(message: e.message);
+    } on PostgrestException catch (e) {
+      log('UpdateReadStatus error: PostgrestException $e');
+      throw ServerException(message: e.message);
+    } catch (e) {
+      log('UpdateReadStatus error: $e');
+      throw ServerException(message: e.toString());
     }
   }
 }

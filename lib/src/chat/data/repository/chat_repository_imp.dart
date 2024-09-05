@@ -113,4 +113,16 @@ class ChatRepositoryImp implements ChatRepository {
       return left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateReadStatus(String chatId) async {
+    try {
+      final result = await _chatRemoteDataSource.updateReadStatus(chatId);
+      return right(result);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

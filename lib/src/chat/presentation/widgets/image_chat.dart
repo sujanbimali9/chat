@@ -45,16 +45,19 @@ class ImageChat extends StatelessWidget {
           maxHeight: screenSize.height * 0.3, maxWidth: screenSize.width * 0.8),
       child: AspectRatio(
         aspectRatio: aspectRatio,
-        child: ChatImageBuilder(
-          chat: chat,
-          borderRadius: borderRadius,
-          image: image,
-          onPressed: () {
-            if (!(chat.status.isSent)) return;
+        child: Hero(
+          tag: chat.msg,
+          child: ChatImageBuilder(
+            chat: chat,
+            borderRadius: borderRadius,
+            image: image,
+            onPressed: () {
+              if (!(chat.status.isSent)) return;
 
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ImageFullScreen(chat: chat)));
-          },
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ImageFullScreen(chat: chat)));
+            },
+          ),
         ),
       ),
     );
@@ -96,27 +99,27 @@ class ChatImageBuilder extends StatelessWidget {
               ? Container(
                   color: Colors.grey,
                 )
-              :chat.status.isFailed?
-              Image.file(
-                File(image),
-                fit: BoxFit.contain,
-                errorBuilder: (context, url, error) => Container(
-                    color: Colors.grey,
-                    child: const Icon(Icons.error, color: Colors.red)),
-                frameBuilder: (context,child,progress,complete)=>progressBuilder(progress?.toDouble()),
-
-              ):
-          CachedNetworkImage(
-                  imageUrl: image,
-                  fit: BoxFit.contain,
-                  errorListener: (value) {},
-                  errorWidget: (context, url, error) => Container(
-                      color: Colors.grey,
-                      child: const Icon(Icons.error, color: Colors.red)),
-                  progressIndicatorBuilder: (context, url, progress) {
-                    return progressBuilder(progress.progress);
-                  },
-                )),
+              : chat.status.isFailed
+                  ? Image.file(
+                      File(image),
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, url, error) => Container(
+                          color: Colors.grey,
+                          child: const Icon(Icons.error, color: Colors.red)),
+                      frameBuilder: (context, child, progress, complete) =>
+                          progressBuilder(progress?.toDouble()),
+                    )
+                  : CachedNetworkImage(
+                      imageUrl: image,
+                      fit: BoxFit.contain,
+                      errorListener: (value) {},
+                      errorWidget: (context, url, error) => Container(
+                          color: Colors.grey,
+                          child: const Icon(Icons.error, color: Colors.red)),
+                      progressIndicatorBuilder: (context, url, progress) {
+                        return progressBuilder(progress.progress);
+                      },
+                    )),
     );
   }
 }
