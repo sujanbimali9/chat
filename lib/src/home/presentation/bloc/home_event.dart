@@ -60,7 +60,7 @@ class UpdateProfileImageEvent extends HomeEvent {
 class UpdateOnlineStatusEvent extends HomeEvent {
   final bool showOnlineStatus;
 
-  const UpdateOnlineStatusEvent({required this.showOnlineStatus});
+  const UpdateOnlineStatusEvent(this.showOnlineStatus);
 
   @override
   List<Object> get props => [showOnlineStatus];

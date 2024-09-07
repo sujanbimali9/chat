@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/chat/presentation/bloc/chat_bloc.dart';
 import 'package:chat/src/chat/presentation/widgets/message_field_icon.dart';
 import 'package:chat/utils/color/color.dart';
@@ -12,14 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MessageField extends StatefulWidget {
-  const MessageField({
-    super.key,
-    required this.user,
-    required this.currentUser,
-  });
-
-  final User user;
-  final User currentUser;
+  const MessageField({super.key});
 
   @override
   State<MessageField> createState() => _MessageFieldState();

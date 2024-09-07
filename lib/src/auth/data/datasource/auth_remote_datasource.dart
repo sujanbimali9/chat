@@ -108,25 +108,7 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
   @override
   Future<AuthResult> loginWithGmail() async {
     try {
-      if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
-        final result =
-            await _supabaseClient.auth.signInWithOAuth(OAuthProvider.google);
-        if (result || _supabaseClient.auth.currentUser != null) {
-          return AuthResult.success;
-        }
-
-        throw const AuthException('login failed try again later');
-      }
-      const webClientId =
-          '654846559142-nne36pdu13ma5e5780t61nmlg204j67v.apps.googleusercontent.com';
-
-      const iosClientId =
-          '654846559142-fbaor0r30q6r02if3e77tuho6h9cl5l3.apps.googleusercontent.com';
-
-      final GoogleSignInAccount? signInAccount = await GoogleSignIn(
-        clientId: iosClientId,
-        serverClientId: webClientId,
-      ).signIn();
+      final GoogleSignInAccount? signInAccount = await GoogleSignIn().signIn();
       if (signInAccount == null) {
         return AuthResult.aborted;
       }

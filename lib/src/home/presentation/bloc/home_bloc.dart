@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat/core/common/model/chat.dart';
@@ -62,8 +61,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetUserByIdEvent>(_getUserById);
     on<SearchUserEvent>(_searchUser);
     on<UpdateProfileImageEvent>(_updateImage);
-    on<UpdateOnlineStatusEvent>(_updateShowOnlineStatus);
+    on<UpdateOnlineStatusEvent>(_updateOnlineStatus);
     on<GetLastChatEvent>(_getLastChats);
+
+    add(const UpdateOnlineStatusEvent(true));
 
     on<_StateEmitterEvent>(
       (event, emit) {
@@ -114,7 +115,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  FutureOr<void> _updateShowOnlineStatus(
+  FutureOr<void> _updateOnlineStatus(
       UpdateOnlineStatusEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
         currentUser:
@@ -145,7 +146,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     result.fold((l) => emit(state.copyWith(isLoading: false)), (r) {
       final chatStream = r;
       chatStream.listen((event) {
-        log('ChatStream: $event');
         add(_StateEmitterEvent(state.copyWith(lastChats: event)));
       });
     });

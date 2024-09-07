@@ -1,13 +1,12 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:typed_data';
-
 import 'package:chat/core/exception/server_exception.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/utils/generator/media/image_metadata.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -120,6 +119,7 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
       final res =
           _client.from('chats').upsert(updatedChat.toJson()).select().single();
       final resonse = await res;
+      _sendNotification(chat);
 
       return ChatModel.fromJson(resonse);
     } on SocketException catch (e) {
@@ -143,6 +143,7 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
       final res =
           _client.from('chats').upsert(updatedChat.toJson()).select().single();
       final resonse = await res;
+      _sendNotification(chat);
 
       return ChatModel.fromJson(resonse);
     } on SocketException catch (e) {
@@ -162,7 +163,7 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
     try {
       final res = _client.from('chats').upsert(chat.toJson()).select().single();
       final resonse = await res;
-
+      _sendNotification(chat);
       return ChatModel.fromJson(resonse);
     } on SocketException catch (e) {
       log('SendText error: SocketException $e');
@@ -192,7 +193,7 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
       final res =
           _client.from('chats').upsert(updatedChat.toJson()).select().single();
       final resonse = await res;
-
+      _sendNotification(chat);
       return ChatModel.fromJson(resonse);
     } on SocketException catch (e) {
       log('SendVideo error: SocketException $e');
@@ -279,4 +280,6 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
       throw ServerException(message: e.toString());
     }
   }
+
+  Future<void> _sendNotification(ChatModel chat) async {}
 }

@@ -57,11 +57,8 @@ class Chatscreen extends StatelessWidget {
                   height: 60,
                 ),
               ),
-              Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: MessageField(user: user, currentUser: currentUser))
+              const Positioned(
+                  left: 0, right: 0, bottom: 0, child: MessageField())
             ],
           ),
         ),

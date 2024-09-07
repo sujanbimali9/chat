@@ -87,11 +87,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     add(const FetchMessagesEvent(limit: 20));
     _listenForNewChats(limit: 5);
     _listenForConnectivity();
-    Future<void> close() async {
-      chatSubscription?.cancel();
-      connectivitySubscription?.cancel();
-      super.close();
-    }
   }
 
   Future<void> _onFetchMessages(
@@ -117,6 +112,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             chats: {...state.chats, ...chats},
             fetchingMore: false,
           ));
+
           if (chats.isEmpty || chats.values.length < event.limit) {
             allChatsLoaded = true;
           } else {
@@ -161,16 +157,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       log(res.toString());
       res.fold(
         (failure) {
-          emit(state.copyWith(
-            chats: {
-              ...state.chats,
-              chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-            },
-            pendingChats: {
-              ...?state.pendingChats,
-              chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-            },
-          ));
+          handleSendError(emit, chat);
         },
         (chat) {
           emit(state.copyWith(
@@ -204,16 +191,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     res.fold(
       (failure) {
-        emit(state.copyWith(
-          chats: {
-            ...state.chats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-          pendingChats: {
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-            ...?state.pendingChats,
-          },
-        ));
+        handleSendError(emit, chat);
       },
       (chat) {
         emit(state.copyWith(
@@ -256,16 +234,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     res.fold(
       (failure) {
-        emit(state.copyWith(
-          chats: {
-            ...state.chats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-          pendingChats: {
-            ...?state.pendingChats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-        ));
+        handleSendError(emit, chat);
       },
       (chat) {
         emit(state.copyWith(
@@ -309,16 +278,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     res.fold(
       (failure) {
-        emit(state.copyWith(
-          chats: {
-            ...state.chats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-          pendingChats: {
-            ...?state.pendingChats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-        ));
+        handleSendError(emit, chat);
       },
       (chat) {
         emit(state.copyWith(
@@ -351,16 +311,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         await _sendAudioUseCase(chat.copyWith(status: MessageStatus.sent));
     res.fold(
       (failure) {
-        emit(state.copyWith(
-          chats: {
-            ...state.chats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-          pendingChats: {
-            ...?state.pendingChats,
-            chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-          },
-        ));
+        handleSendError(emit, chat);
       },
       (chat) {
         emit(state.copyWith(
@@ -394,15 +345,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                     newChat[key] = value;
                   }
                 });
-
-                // for (final entry in chat.entries) {
-                //   final chat = entry.value;
-                //   if (state.chats[entry.key] != null) {
-                //     updatedChats[entry.key] = chat;
-                //   } else {
-                //     newChat[entry.key] = chat;
-                //   }
-                // }
                 add(_StateEmitter(
                     state: state.copyWith(
                   chats: {...newChat, ...state.chats, ...updatedChats},
@@ -508,6 +450,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       },
       (chat) {},
     );
+  }
+
+  void handleSendError(Emitter<ChatState> emit, Chat chat) {
+    emit(state.copyWith(
+      chats: {
+        ...state.chats,
+        chat.sentTime: chat.copyWith(status: MessageStatus.failed),
+      },
+      pendingChats: {
+        ...?state.pendingChats,
+        chat.sentTime: chat.copyWith(status: MessageStatus.failed),
+      },
+    ));
   }
 
   void _retryPendingChats() async {

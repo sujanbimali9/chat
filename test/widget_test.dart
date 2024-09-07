@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/chat_metadata.dart';
 import 'package:chat/core/enum/chat_type.dart';
-import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/src/chat/domain/usecase/get_chat.dart';
 import 'package:chat/src/chat/domain/usecase/get_chat_stream.dart';
 import 'package:chat/src/chat/domain/usecase/remove_chat.dart';

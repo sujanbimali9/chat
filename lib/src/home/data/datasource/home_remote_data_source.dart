@@ -5,6 +5,7 @@ import 'package:chat/core/exception/server_exception.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
 import 'package:chat/utils/generator/id_generator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class HomeRemoteDataSource {
@@ -156,9 +157,12 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<void> updateOnlineStatus(bool show) async {
     try {
-      await _client
-          .from('users')
-          .update({'is_online': show}).eq('id', _client.auth.currentUser!.id);
+      final pushToken = await FirebaseMessaging.instance.getToken();
+      await _client.from('users').update({
+        'is_online': show,
+        'push_token': pushToken,
+        'last_active': DateTime.now().millisecondsSinceEpoch,
+      }).eq('id', _client.auth.currentUser!.id);
     } on SocketException catch (e) {
       log('UpdateShowOnlineStatus error: SocketException $e');
       throw ServerException(message: e.message);
