@@ -31,7 +31,7 @@ class CurrentUserProfileImage extends StatelessWidget {
           height: 40.h,
           width: 40.h,
           borderRadius: 60,
-          showActive: state.isOnline,
+          showActive: state.showOnlineStatus,
           isNetwork: state.profileImage.isNotEmpty,
           fit: BoxFit.cover,
           image:

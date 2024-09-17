@@ -18,50 +18,47 @@ class FetchMessagesEvent extends ChatEvent {
 
 class SendFileEvent extends ChatEvent {
   final String path;
-  final Chat? chat;
 
-  const SendFileEvent(this.path, {this.chat});
+  const SendFileEvent(this.path);
 
   @override
-  List<Object> get props => [path, chat ?? ''];
+  List<Object> get props => [path];
 }
 
 class SendTextEvent extends ChatEvent {
   final String text;
-  final Chat? chat;
 
-  const SendTextEvent(this.text, {this.chat});
+  const SendTextEvent(this.text);
 
   @override
-  List<Object> get props => [text, chat ?? ''];
+  List<Object> get props => [text];
 }
 
 class SendImageEvent extends ChatEvent {
   final String path;
-  final Chat? chat;
 
-  const SendImageEvent(this.path, {this.chat});
+  const SendImageEvent(
+    this.path,
+  );
 
   @override
-  List<Object> get props => [path, chat ?? ''];
+  List<Object> get props => [path];
 }
 
 class SendVideoEvent extends ChatEvent {
   final String path;
-  final Chat? chat;
 
-  const SendVideoEvent(this.path, {this.chat});
+  const SendVideoEvent(this.path);
 
   @override
-  List<Object> get props => [path, chat ?? ''];
+  List<Object> get props => [path];
 }
 
 class SendAudioEvent extends ChatEvent {
   final String path;
   final int? duration;
-  final Chat? chat;
 
-  const SendAudioEvent(this.path, {this.chat, this.duration});
+  const SendAudioEvent(this.path, {this.duration});
 
   @override
   List<Object> get props => [path];
@@ -80,4 +77,13 @@ class _StateEmitter extends ChatEvent {
   final ChatState state;
 
   const _StateEmitter({required this.state});
+}
+
+class UpdateReadEvent extends ChatEvent {
+  final String chatId;
+
+  const UpdateReadEvent(this.chatId);
+
+  @override
+  List<Object> get props => [chatId];
 }

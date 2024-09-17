@@ -13,6 +13,7 @@ import 'package:chat/src/chat/domain/usecase/send_file.dart';
 import 'package:chat/src/chat/domain/usecase/send_image.dart';
 import 'package:chat/src/chat/domain/usecase/send_text.dart';
 import 'package:chat/src/chat/domain/usecase/send_video.dart';
+import 'package:chat/src/chat/domain/usecase/update_read.dart';
 import 'package:chat/utils/generator/id_generator.dart';
 import 'package:chat/utils/generator/list/extensions.dart';
 import 'package:chat/utils/generator/media/image_metadata.dart';
@@ -34,6 +35,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final SendImageUseCase _sendImageUseCase;
   final SendFileUseCase _sendFileUseCase;
   final GetChatUseCase _getChatsUseCase;
+  final UpdateReadUseCase _updateReadUseCase;
+  final Connectivity _connectivity;
   final String _chatId;
   final String _userId;
   final String _currentUserId;
@@ -48,9 +51,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     RemoveChatUseCase removeChatUseCase,
     SendAudioUseCase sendAudioUseCase,
     SendVideoUseCase sendVideoUseCase,
+    Connectivity connectivity,
     SendTextUseCase sendTextUseCase,
     SendImageUseCase sendImageUseCase,
     SendFileUseCase sendFileUseCase,
+    UpdateReadUseCase updateReadUseCase,
     GetChatUseCase getChatUseCase, {
     required String userId,
     required String currentUserId,
@@ -62,6 +67,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _sendImageUseCase = sendImageUseCase,
         _sendFileUseCase = sendFileUseCase,
         _getChatsUseCase = getChatUseCase,
+        _connectivity = connectivity,
+        _updateReadUseCase = updateReadUseCase,
         _currentUserId = currentUserId,
         _userId = userId,
         _chatId = IdGenerator.getConversionId(userId, currentUserId),
@@ -73,6 +80,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<SendImageEvent>(_onSendImage);
     on<SendVideoEvent>(_onSendVideo);
     on<RemoveChatEvent>(_onRemoveChat);
+    on<UpdateReadEvent>(_updateRead);
     on<_StateEmitter>(
       (event, emit) async {
         try {
@@ -84,9 +92,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       },
     );
+    add(UpdateReadEvent(_chatId));
     add(const FetchMessagesEvent(limit: 20));
     _listenForNewChats(limit: 5);
-    _listenForConnectivity();
+    _listernForConnectivity();
   }
 
   Future<void> _onFetchMessages(
@@ -94,12 +103,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (allChatsLoaded || fetchingMore) return;
     fetchingMore = true;
     emit(state.copyWith(fetchingMore: true));
-    await Future.delayed(const Duration(seconds: 2), () async {
+
+    await Future.delayed(Duration(seconds: state.chats.isEmpty ? 0 : 2),
+        () async {
       final result = await _getChatsUseCase(GetChatParms(
         chatId: _chatId,
         limit: event.limit,
         offset: _lastDocId,
       ));
+
       result.fold(
         (failure) {
           emit(state.copyWith(
@@ -127,34 +139,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> _onSendFile(SendFileEvent event, Emitter<ChatState> emit) async {
     final fileType = _fileType(event.path);
     if (fileType.isImage) {
-      add(SendImageEvent(event.path, chat: event.chat));
+      add(SendImageEvent(event.path));
       return;
     } else if (fileType.isVideo) {
-      add(SendVideoEvent(event.path, chat: event.chat));
+      add(SendVideoEvent(event.path));
       return;
     } else if (fileType.isAudio) {
-      add(SendAudioEvent(event.path, chat: event.chat));
+      add(SendAudioEvent(event.path));
       return;
     } else {
-      final chat = event.chat ??
-          Chat(
-            id: const Uuid().v4(),
-            msg: event.path,
-            toId: _userId,
-            read: false,
-            type: ChatType.file,
-            fromId: _currentUserId,
-            readTime: null,
-            sentTime: DateTime.now().millisecondsSinceEpoch,
-            metadata: ChatMetaData(title: event.path.split('/').last),
-            status: MessageStatus.sending,
-          );
+      final chat = Chat(
+        id: const Uuid().v4(),
+        msg: event.path,
+        toId: _userId,
+        read: false,
+        type: ChatType.file,
+        fromId: _currentUserId,
+        readTime: null,
+        sentTime: DateTime.now().millisecondsSinceEpoch,
+        metadata: ChatMetaData(title: event.path.split('/').last),
+        status: MessageStatus.sending,
+      );
       emit(state.copyWith(
         chats: {chat.sentTime: chat, ...state.chats},
       ));
       final res =
           await _sendFileUseCase(chat.copyWith(status: MessageStatus.sent));
-      log(res.toString());
       res.fold(
         (failure) {
           handleSendError(emit, chat);
@@ -169,25 +179,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onSendText(SendTextEvent event, Emitter<ChatState> emit) async {
-    final chat = event.chat ??
-        Chat(
-          id: const Uuid().v4(),
-          msg: event.text,
-          toId: _userId,
-          read: false,
-          type: ChatType.text,
-          fromId: _currentUserId,
-          readTime: null,
-          sentTime: DateTime.now().millisecondsSinceEpoch,
-          metadata: null,
-          status: MessageStatus.sending,
-        );
+    final chat = Chat(
+      id: const Uuid().v4(),
+      msg: event.text,
+      toId: _userId,
+      read: false,
+      type: ChatType.text,
+      fromId: _currentUserId,
+      readTime: null,
+      sentTime: DateTime.now().millisecondsSinceEpoch,
+      metadata: null,
+      status: MessageStatus.sending,
+    );
     emit(state.copyWith(
       chats: {chat.sentTime: chat, ...state.chats},
     ));
     final res =
         await _sendTextUseCase(chat.copyWith(status: MessageStatus.sent));
-    log(res.toString());
 
     res.fold(
       (failure) {
@@ -208,22 +216,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       SendImageEvent event, Emitter<ChatState> emit) async {
     final double aspectRatio = await getImageAspectRatio(event.path);
     final title = event.path.split('/').last;
-    final chat = event.chat ??
-        Chat(
-          id: const Uuid().v4(),
-          msg: event.path,
-          toId: _userId,
-          read: false,
-          type: ChatType.image,
-          fromId: _currentUserId,
-          readTime: null,
-          sentTime: DateTime.now().millisecondsSinceEpoch,
-          metadata: ChatMetaData(
-            aspectRatio: aspectRatio,
-            title: title,
-          ),
-          status: MessageStatus.sending,
-        );
+    final chat = Chat(
+      id: const Uuid().v4(),
+      msg: event.path,
+      toId: _userId,
+      read: false,
+      type: ChatType.image,
+      fromId: _currentUserId,
+      readTime: null,
+      sentTime: DateTime.now().millisecondsSinceEpoch,
+      metadata: ChatMetaData(
+        aspectRatio: aspectRatio,
+        title: title,
+      ),
+      status: MessageStatus.sending,
+    );
 
     emit(state.copyWith(
       chats: {chat.sentTime: chat, ...state.chats},
@@ -246,36 +253,30 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> _onSendVideo(
       SendVideoEvent event, Emitter<ChatState> emit) async {
-    var chat = event.chat ??
-        Chat(
-          id: const Uuid().v4(),
-          msg: event.path,
-          toId: _userId,
-          read: false,
-          type: ChatType.video,
-          fromId: _currentUserId,
-          readTime: null,
-          sentTime: DateTime.now().millisecondsSinceEpoch,
-          status: MessageStatus.sending,
-        );
+    var chat = Chat(
+      id: const Uuid().v4(),
+      msg: event.path,
+      toId: _userId,
+      read: false,
+      type: ChatType.video,
+      fromId: _currentUserId,
+      readTime: null,
+      sentTime: DateTime.now().millisecondsSinceEpoch,
+      status: MessageStatus.sending,
+    );
     final String title = event.path.split('/').last;
     final thumbnail = await getVideoThumbnail(event.path);
     final double aspectRatio = await getImageAspectRatio(thumbnail);
 
     chat = chat.copyWith(
       metadata: ChatMetaData(
-        aspectRatio: aspectRatio,
-        title: title,
-        thumbnail: getImageUrl(title, chat.chatId),
-      ),
+          aspectRatio: aspectRatio, title: title, thumbnail: thumbnail),
     );
     emit(state.copyWith(
       chats: {chat.sentTime: chat, ...state.chats},
     ));
     final res =
         await _sendVideoUseCase(chat.copyWith(status: MessageStatus.sent));
-    log(res.toString());
-
     res.fold(
       (failure) {
         handleSendError(emit, chat);
@@ -290,20 +291,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   FutureOr<void> _onSendAudio(
       SendAudioEvent event, Emitter<ChatState> emit) async {
-    final chat = event.chat ??
-        Chat(
-          id: const Uuid().v4(),
-          msg: event.path,
-          toId: _userId,
-          read: false,
-          type: ChatType.audio,
-          fromId: _currentUserId,
-          readTime: null,
-          sentTime: DateTime.now().millisecondsSinceEpoch,
-          metadata: ChatMetaData(
-              title: event.path.split('/').last, duration: event.duration!),
-          status: MessageStatus.sending,
-        );
+    final chat = Chat(
+      id: const Uuid().v4(),
+      msg: event.path,
+      toId: _userId,
+      read: false,
+      type: ChatType.audio,
+      fromId: _currentUserId,
+      readTime: null,
+      sentTime: DateTime.now().millisecondsSinceEpoch,
+      metadata: ChatMetaData(
+          title: event.path.split('/').last, duration: event.duration!),
+      status: MessageStatus.sending,
+    );
     emit(state.copyWith(
       chats: {chat.sentTime: chat, ...state.chats},
     ));
@@ -322,62 +322,40 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _listenForNewChats({int? limit}) {
-    try {
-      final res =
-          _getChatStreamUseCase(GetChatParms(chatId: _chatId, limit: limit));
+    final res =
+        _getChatStreamUseCase(GetChatParms(chatId: _chatId, limit: limit));
 
-      res.fold(
-        (failure) {
-          log('Failure in getting data:${failure.message}');
-        },
-        (success) {
-          try {
-            chatSubscription = success.listen(
-              (chat) {
-                if (isClosed) return;
-                final newChat = <int, Chat>{};
-                final updatedChats = <int, Chat>{};
+    res.fold(
+      (failure) {
+        log('Failure in getting data:${failure.message}');
+      },
+      (success) {
+        chatSubscription = success.listen(
+          (chat) {
+            if (isClosed) return;
+            final newChat = <int, Chat>{};
+            final updatedChats = <int, Chat>{};
 
-                chat.forEach((key, value) {
-                  if (state.chats[key] != null) {
-                    updatedChats[key] = value;
-                  } else {
-                    newChat[key] = value;
-                  }
-                });
-                add(_StateEmitter(
-                    state: state.copyWith(
-                  chats: {...newChat, ...state.chats, ...updatedChats},
-                )));
-              },
-            );
-          } catch (e) {
-            log('Error in getting data: $e');
-          }
-        },
-      );
-    } catch (e) {
-      log('Listen for chat error: ${e.toString()}');
-    }
-  }
-
-  void _listenForConnectivity() {
-    try {
-      connectivitySubscription =
-          Connectivity().onConnectivityChanged.listen((e) {
-        if (e.contains(ConnectivityResult.none)) {
-          chatSubscription?.cancel();
-          chatSubscription = null;
-        } else if (chatSubscription == null) {
-          _listenForNewChats();
-          if (state.pendingChats?.isNotEmpty ?? false) {
-            _retryPendingChats();
-          }
-        }
-      });
-    } catch (e) {
-      log('Connectivity error: $e');
-    }
+            chat.forEach((key, value) {
+              if (state.chats[key] != null) {
+                updatedChats[key] = value;
+              } else {
+                newChat[key] = value;
+              }
+            });
+            add(_StateEmitter(
+                state: state.copyWith(
+              chats: {...newChat, ...state.chats, ...updatedChats},
+            )));
+          },
+          onError: (value) {
+            chatSubscription?.cancel();
+            chatSubscription = null;
+            log('Error in getting data $value');
+          },
+        );
+      },
+    );
   }
 
   ChatType _fileType(String name) {
@@ -458,27 +436,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ...state.chats,
         chat.sentTime: chat.copyWith(status: MessageStatus.failed),
       },
-      pendingChats: {
-        ...?state.pendingChats,
-        chat.sentTime: chat.copyWith(status: MessageStatus.failed),
-      },
     ));
   }
 
-  void _retryPendingChats() async {
-    state.pendingChats!.forEach((id, chat) async {
-      await Future.delayed(const Duration(seconds: 2));
-      switch (chat.type) {
-        case ChatType.audio:
-          add(SendAudioEvent(chat.msg, chat: chat));
-        case ChatType.file:
-          add(SendFileEvent(chat.msg, chat: chat));
-        case ChatType.video:
-          add(SendVideoEvent(chat.msg, chat: chat));
-        case ChatType.image:
-          add(SendImageEvent(chat.msg, chat: chat));
-        case ChatType.text:
-          add(SendTextEvent(chat.msg, chat: chat));
+  FutureOr<void> _updateRead(
+      UpdateReadEvent event, Emitter<ChatState> emit) async {
+    await _updateReadUseCase(event.chatId);
+  }
+
+  void _listernForConnectivity() {
+    _connectivity.onConnectivityChanged.listen((event) {
+      if (!event.contains(ConnectivityResult.none)) {
+        chatSubscription?.cancel();
+        _listenForNewChats();
+      } else {
+        chatSubscription?.cancel();
       }
     });
   }

@@ -13,7 +13,7 @@ class ImageFullScreen extends StatelessWidget {
         children: [
           Center(
             child: Hero(
-              tag: chat.msg,
+              tag: chat.id,
               child: AspectRatio(
                 aspectRatio: chat.metadata!.aspectRatio!,
                 child: SizedBox(

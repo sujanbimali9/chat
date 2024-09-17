@@ -71,12 +71,12 @@ class CreateUser extends HomeEvent {
 }
 
 class GetLastChatEvent extends HomeEvent {
-  final List<String> chatIds;
+  final String userId;
 
-  const GetLastChatEvent({required this.chatIds});
+  const GetLastChatEvent({required this.userId});
 
   @override
-  List<Object> get props => [chatIds];
+  List<Object> get props => [userId];
 }
 
 class _StateEmitterEvent extends HomeEvent {

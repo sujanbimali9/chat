@@ -36,6 +36,8 @@ class Chatscreen extends StatelessWidget {
         serviceLocater(),
         serviceLocater(),
         serviceLocater(),
+        serviceLocater(),
+        serviceLocater(),
       ),
       child: Scaffold(
         body: PopScope(
@@ -78,7 +80,7 @@ class Chatscreen extends StatelessWidget {
                 height: 40,
                 width: 40,
                 fit: BoxFit.cover,
-                showActive: user.isOnline && user.showOnlineStatus,
+                showActive: user.showOnlineStatus,
                 image: user.profileImage,
                 isNetwork: true,
               ),
@@ -94,8 +96,8 @@ class Chatscreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
-                    if (user.isOnline) const Text('online'),
-                    if (!user.isOnline)
+                    if (user.showOnlineStatus) const Text('online'),
+                    if (!user.showOnlineStatus)
                       Text(
                         DateFormatter.format(user.lastActive),
                         overflow: TextOverflow.ellipsis,

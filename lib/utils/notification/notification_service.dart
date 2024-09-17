@@ -4,9 +4,12 @@ import 'package:chat/.supabase_key.dart';
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/src/chat/data/data_source/chat_remote_data_source.dart';
+import 'package:chat/src/chat/data/data_source/local_remote_data_source.dart';
 import 'package:chat/src/chat/data/repository/chat_repository_imp.dart';
-import 'package:chat/src/chat/domain/repository/chat_repository.dart';
 import 'package:chat/src/chat/domain/usecase/send_text.dart';
+import 'package:chat/utils/database/local_database.dart';
+import 'package:chat/utils/helper/network_info.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -179,15 +182,23 @@ class NotificationService {
     );
 
     try {
+      final connectivity = Connectivity();
       if (!_isInitialize) {
         await Supabase.initialize(anonKey: anonKey, url: url);
+        await LocalDatabase.initializeLocalDatabase();
+        NetworkInfo.init(connectivity);
         _isInitialize = true;
       }
       final supabaseClient = Supabase.instance.client;
-      final ChatRemoteDataSource chatRemoteDataSource =
-          ChatRemoteDataSourceImp(supabaseClient);
-      final ChatRepository chatRepository =
-          ChatRepositoryImp(chatRemoteDataSource);
+
+      final chatRemoteDataSource = ChatRemoteDataSourceImp(supabaseClient);
+
+      final localDataBase = LocalDatabase.instance;
+      final localDataSource = ChatLocalDataSourceImp(localDataBase);
+      final networkInfo = NetworkInfo.instance;
+
+      final chatRepository =
+          ChatRepositoryImp(chatRemoteDataSource, localDataSource, networkInfo);
       final sendTextUseCase = SendTextUseCase(chatRepository);
       await sendTextUseCase(chat);
     } catch (e) {

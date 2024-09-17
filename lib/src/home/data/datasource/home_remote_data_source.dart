@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:chat/core/exception/server_exception.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
-import 'package:chat/utils/generator/id_generator.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,8 +15,8 @@ abstract interface class HomeRemoteDataSource {
   Future<void> deleteUser(String id);
   Future<UserModel> createUser();
   Future<Map<String, UserModel>> searchUser(String query);
-  Stream<Map<String, ChatModel>> getLastChat(List<String> chatIds);
-  Future<void> updateProfileImage(File file);
+  Future<Map<String, ChatModel>> getLastChat();
+  Future<UserModel> updateProfileImage(File file);
   Future<void> updateOnlineStatus(bool show);
 }
 
@@ -137,11 +136,19 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<void> updateProfileImage(File file) async {
+  Future<UserModel> updateProfileImage(File file) async {
     try {
       final path = 'profile/${_client.auth.currentUser!.id}.jpg';
+      final userId = _client.auth.currentUser!.id;
       await _client.storage.from('users').upload(path, file);
-      return;
+      final url = _client.storage.from('users').getPublicUrl(path);
+      final user = await _client
+          .from('users')
+          .update({'avatar_url': url})
+          .eq('id', userId)
+          .select()
+          .single();
+      return UserModel.fromJson(user);
     } on SocketException catch (e) {
       log('UpdateProfileImage error: SocketException $e');
       throw ServerException(message: e.message);
@@ -198,21 +205,25 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Stream<Map<String, ChatModel>> getLastChat(List<String> chatIds) {
+  Future<Map<String, ChatModel>> getLastChat() async {
     final currentUserId = _client.auth.currentUser!.id;
-    final chatids = chatIds
-        .map((e) => IdGenerator.getConversionId(e, currentUserId))
-        .toList();
+
     try {
-      return _client
+      //   return _client
+      //       .from('chats')
+      //       .stream(primaryKey: ['chat_id'])
+      //       .inFilter('chat_id', chatids)
+      //       .map((e) {
+      //         return {
+      //           for (var i in e) i['chat_id'] as String: ChatModel.fromJson(i)
+      //         };
+      //       });
+      final res = await _client
           .from('chats')
-          .stream(primaryKey: ['chat_id'])
-          .inFilter('chat_id', chatids)
-          .map((e) {
-            return {
-              for (var i in e) i['chat_id'] as String: ChatModel.fromJson(i)
-            };
-          });
+          .select()
+          .or('from_id.eq.$currentUserId,to_id.eq.$currentUserId');
+
+      return {for (var i in res) i['chat_id'] as String: ChatModel.fromJson(i)};
     } on SocketException catch (e) {
       log('GetLastChat error: SocketException $e');
       throw ServerException(message: e.message);

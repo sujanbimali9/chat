@@ -33,8 +33,9 @@ abstract interface class ChatRemoteDataSource {
 class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
   final SupabaseClient _client;
 
-  ChatRemoteDataSourceImp(SupabaseClient supabaseClient)
-      : _client = supabaseClient;
+  ChatRemoteDataSourceImp(
+    SupabaseClient supabaseClient,
+  ) : _client = supabaseClient;
   @override
   Future<Map<int, ChatModel>> getChats(String chatId,
       {int? limit, int? offset}) async {
@@ -281,5 +282,56 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
     }
   }
 
-  Future<void> _sendNotification(ChatModel chat) async {}
+  Future<void> _sendNotification(ChatModel chat) async {
+    try {
+      final users = await _client
+          .from('users')
+          .select('push_token, full_name, id')
+          .inFilter('id', [chat.toId, chat.fromId]);
+      final sender =
+          users.firstWhere((element) => element['id'] == chat.fromId);
+      final receiver =
+          users.firstWhere((element) => element['id'] == chat.toId);
+
+      const oauth2Key = '';
+      await post(
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/chat-568d3/messages:send'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $oauth2Key',
+        },
+        body: jsonEncode({
+          'message': {
+            'token': receiver['push_token'],
+            'data': {
+              'chat_id': chat.chatId,
+              'msg': chat.msg,
+              'type': chat.type.name,
+              'from_id': chat.fromId,
+              'to_id': chat.toId,
+              'receiver_name': receiver['full_name'],
+              'sender_name': sender['full_name'],
+            },
+            'android': {'priority': 'high'},
+            'apns': {
+              'headers': {'apns-priority': '10'},
+              'payload': {
+                'aps': {'content-available': 1}
+              }
+            }
+          }
+        }),
+      );
+    } on HttpException catch (e) {
+      log('SendNotification error: HttpException $e');
+      throw ServerException(message: e.message);
+    } on SocketException catch (e) {
+      log('SendNotification error: SocketException $e');
+      throw ServerException(message: e.message);
+    } catch (e) {
+      log('SendNotification error: $e');
+      throw ServerException(message: e.toString());
+    }
+  }
 }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:chat/src/home/presentation/bloc/home_bloc.dart';
 import 'package:chat/src/home/presentation/widgets/app_bar.dart';
@@ -7,8 +6,6 @@ import 'package:chat/src/home/presentation/widgets/current_user_profile_image.da
 import 'package:chat/src/home/presentation/widgets/user_tile.dart';
 import 'package:chat/utils/constant/constant.dart';
 import 'package:chat/utils/generator/id_generator.dart';
-import 'package:chat/utils/notification/notification_service.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,9 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
     scrollController.addListener(_scrollListener);
     context.read<HomeBloc>().add(GetUsersEvent());
     context.read<HomeBloc>().add(GetCurrentUserEvent());
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      log('onMessageOpenedApp: $message');
-    });
     super.initState();
   }
 

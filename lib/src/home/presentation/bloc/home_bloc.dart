@@ -80,10 +80,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     result.fold(
       (l) => emit(state.copyWith(isLoading: false)),
-      (r) {
-        add(GetLastChatEvent(chatIds: r.values.map((e) => e.id).toList()));
-        emit(state.copyWith(users: r, isLoading: false));
-      },
+      (r) => emit(state.copyWith(users: r, isLoading: false)),
     );
   }
 
@@ -118,8 +115,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   FutureOr<void> _updateOnlineStatus(
       UpdateOnlineStatusEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(
-        currentUser:
-            state.currentUser?.copyWith(isOnline: event.showOnlineStatus)));
+        currentUser: state.currentUser
+            ?.copyWith(showOnlineStatus: event.showOnlineStatus)));
     await _updateStatusUseCase(event.showOnlineStatus);
   }
 
@@ -136,18 +133,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final result = await _getCurrentUserUseCase(NoParams());
     result.fold(
       (l) => emit(state.copyWith(isLoading: false)),
-      (r) => emit(state.copyWith(currentUser: r, isLoading: false)),
+      (r) {
+        emit(state.copyWith(currentUser: r, isLoading: false));
+        add(GetLastChatEvent(userId: state.currentUser!.id));
+      },
     );
   }
 
   FutureOr<void> _getLastChats(
       GetLastChatEvent event, Emitter<HomeState> emit) async {
-    final result = _getLastChatsUseCase(event.chatIds);
-    result.fold((l) => emit(state.copyWith(isLoading: false)), (r) {
-      final chatStream = r;
-      chatStream.listen((event) {
-        add(_StateEmitterEvent(state.copyWith(lastChats: event)));
-      });
-    });
+    final result = await _getLastChatsUseCase(NoParams());
+    result.fold(
+      (l) => emit(state.copyWith(isLoading: false)),
+      (r) => emit(state.copyWith(lastChats: r, isLoading: false)),
+    );
   }
 }

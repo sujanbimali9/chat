@@ -7,11 +7,8 @@ class UserModel extends User {
     required super.fullName,
     required super.email,
     required super.profileImage,
-    required super.blocked,
     required super.createdAt,
     required super.dateofBirth,
-    required super.friends,
-    required super.isOnline,
     required super.lastActive,
     required super.showOnlineStatus,
     required super.phone,
@@ -25,13 +22,10 @@ class UserModel extends User {
       fullName: json['full_name'],
       email: json['email'],
       profileImage: json['profile_image'],
-      blocked: List<String>.from(json['blocked']),
       createdAt: json['created_at'],
       dateofBirth: json['date_of_birth'],
-      friends: List<String>.from(json['friends']),
-      isOnline: json['is_online'],
       lastActive: json['last_active'],
-      showOnlineStatus: json['show_online_status'],
+      showOnlineStatus: _getBool(json['show_online_status']),
       phone: json['phone'],
       pushToken: json['push_token'],
       userName: json['user_name'],
@@ -44,11 +38,8 @@ class UserModel extends User {
         fullName: user.fullName,
         email: user.email,
         profileImage: user.profileImage,
-        blocked: user.blocked,
         createdAt: user.createdAt,
         dateofBirth: user.dateofBirth,
-        friends: user.friends,
-        isOnline: user.isOnline,
         lastActive: user.lastActive,
         showOnlineStatus: user.showOnlineStatus,
         phone: user.phone,
@@ -64,11 +55,8 @@ class UserModel extends User {
       profileImage: json['user_metadata']['avatar_url'] ??
           json['user_metadata']['picture'] ??
           '',
-      blocked: const [],
       createdAt: json['created_at'],
       dateofBirth: '',
-      friends: const [],
-      isOnline: true,
       lastActive: DateTime.now().millisecondsSinceEpoch.toString(),
       showOnlineStatus: true,
       phone: json['phone'],
@@ -83,13 +71,10 @@ class UserModel extends User {
       'full_name': super.fullName,
       'email': super.email,
       'profile_image': super.profileImage,
-      'blocked': super.blocked,
       'created_at': super.createdAt,
       'date_of_birth': super.dateofBirth,
-      'friends': super.friends,
-      'is_online': super.isOnline,
       'last_active': super.lastActive,
-      'show_online_status': super.showOnlineStatus,
+      'show_online_status': super.showOnlineStatus ? 1 : 0,
       'phone': super.phone,
       'push_token': super.pushToken,
       'user_name': super.userName,
@@ -103,11 +88,8 @@ class UserModel extends User {
     String? fullName,
     String? email,
     String? profileImage,
-    List<String>? blocked,
     String? createdAt,
     String? dateofBirth,
-    List<String>? friends,
-    bool? isOnline,
     String? lastActive,
     bool? showOnlineStatus,
     String? phone,
@@ -120,16 +102,21 @@ class UserModel extends User {
       fullName: fullName ?? super.fullName,
       email: email ?? super.email,
       profileImage: profileImage ?? super.profileImage,
-      blocked: blocked ?? super.blocked,
       createdAt: createdAt ?? super.createdAt,
       dateofBirth: dateofBirth ?? super.dateofBirth,
-      friends: friends ?? super.friends,
-      isOnline: isOnline ?? super.isOnline,
       lastActive: lastActive ?? super.lastActive,
       showOnlineStatus: showOnlineStatus ?? super.showOnlineStatus,
       phone: phone ?? super.phone,
       pushToken: pushToken ?? super.pushToken,
       userName: userName ?? super.userName,
     );
+  }
+
+  static bool _getBool(dynamic value) {
+    if (value == 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

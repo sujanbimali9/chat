@@ -37,7 +37,7 @@ class ChatModel extends Chat {
       id: json['id'],
       msg: json['msg'],
       toId: json['to_id'],
-      read: json['read'],
+      read: _getBool(json['read']),
       type: getChatType(json['type']),
       fromId: json['from_id'],
       readTime: json['read_time'],
@@ -55,7 +55,7 @@ class ChatModel extends Chat {
       'chat_id': chatId,
       'msg': msg,
       'to_id': toId,
-      'read': read,
+      'read': read ? 1 : 0,
       'type': type.name,
       'from_id': fromId,
       'read_time': readTime,
@@ -92,6 +92,14 @@ class ChatModel extends Chat {
           : this.metadata as ChatMetaDataModel?,
       status: status ?? this.status,
     );
+  }
+
+  static bool _getBool(dynamic value) {
+    if (value == 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

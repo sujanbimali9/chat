@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -46,7 +47,7 @@ class ImageChat extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: aspectRatio,
         child: Hero(
-          tag: chat.msg,
+          tag: chat.id,
           child: ChatImageBuilder(
             chat: chat,
             borderRadius: borderRadius,
@@ -106,8 +107,10 @@ class ChatImageBuilder extends StatelessWidget {
                       errorBuilder: (context, url, error) => Container(
                           color: Colors.grey,
                           child: const Icon(Icons.error, color: Colors.red)),
-                      frameBuilder: (context, child, progress, complete) =>
-                          progressBuilder(progress?.toDouble()),
+                      // frameBuilder: (context, child, progress, complete) =>
+                      //     complete
+                      //         ? child
+                      //         : progressBuilder(progress?.toDouble()),
                     )
                   : CachedNetworkImage(
                       imageUrl: image,

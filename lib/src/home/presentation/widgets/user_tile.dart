@@ -40,8 +40,7 @@ class UserTile extends StatelessWidget {
             'currentUser': context.read<HomeBloc>().state.currentUser,
           });
         },
-        trailing:
-            user.isOnline ? Text(DateFormatter.format(user.lastActive)) : null,
+        trailing: Text(DateFormatter.format(user.lastActive)),
         title:
             Text(user.fullName, style: Theme.of(context).textTheme.bodyLarge),
         subtitle: Text(lastChat?.msg ?? '',
@@ -49,7 +48,7 @@ class UserTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium),
         leading: ProfileImage(
-          showActive: user.isOnline && user.showOnlineStatus,
+          showActive: user.showOnlineStatus,
           fit: BoxFit.cover,
           width: 40,
           isNetwork: user.profileImage.isNotEmpty,

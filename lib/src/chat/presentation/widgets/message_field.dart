@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-
+import 'dart:isolate';
 import 'package:chat/src/chat/presentation/bloc/chat_bloc.dart';
 import 'package:chat/src/chat/presentation/widgets/message_field_icon.dart';
 import 'package:chat/utils/color/color.dart';
@@ -70,6 +70,13 @@ class _MessageFieldState extends State<MessageField> {
   Future<String?> pickFile(FileType type) async {
     final bool permission = await checkPermission(type);
     if (!permission) return null;
+    // final receivePort = ReceivePort();
+    // await Isolate.spawn(_filePickerIsolate, receivePort.sendPort);
+    // final sendPort = await receivePort.first as SendPort;
+    // final response = ReceivePort();
+    // sendPort.send([response.sendPort, type]);
+    // final data = await response.first;
+    // return data;
     try {
       if (type == FileType.image) {
         final picker = FilePicker.platform;
@@ -84,7 +91,7 @@ class _MessageFieldState extends State<MessageField> {
       } else {
         final picker =
             await FilePicker.platform.pickFiles(allowMultiple: false);
-        return picker?.files.first.path;
+        return picker?.files.single.path;
       }
     } catch (e) {
       log(e.toString());

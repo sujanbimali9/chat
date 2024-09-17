@@ -15,7 +15,7 @@ abstract interface class HomeRepository {
   Future<Either<Failure, void>> deleteUser(String id);
   Future<Either<Failure, User>> createUser();
   Future<Either<Failure, Map<String, User>>> searchUser(String query);
-  Either<Failure, Stream<Map<String, Chat>>> getLastChat(List<String> chatIds);
+  Future<Either<Failure, Map<String, Chat>>> getLastChat();
 
   Future<Either<Failure, void>> updateProfileImage(File file);
   Future<Either<Failure, void>> updateOnlineStatus(bool show);

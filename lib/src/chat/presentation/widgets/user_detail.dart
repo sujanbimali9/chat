@@ -22,7 +22,7 @@ class UserDetail extends StatelessWidget {
             width: 100,
             fit: BoxFit.cover,
             isNetwork: true,
-            showActive: user.isOnline,
+            showActive: user.showOnlineStatus,
             image: user.profileImage,
             height: 100,
           )),
