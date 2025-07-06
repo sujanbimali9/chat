@@ -1,0 +1,180 @@
+import 'dart:convert';
+
+import 'package:chat/core/common/model/api_response.dart';
+import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/core/common/model/pagination.dart';
+import 'package:chat/src/chat/data/model/chat_model.dart';
+import 'package:chat/utils/database/local_database.dart';
+import 'package:chat/utils/database/table/chat_table.dart';
+import 'package:drift/drift.dart';
+
+part 'chat_table_query.g.dart';
+
+@DriftAccessor(tables: [ChatTable])
+class ChatTableQuery extends DatabaseAccessor<LocalDatabase>
+    with _$ChatTableQueryMixin {
+  ChatTableQuery(super.database);
+
+  Future<ApiResponse<ChatModel>> getChats(String chatId,
+      {required int limit, required int offset}) async {
+    final cTable = alias(chatTable, 'chat');
+    final rTable = alias(chatTable, 'reply');
+    final chats = await (select(cTable)
+          ..where((tbl) => tbl.chatId.equals(chatId))
+          ..limit(limit, offset: offset)
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.sentTime, mode: OrderingMode.desc)
+          ]))
+        .join(
+      [leftOuterJoin(rTable, cTable.replyToId.equalsExp(rTable.id))],
+    ).map((row) {
+      final mainChat = row.readTable(cTable);
+      final replyChat = row.readTableOrNull(rTable);
+      return ChatModel.fromChatEntity(mainChat).copyWith(
+          replyTo:
+              replyChat != null ? ChatModel.fromChatEntity(replyChat) : null);
+    }).get();
+
+    final total = await countTotalChats(chatId);
+
+    return ApiResponse(
+      data: chats,
+      message: 'Success',
+      pagination: Pagination(
+        limit: limit,
+        offset: offset,
+        total: total,
+      ),
+      dataSource: ApiDataSource.local,
+    );
+  }
+
+  Future<int> countTotalChats(String chatId) async {
+    final countQuery = await customSelect(
+      'SELECT COUNT(*) AS count FROM chat WHERE chatId = ?',
+      variables: [Variable.withString(chatId)],
+    ).getSingle();
+
+    return countQuery.data['count'] as int;
+  }
+
+  Stream<List<ChatModel>> getChatsStream(String chatId,
+      {int? limit, int? offset}) {
+    final cTable = alias(chatTable, 'chat');
+    final rTable = alias(chatTable, 'reply');
+
+    return (select(cTable)
+          ..where((tbl) => tbl.chatId.equals(chatId))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.sentTime, mode: OrderingMode.desc)
+          ])
+          ..limit(limit ?? 20, offset: offset))
+        .join(
+      [leftOuterJoin(rTable, cTable.replyToId.equalsExp(rTable.id))],
+    ).map((row) {
+      final mainChat = row.readTable(cTable);
+      final replyChat = row.readTableOrNull(rTable);
+      return ChatModel.fromChatEntity(mainChat).copyWith(
+          replyTo:
+              replyChat != null ? ChatModel.fromChatEntity(replyChat) : null);
+    }).watch();
+  }
+
+  Future<List<ChatModel>> getPendingChats() async {
+    final cTable = alias(chatTable, 'chat');
+    final rTable = alias(chatTable, 'reply');
+
+    final chats = await (select(cTable)
+          ..where((tbl) => tbl.status.equals(MessageStatus.failed.name))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.sentTime, mode: OrderingMode.desc)
+          ]))
+        .join(
+      [leftOuterJoin(rTable, cTable.replyToId.equalsExp(rTable.id))],
+    ).map((row) {
+      final mainChat = row.readTable(cTable);
+      final replyChat = row.readTableOrNull(rTable);
+      return ChatModel.fromChatEntity(mainChat).copyWith(
+          replyTo:
+              replyChat != null ? ChatModel.fromChatEntity(replyChat) : null);
+    }).get();
+    return chats;
+  }
+
+  Future<void> insertChat(ChatModel chat) async {
+    await batch((batch) {
+      if (chat.replyTo != null) {
+        final replyChatJson = chat.replyTo!.toJson();
+        batch.insert(
+          chatTable,
+          ChatEntity.fromJson({
+            ...replyChatJson,
+            'medias': jsonEncode(replyChatJson['medias'])
+          }),
+          mode: InsertMode.insertOrIgnore,
+        );
+      }
+      final chatJson = chat.toJson();
+      batch.insert(
+        chatTable,
+        ChatEntity.fromJson({
+          ...chatJson,
+          'medias': jsonEncode(chatJson['medias']),
+          'replyToId': chat.replyTo?.id,
+        }),
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+  }
+
+  Future<void> insertChats(List<ChatModel> chats) async {
+    final List<ChatEntity> replyEntities = [];
+    final List<ChatEntity> mainChatEntities = [];
+
+    for (final chat in chats) {
+      if (chat.replyTo != null) {
+        final replyChatJson = chat.replyTo!.toJson();
+        replyEntities.add(
+          ChatEntity.fromJson(
+            {...replyChatJson, 'medias': jsonEncode(replyChatJson['medias'])},
+          ),
+        );
+      }
+      final chatJson = chat.toJson();
+      mainChatEntities.add(ChatEntity.fromJson({
+        ...chatJson,
+        'medias': jsonEncode(chatJson['medias']),
+        'replyToId': chat.replyTo?.id
+      }));
+    }
+
+    await batch((batch) {
+      if (replyEntities.isNotEmpty) {
+        batch.insertAll(chatTable, replyEntities,
+            mode: InsertMode.insertOrIgnore);
+      }
+      if (mainChatEntities.isNotEmpty) {
+        batch.insertAll(chatTable, mainChatEntities,
+            mode: InsertMode.insertOrReplace);
+      }
+    });
+  }
+
+  Future<void> updateRead(String chatId) async {
+    await (update(chatTable)..where((tbl) => tbl.chatId.equals(chatId)))
+        .write(const ChatTableCompanion(read: Value(true)));
+  }
+
+  Future<void> deleteChat(String chatId) async {
+    await (delete(chatTable)..where((tbl) => tbl.chatId.equals(chatId))).go();
+  }
+
+  Future<void> deleteAllChats() async {
+    await transaction(() async {
+      await delete(chatTable).go();
+    });
+  }
+}
