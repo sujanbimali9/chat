@@ -13,6 +13,7 @@ import 'package:chat/utils/helper/network_info.dart';
 import 'package:chat/utils/services/api_service.dart';
 import 'package:chat/utils/services/socket_io.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -76,14 +77,14 @@ class NotificationService {
   static const int _maxMessages = 5;
   static final Map<String, ListQueue<Message>> _messageQueue = {};
 
-  static Future<void> init() async {
-    final notificationPlugin = FlutterLocalNotificationsPlugin();
+  static final _notificationPlugin = FlutterLocalNotificationsPlugin();
 
+  static Future<void> init() async {
     const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
     );
 
-    await notificationPlugin.initialize(
+    await _notificationPlugin.initialize(
       initializationSettings,
       onDidReceiveBackgroundNotificationResponse: _handleNotificationAction,
     );
@@ -93,92 +94,75 @@ class NotificationService {
   static Future<void> showNotification(RemoteMessage? remoteMessage) async {
     if (remoteMessage == null) return;
 
-    final notificationPlugin = FlutterLocalNotificationsPlugin();
-    final messageData = remoteMessage.data;
-    final chatNotification = NotiChat.fromMap(messageData);
-    final messageKey = chatNotification.chatId;
+    final chat = NotiChat.fromMap(remoteMessage.data);
+    final sender = Person(name: chat.senderName, key: chat.senderId);
+    final message = Message(chat.message, DateTime.now(), sender);
+    final id = chat.chatId.hashCode;
 
-    final activeNotifications = await notificationPlugin
-        .getActiveNotifications();
+    await _queueMessage(chat.chatId, message);
+    final messages = _messageQueue[chat.chatId]!.toList();
 
-    final isActiveMessages =
-        activeNotifications.isNotEmpty &&
-        activeNotifications.any((n) => n.id == messageKey.hashCode);
-
-    _messageQueue.putIfAbsent(messageKey, () => ListQueue(_maxMessages + 1));
-
-    final sender = Person(
-      name: chatNotification.senderName,
-      key: chatNotification.senderId,
-    );
-
-    final message = Message(chatNotification.message, DateTime.now(), sender);
-
-    if (isActiveMessages) {
-      _messageQueue[messageKey]!.addLast(message);
-      if (_messageQueue[messageKey]!.length > _maxMessages) {
-        _messageQueue[messageKey]!.removeFirst();
-      }
-    } else {
-      _messageQueue[messageKey]!.clear();
-      _messageQueue[messageKey]!.addLast(message);
-    }
-
-    final messageList = _messageQueue[messageKey]!.toList();
-
-    final inboxStyleInformation = MessagingStyleInformation(
+    final style = MessagingStyleInformation(
       sender,
-      conversationTitle: messageList.first.text,
-      messages: messageList,
+      conversationTitle: messages.first.text,
+      messages: messages,
     );
 
-    final androidNotification = AndroidNotificationDetails(
+    final androidDetails = AndroidNotificationDetails(
       'chat_channel',
       'Chat Notifications',
-      styleInformation: inboxStyleInformation,
+      styleInformation: style,
+      importance: Importance.max,
+      priority: Priority.high,
       actions: const [
         AndroidNotificationAction(
           'reply_action',
           'Reply',
           allowGeneratedReplies: true,
-          inputs: [
-            AndroidNotificationActionInput(label: 'Type your reply here'),
-          ],
+          inputs: [AndroidNotificationActionInput(label: 'Type your reply')],
         ),
       ],
-      importance: Importance.max,
-      priority: Priority.high,
     );
 
-    final notificationDetails = NotificationDetails(
-      android: androidNotification,
+    await _notificationPlugin.show(
+      id,
+      chat.senderName,
+      chat.message,
+      NotificationDetails(android: androidDetails),
+      payload: chat.toJson(),
     );
+  }
 
-    await notificationPlugin.show(
-      messageKey.hashCode,
-      sender.name,
-      message.text,
-      notificationDetails,
-      payload: chatNotification.toJson(),
-    );
+  static Future<void> _queueMessage(String key, Message message) async {
+    _messageQueue.putIfAbsent(key, () => ListQueue(_maxMessages + 1));
+    final queue = _messageQueue[key]!;
+
+    final active = await _notificationPlugin.getActiveNotifications();
+    final isActive = active.any((n) => n.id == key.hashCode);
+
+    if (isActive) {
+      queue.addLast(message);
+      if (queue.length > _maxMessages) queue.removeFirst();
+    } else {
+      queue.clear();
+      queue.addLast(message);
+    }
   }
 
   @pragma('vm:entry-point')
   static Future<void> _handleNotificationAction(
     NotificationResponse response,
   ) async {
-    final inputText = response.input;
-    log('Input Text: $inputText');
+    final input = response.input;
+    if (input == null) return;
+    log('Input Text: $input');
 
-    if (inputText == null) return;
-
-    final chatNotification = NotiChat.fromJson(response.payload!);
-
-    final chat = Chat(
+    final chat = NotiChat.fromJson(response.payload!);
+    final newChat = Chat(
       id: const Uuid().v4(),
-      toId: chatNotification.senderId,
-      fromId: chatNotification.receiverId,
-      msg: inputText,
+      toId: chat.senderId,
+      fromId: chat.receiverId,
+      msg: input,
       medias: const [],
       read: false,
       sentTime: DateTime.now(),
@@ -187,39 +171,53 @@ class NotificationService {
       type: ChatType.text,
     );
 
-    try {
-      final chatModel = ChatModel.fromChat(chat);
+    await _sendChat(ChatModel.fromChat(newChat));
+  }
 
-      final connectivity = Connectivity();
-      if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
-        NetworkInfo.init(connectivity);
+  static Future<void> _sendChat(ChatModel chat) async {
+    try {
+      await _ensureFirebaseInitialized();
+      final auth = FirebaseAuth.instance;
+      final userId = auth.currentUser?.uid;
+      if (userId == null) {
+        log('User not authenticated');
+        return;
+      }
+      final token = await auth.currentUser?.getIdToken();
+      if (token == null) {
+        log('User token not available');
+        return;
       }
 
-      final firebaseAuth = FirebaseAuth.instance;
-      final apiService = ApiService.init(
-        firebaseAuth,
-        'http://192.168.1.22:8000/',
-      );
-      final socketIO = SocketIOService();
-
-      final chatRemoteDataSource = ChatRemoteDataSourceImp(
-        apiService,
-        socketIO,
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: 'http://192.168.1.22:8000/',
+          headers: {
+            'Authorization Bearer': token,
+            'Content-Type': 'application/json',
+          },
+        ),
       );
 
-      log('sending message: ${chatModel.toJson()}');
-      await chatRemoteDataSource.sendMessageHttp(chatModel);
-      log('message sent successfully');
+      log('Sending message: ${chat.toJson()}');
+      await dio.post('chats/sendChat', data: chat.toJson());
 
-      final localDatabase = LocalDatabase();
-      await localDatabase.chatTableQuery.insertChat(chatModel);
+      log('Message sent successfully');
+
+      await LocalDatabase().chatTableQuery.insertChat(chat);
     } on ServerException catch (e) {
-      log('Error sending message Http: ${e.message}');
+      log('Server Error: ${e.message}');
     } catch (e) {
-      log('Error: $e');
+      log('Unexpected Error: $e');
+    }
+  }
+
+  static Future<void> _ensureFirebaseInitialized() async {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      NetworkInfo.init(Connectivity());
     }
   }
 }
