@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:chat/core/common/model/api_response.dart';
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/media.dart';
+import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/exception/exception.dart';
 import 'package:chat/core/failure/failure.dart';
 import 'package:chat/src/chat/data/data_source/chat_remote_data_source.dart';
@@ -55,10 +56,14 @@ class ChatRepositoryImp implements ChatRepository {
       );
 
       final result = await _chatRemoteDataSource.sendMessage(chatModel);
+
       await _chatLocalDataSource.addChat(result);
       await _chatLocalDataSource.addLastChat(result);
       return right(Chat.fromChatModel(result));
-    } on ServerException {
+    } on ServerException catch (e) {
+      log(
+        'SendMessage Error: ServerException, MesssageType: ${chatModel.type} - ${e.message}',
+      );
       return saveOnError(chatModel);
     } catch (e) {
       log('SendMessage Error: $e , MesssageType: ${chatModel.type}');
@@ -103,9 +108,7 @@ class ChatRepositoryImp implements ChatRepository {
   Future<MediaModel> sendAudio(Media media, String chatId) async {
     final title = media.url.split('/').last;
     final mediaModel = MediaModel.fromMedia(
-      media.copyWith(
-        metaData: media.metaData.copyWith(title: title),
-      ),
+      media.copyWith(metaData: media.metaData.copyWith(title: title)),
     );
 
     return await _chatRemoteDataSource.sendAudio(mediaModel, chatId);
@@ -117,20 +120,26 @@ class ChatRepositoryImp implements ChatRepository {
     final imageAspectRatiosFuture = <Future<double>>[];
     final titles = <String>[];
     for (final media in medias) {
-      imageAspectRatiosFuture.add(getVideoThumbnail(media.url).then((value) {
-        videoThumbnails.add(value);
-        return getImageAspectRatio(value);
-      }));
+      imageAspectRatiosFuture.add(
+        getVideoThumbnail(media.url).then((value) {
+          videoThumbnails.add(value);
+          return getImageAspectRatio(value);
+        }),
+      );
       final title = media.url.split('/').last;
       titles.add(title);
     }
     final imageAspectRatios = await Future.wait(imageAspectRatiosFuture);
     for (int i = 0; i < medias.length; i++) {
-      final mediaModel = MediaModel.fromMedia(medias[i].copyWith(
+      final mediaModel = MediaModel.fromMedia(
+        medias[i].copyWith(
           metaData: medias[i].metaData.copyWith(
-              thumbnail: videoThumbnails[i],
-              aspectRatio: imageAspectRatios[i],
-              title: titles[i])));
+            thumbnail: videoThumbnails[i],
+            aspectRatio: imageAspectRatios[i],
+            title: titles[i],
+          ),
+        ),
+      );
       mediaModels.add(mediaModel);
     }
     return await _chatRemoteDataSource.sendVideos(mediaModels, chatId);
@@ -189,12 +198,20 @@ class ChatRepositoryImp implements ChatRepository {
   }
 
   @override
-  Either<Failure, Stream<Chat>> getChatsStream(
-    String chatId,
-  ) {
+  Either<Failure, Stream<Chat>> getChatsStream(String chatId) {
     try {
       final result = _chatRemoteDataSource.getChatsStream(chatId);
-      return right(result.map(Chat.fromChatModel));
+      return right(
+        result.asyncMap((chatModel) async {
+          try {
+            await _chatLocalDataSource.addChat(chatModel);
+            await _chatLocalDataSource.addLastChat(chatModel);
+          } catch (e) {
+            log('Error saving chat to local: $e');
+          }
+          return Chat.fromChatModel(chatModel);
+        }),
+      );
     } on ServerException catch (e) {
       return left(Failure(e.message));
     } catch (e) {
@@ -203,25 +220,28 @@ class ChatRepositoryImp implements ChatRepository {
   }
 
   @override
-  Future<Either<Failure, ApiResponse<Chat>>> getChats(String chatId,
-      {required int limit, required int offset}) async {
+  Future<Either<Failure, ApiResponse<Chat, ChatPagination>>> getChats(
+    String chatId, {
+    required int limit,
+    required int? lastMessageSentTime,
+    required bool localOnly,
+  }) async {
     try {
-      if (_networkInfo.checkConnection()) {
-        final result = await _chatRemoteDataSource.getChats(
+      if (localOnly) {
+        final result = await _chatLocalDataSource.getChats(
           chatId,
           limit: limit,
-          offset: offset,
+          lastMessageSentTime: lastMessageSentTime,
         );
-        await _chatLocalDataSource.addChatsAll(result.data);
         return right(result.map(Chat.fromChatModel));
       }
+
       final result = await _chatRemoteDataSource.getChats(
         chatId,
         limit: limit,
-        offset: offset,
+        lastMessagesentTime: lastMessageSentTime,
       );
       await _chatLocalDataSource.addChatsAll(result.data);
-
       return right(result.map(Chat.fromChatModel));
     } on ServerException catch (e) {
       return left(Failure(e.message));
@@ -255,7 +275,9 @@ class ChatRepositoryImp implements ChatRepository {
 
   Future<double> getImageAspectRatio(String compressedImage) {
     final aspectRatio = ImageMetadata.getImageAspectRatio(
-        path: compressedImage, extension: compressedImage.split('.').last);
+      path: compressedImage,
+      extension: compressedImage.split('.').last,
+    );
     return aspectRatio;
   }
 
@@ -295,18 +317,23 @@ class ChatRepositoryImp implements ChatRepository {
 
   Future<void> saveToLocalOnNoConnection(ChatModel chatModel) async {
     if (!_networkInfo.checkConnection()) {
-      await _chatLocalDataSource
-          .addPending(chatModel.copyWith(status: MessageStatus.failed));
+      await _chatLocalDataSource.addPending(
+        chatModel.copyWith(status: MessageStatus.failed),
+      );
       throw const ServerException('No internet connection');
     }
   }
 
   @override
   Future<Either<Failure, void>> updateReadStatus(
-      String chatId, String userId) async {
+    String chatId,
+    String userId,
+  ) async {
     try {
-      final result =
-          await _chatRemoteDataSource.updateReadStatus(chatId, userId);
+      final result = await _chatRemoteDataSource.updateReadStatus(
+        chatId,
+        userId,
+      );
       return right(result);
     } on ServerException catch (e) {
       return left(Failure(e.message));

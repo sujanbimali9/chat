@@ -5,10 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ApiService {
-  ApiService._() {
+  static ApiService? _instance;
+  ApiService._(String baseUrl, this._firebaseAuth) {
     _dio = Dio();
     _dio.options
-      ..baseUrl = 'http://10.100.51.144:8000/api/'
+      ..baseUrl = '$baseUrl/api/'
       ..connectTimeout = const Duration(seconds: 30)
       ..receiveTimeout = const Duration(seconds: 30)
       ..headers = {'Content-Type': 'application/json'};
@@ -24,15 +25,19 @@ class ApiService {
     ));
   }
 
-  static ApiService init(FirebaseAuth firebaseAuth) {
-    instance._firebaseAuth = firebaseAuth;
+  static ApiService init(FirebaseAuth firebaseAuth, String baseUrl) {
+    _instance ??= ApiService._(baseUrl, firebaseAuth);
     return instance;
   }
 
-  static final ApiService instance = ApiService._();
+  static ApiService get instance {
+    if (_instance != null) return _instance!;
+    throw Exception(
+        'ApiService not initialized. Call ApiService.init() first.');
+  }
 
   late final Dio _dio;
-  late final FirebaseAuth _firebaseAuth;
+  final FirebaseAuth _firebaseAuth;
 
   void _handleException(DioException e) {
     final statusCode = e.response?.statusCode ?? 0;

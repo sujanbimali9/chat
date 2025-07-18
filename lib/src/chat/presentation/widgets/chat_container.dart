@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat/src/chat/data/model/media_model.dart';
 import 'package:chat/src/chat/presentation/widgets/multimedia.dart';
 import 'package:chat/src/chat/presentation/widgets/reply_chat_render_object.dart';
 import 'package:chat/utils/color/color.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/core/enum/chat_type.dart';
-import 'package:chat/src/chat/presentation/reply_cubit/reply_cubit.dart';
+import 'package:chat/src/chat/presentation/bloc/reply_cubit/reply_cubit.dart';
 import 'package:chat/src/chat/presentation/widgets/file_chat.dart';
 import 'package:chat/src/chat/presentation/widgets/image_chat.dart';
 import 'package:chat/src/chat/presentation/widgets/rounded_container.dart';
@@ -40,7 +40,6 @@ class ChatContainer extends StatefulWidget {
 
 class _ChatContainerState extends State<ChatContainer> {
   final ValueNotifier<Offset> offset = ValueNotifier(const Offset(0, 0));
-
   @override
   void dispose() {
     offset.dispose();
@@ -56,19 +55,21 @@ class _ChatContainerState extends State<ChatContainer> {
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment:
-          isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: isUser
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       children: [
         _buildAvatar(isUser, isNextSameAuthor),
         if (!isUser) const SizedBox(width: 4),
         Expanded(
           child: Column(
-            crossAxisAlignment:
-                isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment: isUser
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
             children: [
               if (widget.isAfterDateSeparator) const SizedBox(height: 10),
               _buildChatBubble(isUser, isPreviousSameAuthor, isNextSameAuthor),
-              _buildChatStatusIndicator(),
+              ?_buildChatStatusIndicator(),
               if (!isNextSameAuthor || widget.isBeforeDateSeparator)
                 const SizedBox(height: 10),
             ],
@@ -91,20 +92,20 @@ class _ChatContainerState extends State<ChatContainer> {
   }
 
   Widget _buildChatBubble(
-      bool isUser, bool isPreviousSameAuthor, bool isNextSameAuthor) {
+    bool isUser,
+    bool isPreviousSameAuthor,
+    bool isNextSameAuthor,
+  ) {
     return GestureDetector(
       onHorizontalDragCancel: _onDragCancel,
-      onHorizontalDragEnd: (details) =>
-          {_handleHorizontalDragEnd(details, isUser)},
+      onHorizontalDragEnd: (details) async =>
+          await _handleHorizontalDragEnd(details, isUser),
       onHorizontalDragUpdate: (details) =>
           _handleHorizontalDragUpdate(details, isUser),
       child: ValueListenableBuilder<Offset>(
         valueListenable: offset,
         builder: (context, value, child) {
-          return FractionalTranslation(
-            translation: value,
-            child: child,
-          );
+          return FractionalTranslation(translation: value, child: child);
         },
         child: widget.chat.replyTo != null
             ? _buildReplyContent(isUser, isPreviousSameAuthor, isNextSameAuthor)
@@ -114,7 +115,10 @@ class _ChatContainerState extends State<ChatContainer> {
   }
 
   Widget _buildReplyContent(
-      bool isUser, bool isPreviousSameAuthor, bool isNextSameAuthor) {
+    bool isUser,
+    bool isPreviousSameAuthor,
+    bool isNextSameAuthor,
+  ) {
     final replyChat = widget.chat.replyTo!;
 
     return Column(
@@ -123,11 +127,7 @@ class _ChatContainerState extends State<ChatContainer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Icon(
-                Icons.reply,
-                size: 15,
-                color: TColors.replyColor,
-              ),
+              const Icon(Icons.reply, size: 15, color: TColors.replyColor),
               const SizedBox(width: 5),
               Text(
                 'You replied to  ${replyChat.toId == widget.chat.toId ? 'yourself' : widget.user.name}',
@@ -135,12 +135,19 @@ class _ChatContainerState extends State<ChatContainer> {
               ),
             ],
           ),
-        ReplyChat(
-          crossAxisAlignment:
-              isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          chat:
-              _buildChatContent(isUser, isPreviousSameAuthor, isNextSameAuthor),
-          reply: _buildReplyType(replyChat),
+        Align(
+          alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+          child: ReplyChat(
+            crossAxisAlignment: isUser
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
+            chat: _buildChatContent(
+              isUser,
+              isPreviousSameAuthor,
+              isNextSameAuthor,
+            ),
+            reply: _buildReplyType(replyChat),
+          ),
         ),
       ],
     );
@@ -169,21 +176,33 @@ class _ChatContainerState extends State<ChatContainer> {
   Widget _buildReplyMedia(Chat chat) {
     final size = MediaQuery.of(context).size;
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: size.width * 0.3,
-      ),
+      constraints: BoxConstraints(maxWidth: size.width * 0.3),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: MultiMediaGrid(
-            children: chat.medias
-                .map((e) => CachedNetworkImage(imageUrl: e.url))
-                .toList()),
+          children: chat.medias
+              .map(
+                (e) => switch (e.type) {
+                  MediaType.image => ImageChat(image: e, status: chat.status),
+                  MediaType.video => VideoChat(
+                    video: e,
+                    status: chat.status,
+                    isUser: chat.fromId == widget.currentUser.id,
+                  ),
+                  _ => FileChat(file: e, vertical: true),
+                },
+              )
+              .toList(),
+        ),
       ),
     );
   }
 
   Widget _buildChatContent(
-      bool isUser, bool isPreviousSameAuthor, bool isNextSameAuthor) {
+    bool isUser,
+    bool isPreviousSameAuthor,
+    bool isNextSameAuthor,
+  ) {
     final borderRadius = _getBorderRadius(
       isPreviousSameAuthor,
       isUser,
@@ -209,72 +228,74 @@ class _ChatContainerState extends State<ChatContainer> {
     final files = widget.chat.medias.where((e) => e.type.isFile);
     return Container(
       margin: const EdgeInsets.only(top: 5),
-      constraints: BoxConstraints(
-        maxWidth: size.width * 0.5,
+      constraints: BoxConstraints(maxWidth: size.width * 0.5),
+      child: Column(
+        children: [
+          ...files.map((file) {
+            return FileChat(file: file, borderRadius: borderRadius);
+          }),
+          if (images.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: ClipRRect(
+                borderRadius: borderRadius,
+                child: MultiMediaGrid(
+                  children: images.map((image) {
+                    return ImageChat(image: image, status: widget.chat.status);
+                  }).toList(),
+                ),
+              ),
+            ),
+          if (videos.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: ClipRRect(
+                borderRadius: borderRadius,
+                child: MultiMediaGrid(
+                  children: videos.map((video) {
+                    return VideoChat(
+                      video: video,
+                      status: widget.chat.status,
+                      isUser: isUser,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+        ],
       ),
-      child: Column(children: [
-        ...files.map((file) {
-          return FileChat(
-            file: file,
-            borderRadius: borderRadius,
-          );
-        }),
-        if (images.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: ClipRRect(
-              borderRadius: borderRadius,
-              child: MultiMediaGrid(
-                children: images.map((image) {
-                  return ImageChat(
-                    image: image,
-                    status: widget.chat.status,
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-        if (videos.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: ClipRRect(
-              borderRadius: borderRadius,
-              child: MultiMediaGrid(
-                children: videos.map((video) {
-                  return VideoChat(
-                    video: video,
-                    status: widget.chat.status,
-                    isUser: isUser,
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-      ]),
     );
   }
 
-  Widget _buildChatStatusIndicator() {
+  Widget? _buildChatStatusIndicator() {
     return switch (widget.chat.status) {
       MessageStatus.sending => const SizedBox(
-          width: 10,
-          height: 10,
-          child: CircularProgressIndicator(strokeWidth: 1),
-        ),
-      MessageStatus.failed =>
-        const Icon(Icons.error, color: Colors.red, size: 15),
-      MessageStatus.sent => const SizedBox(),
+        width: 10,
+        height: 10,
+        child: CircularProgressIndicator(strokeWidth: 1),
+      ),
+      MessageStatus.failed => const Icon(
+        Icons.error,
+        color: Colors.red,
+        size: 15,
+      ),
+      MessageStatus.sent => null,
     };
   }
 
   void _handleHorizontalDragUpdate(DragUpdateDetails details, bool isUser) {
-    final double dx =
-        (details.primaryDelta! / context.size!.width + offset.value.dx)
-            .clamp(isUser ? -0.5 : 0, isUser ? 0 : 0.5);
+    final width = MediaQuery.of(context).size.width;
+    final double dx = (details.primaryDelta! / width + offset.value.dx).clamp(
+      isUser ? -0.5 : 0,
+      isUser ? 0 : 0.5,
+    );
     offset.value = Offset(dx, 0);
   }
 
-  void _handleHorizontalDragEnd(DragEndDetails details, bool isUser) {
+  Future<void> _handleHorizontalDragEnd(
+    DragEndDetails details,
+    bool isUser,
+  ) async {
     if (details.primaryVelocity != null &&
             (details.primaryVelocity!.abs() >= 50 &&
                 isUser &&
@@ -282,12 +303,22 @@ class _ChatContainerState extends State<ChatContainer> {
         offset.value.dx.abs() > 0.3) {
       context.read<ReplyCubit>().replyTo(widget.chat);
     }
-    offset.value = const Offset(0, 0);
+    await _offsetReset();
   }
 
-  void _onDragCancel() {
+  Future<void> _onDragCancel() async {
     if (offset.value.dx.abs() > 0.2) {
       context.read<ReplyCubit>().replyTo(widget.chat);
+    }
+
+    await _offsetReset();
+  }
+
+  Future<void> _offsetReset() async {
+    final offsetValue = offset.value;
+    for (int i = 0; i < 10; i++) {
+      await Future.delayed(const Duration(milliseconds: 10));
+      offset.value = Offset.lerp(offsetValue, const Offset(0, 0), i / 10)!;
     }
     offset.value = const Offset(0, 0);
   }

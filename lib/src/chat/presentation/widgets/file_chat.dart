@@ -9,14 +9,47 @@ class FileChat extends StatelessWidget {
     super.key,
     required this.file,
     this.borderRadius,
+    this.vertical = false,
   });
 
   final Media file;
   final BorderRadius? borderRadius;
+  final bool vertical;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    if (vertical) {
+      return Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: TColors.fileMessageBoxColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+          children: [
+            const TCircularContainer(
+              backgroundColor: Color.fromARGB(255, 170, 200, 235),
+              padding: EdgeInsets.all(10),
+              borderRadius: 30,
+              child: Icon(Icons.insert_drive_file_sharp, size: 30),
+            ),
+            const SizedBox(width: 5),
+            Flexible(
+              child: Text(
+                file.metaData.title ?? file.url,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Container(
       constraints: BoxConstraints(maxWidth: size.width * 0.7),
       decoration: BoxDecoration(
@@ -35,10 +68,12 @@ class FileChat extends StatelessWidget {
           ),
           const SizedBox(width: 5),
           Flexible(
-            child: Text(file.metaData.title ?? file.url,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodySmall),
+            child: Text(
+              file.metaData.title ?? file.url,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
         ],
       ),

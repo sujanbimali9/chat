@@ -16,12 +16,16 @@ class ReplyChat extends MultiChildRenderObjectWidget {
   @override
   RenderReplyChat createRenderObject(BuildContext context) {
     return RenderReplyChat(
-        crossAxisAlignment: crossAxisAlignment, overlapOffset: overlapOffset);
+      crossAxisAlignment: crossAxisAlignment,
+      overlapOffset: overlapOffset,
+    );
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant RenderReplyChat renderObject) {
+    BuildContext context,
+    covariant RenderReplyChat renderObject,
+  ) {
     renderObject
       ..crossAxisAlignment = crossAxisAlignment
       ..overlapOffset = overlapOffset;
@@ -52,11 +56,11 @@ class RenderReplyChat extends RenderBox
     markNeedsLayout();
   }
 
-  RenderReplyChat(
-      {required CrossAxisAlignment crossAxisAlignment,
-      required double overlapOffset})
-      : _crossAxisAlignment = crossAxisAlignment,
-        _overlapOffset = overlapOffset;
+  RenderReplyChat({
+    required CrossAxisAlignment crossAxisAlignment,
+    required double overlapOffset,
+  }) : _crossAxisAlignment = crossAxisAlignment,
+       _overlapOffset = overlapOffset;
 
   @override
   void setupParentData(covariant RenderObject child) {
@@ -79,7 +83,7 @@ class RenderReplyChat extends RenderBox
         CrossAxisAlignment.start => 0,
         CrossAxisAlignment.center => (availableWidth - childWidth) / 2,
         CrossAxisAlignment.end => availableWidth - childWidth,
-        _ => 0
+        _ => 0,
       };
 
       childOffset = Offset(offsetX, childOffset.dy);
@@ -105,11 +109,12 @@ class RenderReplyChat extends RenderBox
     while (child != null) {
       final childParentData = child.parentData! as _ReplyChatChild;
       if (result.addWithPaintOffset(
-          offset: childParentData.offset,
-          position: position,
-          hitTest: (BoxHitTestResult result, Offset transformed) {
-            return child!.hitTest(result, position: transformed);
-          })) {
+        offset: childParentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          return child!.hitTest(result, position: transformed);
+        },
+      )) {
         return true;
       }
       child = childBefore(child);

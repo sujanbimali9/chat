@@ -5,7 +5,8 @@ class InteractedUserState with _$InteractedUserState {
   const factory InteractedUserState.initial() = _Initial;
   const factory InteractedUserState.loading() = _Loading;
   const factory InteractedUserState.error(String message) = _Error;
-  const factory InteractedUserState.loaded(List<User> users) = _Loaded;
-  const factory InteractedUserState.fetchingMore(List<User> users) =
-      _FetchingMore;
+  const factory InteractedUserState.loaded(
+      List<({User user, Chat chat})> data) = _Loaded;
+  const factory InteractedUserState.fetchingMore(
+      List<({User user, Chat chat})> data) = _FetchingMore;
 }

@@ -19,9 +19,6 @@ class UserTile extends StatelessWidget {
   final Chat? lastChat;
 
   String get lastMessage {
-    if (lastChat == null) {
-      return '';
-    }
     if (lastChat!.type.isText) {
       return lastChat!.msg;
     }
@@ -31,6 +28,9 @@ class UserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        dense: true,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))),
         onTap: () {
@@ -49,10 +49,12 @@ class UserTile extends StatelessWidget {
         trailing:
             user.isOnline ? null : Text(DateFormatter.format(user.lastActive)),
         title: Text(user.name, style: Theme.of(context).textTheme.bodyLarge),
-        subtitle: Text(lastMessage,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyMedium),
+        subtitle: lastChat != null
+            ? Text(lastMessage,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyMedium)
+            : null,
         leading: ProfileImage(
           showActive: user.showOnlineStatus,
           fit: BoxFit.cover,

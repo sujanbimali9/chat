@@ -10,10 +10,9 @@ import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/src/chat/data/model/media_model.dart';
 import 'package:chat/src/chat/domain/usecase/get_chat.dart';
 import 'package:chat/src/chat/domain/usecase/get_chat_stream.dart';
-import 'package:chat/src/chat/domain/usecase/remove_chat.dart';
 import 'package:chat/src/chat/domain/usecase/send_message.dart';
 import 'package:chat/src/chat/domain/usecase/update_read_status.dart';
-import 'package:chat/src/chat/presentation/reply_cubit/reply_cubit.dart';
+import 'package:chat/src/chat/presentation/bloc/reply_cubit/reply_cubit.dart';
 import 'package:chat/utils/generator/id_generator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -24,7 +23,6 @@ part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final GetChatStreamUseCase _getChatStreamUseCase;
-  final RemoveChatUseCase _removeChatUseCase;
   final UpdateReadStatusUserCase _updateReadStatusUseCase;
   final SendChatUseCase _sendChatUseCase;
   final GetChatUseCase _getChatsUseCase;
@@ -36,28 +34,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   StreamSubscription<Chat>? chatSubscription;
   StreamSubscription? connectivitySubscription;
 
-  Pagination _pagination = const Pagination(limit: 20, offset: 0, total: 0);
+  ChatPagination? _chatPagination;
 
   ChatBloc(
     this._getChatStreamUseCase,
-    this._removeChatUseCase,
     this._sendChatUseCase,
     this._updateReadStatusUseCase,
     this._getChatsUseCase, {
     required String userId,
     required String currentUserId,
     required ReplyCubit replyCubit,
-  })  : _replyCubit = replyCubit,
-        _currentUserId = currentUserId,
-        _userId = userId,
-        _chatId = IdGenerator.getConversionId(userId, currentUserId),
-        super(const ChatInitial([])) {
+  }) : _replyCubit = replyCubit,
+       _currentUserId = currentUserId,
+       _userId = userId,
+       _chatId = IdGenerator.getConversionId(userId, currentUserId),
+       super(const ChatInitial([])) {
     on<ChatEvent>((event, emit) async {
       if (event is FetchMore) {
         await _fetchMore(emit);
       } else if (event is SendChat) {
         await _sendChat(
-            event.text, event.type, event.medias, event.mediaType, emit);
+          event.text,
+          event.type,
+          event.medias,
+          event.mediaType,
+          emit,
+        );
       } else if (event is ListenForNewChats) {
         _listenForNewChats();
       } else if (event is UpdateReadStatus) {
@@ -84,16 +86,38 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (allChatsLoaded) return;
     emit(ChatFetchingMore(state.chats));
 
-    final res = await _getChatsUseCase(GetChatParms(
-      chatId: _chatId,
-      limit: _pagination.limit,
-      offset: _pagination.offset,
-    ));
-    res.fold(
-      (l) => log('Error fetching chats: ${l.message}'),
+    final localRes = await _getChatsUseCase(
+      GetChatParms(
+        chatId: _chatId,
+        limit: 20,
+        lastChatSentTime: _chatPagination?.lastMessageSentTime,
+        localOnly: true,
+      ),
+    );
+    localRes.fold((l) => log('Error fetching chats: ${l.message}'), (res) {
+      final chats = res.data;
+      emit(ChatLoaded(mergeChatList(state.chats, chats)));
+    });
+
+    final remoteRes = await _getChatsUseCase(
+      GetChatParms(
+        chatId: _chatId,
+        limit: 20,
+        lastChatSentTime: _chatPagination?.lastMessageSentTime,
+        localOnly: false,
+      ),
+    );
+    remoteRes.fold(
+      (l) {
+        log('Error fetching remote chats: ${l.message}');
+        localRes.fold((l) {}, (res) {
+          _chatPagination = res.pagination;
+        });
+      },
       (res) {
         final chats = res.data;
-        _pagination = res.pagination;
+        _chatPagination = res.pagination;
+
         if (chats.isEmpty) {
           allChatsLoaded = true;
           return;
@@ -145,7 +169,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       sentTime: DateTime.now(),
       status: MessageStatus.sending,
       replyTo: replyToChat,
-      medias: medias
+      medias:
+          medias
               ?.map(
                 (e) => Media(
                   url: e,
@@ -170,10 +195,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   FutureOr<void> _updateReadStatus(String chatId, String userId) async {
     await _updateReadStatusUseCase(
-      UpdateReadStatusParams(
-        chatId: chatId,
-        userId: userId,
-      ),
+      UpdateReadStatusParams(chatId: chatId, userId: userId),
     );
   }
 

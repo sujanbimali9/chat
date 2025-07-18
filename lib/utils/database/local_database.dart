@@ -4,11 +4,9 @@ import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/src/chat/data/model/media_model.dart';
 
 import 'package:chat/utils/database/converter/converter.dart';
-import 'package:chat/utils/database/daos/last_chat_table_query.dart';
 import 'package:chat/utils/database/daos/user_table_query.dart';
 import 'package:chat/utils/database/table/chat_table.dart';
 import 'package:chat/utils/database/daos/chat_table_query.dart';
-import 'package:chat/utils/database/table/last_chat_table.dart';
 import 'package:chat/utils/database/table/user_table.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -25,17 +23,20 @@ LazyDatabase _openConnection() {
 }
 
 @DriftDatabase(
-  tables: [UserTable, ChatTable, LastChatTable],
-  daos: [
-    ChatTableQuery,
-    LastChatTableQuery,
-    UserTableQuery,
-  ],
+  tables: [UserTable, ChatTable, InteractedUserTable],
+  daos: [ChatTableQuery, UserTableQuery],
 )
 class LocalDatabase extends _$LocalDatabase {
-  LocalDatabase() : super(_openConnection());
+  LocalDatabase._internal() : super(_openConnection());
   @override
   int get schemaVersion => 1;
+
+  static LocalDatabase? _instance;
+
+  factory LocalDatabase() {
+    _instance ??= LocalDatabase._internal();
+    return _instance!;
+  }
 
   @override
   MigrationStrategy get migration {
@@ -50,7 +51,7 @@ class LocalDatabase extends _$LocalDatabase {
     transaction(() async {
       await delete(userTable).go();
       await delete(chatTable).go();
-      await delete(lastChatTable).go();
+      await delete(interactedUserTable).go();
     });
   }
 }

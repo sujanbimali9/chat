@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:chat/core/common/model/api_response.dart';
+import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/exception/exception.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/src/chat/data/model/media_model.dart';
@@ -17,15 +19,11 @@ abstract interface class ChatRemoteDataSource {
   Future<List<MediaModel>> sendImages(List<MediaModel> media, String chatId);
   Future<List<MediaModel>> sendVideos(List<MediaModel> media, String chatId);
   Future<MediaModel> sendAudio(MediaModel media, String chatId);
-  Stream<ChatModel> getChatsStream(
-    String chatId, {
-    int? limit,
-    int? offset,
-  });
-  Future<ApiResponse<ChatModel>> getChats(
+  Stream<ChatModel> getChatsStream(String chatId);
+  Future<ApiResponse<ChatModel, ChatPagination>> getChats(
     String chatId, {
     required int limit,
-    required int offset,
+    required int? lastMessagesentTime,
   });
   Future<void> removeChat(ChatModel chat);
 
@@ -37,40 +35,63 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
   final SocketIOService _socketIO;
   ChatRemoteDataSourceImp(this._apiService, this._socketIO);
 
-  Future<T> handleException<T>(Future<T> Function() operation,
-      {String? context}) async {
+  FutureOr<T> _handleException<T>(
+    Future<T> Function() operation, {
+    String context = '',
+  }) async {
     try {
       return await operation();
     } on TimeoutException catch (e) {
+      log(
+        'Timeout Exception: ${e.message}',
+        name: 'ChatRemoteDataSource.$context',
+      );
       throw ServerException(e.message);
     } on SocketException catch (e) {
+      log(
+        'Socket Exception: ${e.message}',
+        name: 'ChatRemoteDataSource.$context',
+      );
       throw ServerException(e.message);
+    } on ServerException catch (e) {
+      log(
+        'Server Exception: ${e.message}',
+        name: 'ChatRemoteDataSource.$context',
+      );
+      rethrow;
     } catch (e) {
+      log('Unexpected Exception: $e', name: 'ChatRemoteDataSource.$context');
       throw ServerException(e.toString());
     }
   }
 
   @override
-  Future<ApiResponse<ChatModel>> getChats(String chatId,
-      {required int limit, required int offset}) async {
-    return await handleException(() async {
+  Future<ApiResponse<ChatModel, ChatPagination>> getChats(
+    String chatId, {
+    required int limit,
+    required int? lastMessagesentTime,
+  }) async {
+    return await _handleException(() async {
       final chats = await _apiService.get(
-        'chats',
-        query: {
-          'chatId': chatId,
-          'limit': limit,
-          'offset': offset,
-        },
+        'chats/$chatId',
+        query: {'limit': limit, 'lastMessagesentTime': lastMessagesentTime},
       );
-      return ApiResponse.fromJson(chats, ChatModel.fromJson);
+
+      return ApiResponse.fromJson(
+        chats,
+        ChatModel.fromJson,
+        ChatPagination.fromJson,
+      );
     }, context: 'GetChats');
   }
 
   @override
-  Stream<ChatModel> getChatsStream(String chatId, {int? limit, int? offset}) {
+  Stream<ChatModel> getChatsStream(String chatId) {
     try {
-      final chat =
-          _socketIO.chatStream.where((event) => event['chatId'] == chatId);
+      final chat = _socketIO.chatStream.where(
+        (event) => event['chatId'] == chatId,
+      );
+
       return chat.map((event) => ChatModel.fromJson(event));
     } on SocketException catch (e) {
       log('GetChatStream error: SocketException $e');
@@ -93,18 +114,24 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
 
   @override
   Future<List<MediaModel>> sendFiles(
-      List<MediaModel> media, String chatId) async {
-    return await handleException(() async {
-      final url =
-          await _uploadFiles(media.map((e) => e.url).toList(), '$chatId/file/');
+    List<MediaModel> media,
+    String chatId,
+  ) async {
+    return await _handleException(() async {
+      final url = await _uploadFiles(
+        media.map((e) => e.url).toList(),
+        '$chatId/file/',
+      );
       return media.indexed.map((e) => e.$2.copyWith(url: url[e.$1])).toList();
     }, context: 'SendFile');
   }
 
   @override
   Future<List<MediaModel>> sendImages(
-      List<MediaModel> media, String chatId) async {
-    return await handleException(() async {
+    List<MediaModel> media,
+    String chatId,
+  ) async {
+    return await _handleException(() async {
       final urls = await _uploadImages(
         media.map((e) => e.url).toList(),
         '$chatId/image/',
@@ -115,16 +142,19 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
 
   @override
   Future<ChatModel> sendMessage(ChatModel chat) async {
-    return await handleException(() async {
+    return await _handleException(() async {
       final res = await _socketIO.sendMessage(chat.toJson());
+
       return ChatModel.fromJson(res);
     }, context: 'SendMessage');
   }
 
   @override
   Future<List<MediaModel>> sendVideos(
-      List<MediaModel> media, String chatId) async {
-    return await handleException(() async {
+    List<MediaModel> media,
+    String chatId,
+  ) async {
+    return await _handleException(() async {
       final videoUrl = _uploadFiles(
         media.map((e) => e.url).toList(),
         '$chatId/video/',
@@ -147,8 +177,11 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
 
   Future<List<String>> _uploadFiles(List<String> filesPath, String path) async {
     try {
-      final urls = await _apiService.uploadFiles(filesPath,
-          storagePath: path, url: 'uploads');
+      final urls = await _apiService.uploadFiles(
+        filesPath,
+        storagePath: path,
+        url: 'uploads',
+      );
       return urls['data'].cast<String>();
     } catch (e) {
       rethrow;
@@ -193,7 +226,9 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
   }
 
   Future<List<String>> _uploadImages(
-      List<String> path, String supabasePath) async {
+    List<String> path,
+    String supabasePath,
+  ) async {
     try {
       final pendingImageCompressions = <Future<Uint8List>>[];
       for (final p in path) {
@@ -213,19 +248,20 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
 
   @override
   Future<ChatModel> sendMessageHttp(ChatModel chat) async {
-    return await handleException(() async {
+    return await _handleException(() async {
+      log('Sending message via HTTP: ${chat.toJson()}');
       final res = await _apiService.post('chats/sendChat', data: chat.toJson());
       return ChatModel.fromJson(res);
-    }, context: 'SendMessage');
+    }, context: 'SendMessageHttp');
   }
 
   @override
   Future<void> updateReadStatus(String chatId, String userId) async {
-    return await handleException(() async {
-      await _apiService.post('chats/updateRead', data: {
-        'chatId': chatId,
-        'userId': userId,
-      });
+    return await _handleException(() async {
+      await _apiService.post(
+        'chats/updateRead',
+        data: {'chatId': chatId, 'userId': userId},
+      );
     }, context: 'UpdateReadStatus');
   }
 }

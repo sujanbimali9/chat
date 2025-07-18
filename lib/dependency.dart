@@ -22,21 +22,15 @@ import 'package:chat/src/chat/domain/usecase/remove_chat.dart';
 import 'package:chat/src/chat/domain/usecase/send_message.dart';
 import 'package:chat/src/chat/domain/usecase/update_read_status.dart';
 import 'package:chat/src/chat/presentation/bloc/pending_chat_bloc/pending_chat_bloc.dart';
-import 'package:chat/src/home/data/datasource/last_chat_local_data_source.dart';
-import 'package:chat/src/home/data/datasource/last_chat_remote_data_source.dart';
 import 'package:chat/src/home/data/datasource/user_local_data_source.dart';
 import 'package:chat/src/home/data/datasource/user_remote_data_source.dart';
-import 'package:chat/src/home/data/repository/last_chat_repository_imp.dart';
 import 'package:chat/src/home/data/repository/user_repository_imp.dart';
-import 'package:chat/src/home/domain/repository/last_chat_repository.dart';
 import 'package:chat/src/home/domain/repository/user_repository.dart';
 import 'package:chat/src/home/domain/usecases/get_interacted_user.dart';
+import 'package:chat/src/home/domain/usecases/get_interactive_user_stream.dart';
 import 'package:chat/src/home/domain/usecases/get_user.dart';
 import 'package:chat/src/home/domain/usecases/get_user_local.dart';
 import 'package:chat/src/home/domain/usecases/get_current_user.dart';
-import 'package:chat/src/home/domain/usecases/get_last_chats.dart';
-import 'package:chat/src/home/domain/usecases/get_last_chats_stream.dart';
-import 'package:chat/src/home/domain/usecases/get_user_stream.dart';
 import 'package:chat/src/home/domain/usecases/search_user.dart';
 
 import 'package:chat/src/home/domain/usecases/update_profile_image.dart';
@@ -55,7 +49,8 @@ final serviceLocater = GetIt.instance;
 
 void initDependency() {
   serviceLocater.registerLazySingleton(() => FirebaseAuth.instance);
-  serviceLocater.registerLazySingleton(() => ApiService.init(serviceLocater()));
+  serviceLocater.registerLazySingleton(
+      () => ApiService.init(serviceLocater(), 'http://192.168.1.22:8000'));
   serviceLocater.registerFactory(() => Connectivity());
   serviceLocater.registerLazySingleton(() => NetworkInfo.instance);
   serviceLocater.registerLazySingleton(() => LocalDatabase());
@@ -63,7 +58,6 @@ void initDependency() {
 
   _initAuth();
   _initUser();
-  _initLastChat();
   _initChat();
 }
 
@@ -99,7 +93,7 @@ void _initAuth() {
 void _initUser() {
   serviceLocater
     ..registerFactory<UserRemoteDataSource>(
-        () => UserRemoteDataSourceImp(serviceLocater(), serviceLocater()))
+        () => UserRemoteDataSourceImp(serviceLocater()))
     ..registerFactory<UserLocalDataSource>(
         () => UserLocalDataSourceImp(serviceLocater(), serviceLocater()))
     ..registerFactory<UserRepository>(() => UserRepositoryImp(
@@ -109,11 +103,11 @@ void _initUser() {
         ))
     ..registerFactory(() => GetAllUsersUseCase(serviceLocater()))
     ..registerFactory(() => GetInteractedUserUseCase(serviceLocater()))
+    ..registerFactory(() => GetInteractedUserUseCaseStream(serviceLocater()))
     ..registerFactory(() => GetCurrentUserUseCase(serviceLocater()))
     ..registerFactory(() => SearchUserUseCase(serviceLocater()))
     ..registerFactory(() => UpdateProfileImageUseCase(serviceLocater()))
     ..registerFactory(() => UpdateUserUseCase(serviceLocater()))
-    ..registerFactory(() => GetUsersStream(serviceLocater()))
     ..registerFactory(() => GetAllUserLocalUseCase(serviceLocater()))
     ..registerFactory(() => CurrentUserBloc(
           serviceLocater(),
@@ -149,19 +143,4 @@ void _initChat() {
           serviceLocater(),
           serviceLocater(),
         ));
-}
-
-void _initLastChat() {
-  serviceLocater
-    ..registerFactory<LastChatRemoteDataSource>(
-        () => LastChatRemoteDataSourceImp(serviceLocater(), serviceLocater()))
-    ..registerFactory<LastChatLocalDataSource>(
-        () => LastChatLocalDataSourceImp(serviceLocater()))
-    ..registerFactory<LastChatRepository>(() => LastChatRepositoryImp(
-          serviceLocater(),
-          serviceLocater(),
-          serviceLocater(),
-        ))
-    ..registerFactory(() => GetLastChatsStreamUseCase(serviceLocater()))
-    ..registerFactory(() => GetLastChatsUseCase(serviceLocater()));
 }

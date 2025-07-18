@@ -31,14 +31,20 @@ class PendingChatBloc extends Bloc<PendingChatEvent, PendingChatState> {
   }
 
   FutureOr<void> _retryPendingChats(
-      RetryPendingChats event, Emitter<PendingChatState> emit) async {
+    RetryPendingChats event,
+    Emitter<PendingChatState> emit,
+  ) async {
     final res = await _pendingChatUseCase(NoParams());
-    log('RetryPendingChats: $res');
     res.fold(
-      (l) => {},
+      (l) => {
+        log(
+          'Failed to fetch pending chats: ${l.message}',
+          name: 'PendingChatBloc',
+        ),
+      },
       (r) => {
         log('RetryPendingChats: $r'),
-        if (r.isNotEmpty) {_retry(r)}
+        if (r.isNotEmpty) {_retry(r)},
       },
     );
   }
@@ -54,8 +60,9 @@ class PendingChatBloc extends Bloc<PendingChatEvent, PendingChatState> {
   }
 
   void listenToConnectivity() {
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen((event) {
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((
+      event,
+    ) {
       if (!event.contains(ConnectivityResult.none)) {
         log('Retry pending chats');
         add(RetryPendingChats());

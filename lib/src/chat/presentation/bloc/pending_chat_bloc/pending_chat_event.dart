@@ -7,4 +7,6 @@ sealed class PendingChatEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class RetryPendingChats extends PendingChatEvent {}
+class RetryPendingChats extends PendingChatEvent {
+  const RetryPendingChats();
+}

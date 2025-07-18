@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/core/exception/exception.dart';
@@ -14,9 +16,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:collection';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:uuid/uuid.dart';
 
 class NotiChat extends Equatable {
   final String chatId;
@@ -35,67 +37,73 @@ class NotiChat extends Equatable {
     required this.message,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'chatId': chatId,
-      'fromId': senderId,
-      'toId': receiverId,
-      'senderName': senderName,
-      'receiverName': receiverName,
-      'msg': message,
-    };
-  }
+  factory NotiChat.fromMap(Map<String, dynamic> map) => NotiChat(
+    chatId: map['chatId'] as String,
+    senderId: map['fromId'] as String,
+    receiverId: map['toId'] as String,
+    senderName: map['senderName'] as String,
+    receiverName: map['receiverName'] as String,
+    message: map['msg'] as String,
+  );
 
-  factory NotiChat.fromMap(Map<String, dynamic> map) {
-    return NotiChat(
-      chatId: map['chatId'] as String,
-      senderId: map['fromId'] as String,
-      receiverId: map['toId'] as String,
-      senderName: map['senderName'] as String,
-      receiverName: map['receiverName'] as String,
-      message: map['msg'] as String,
-    );
-  }
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toMap() => {
+    'chatId': chatId,
+    'fromId': senderId,
+    'toId': receiverId,
+    'senderName': senderName,
+    'receiverName': receiverName,
+    'msg': message,
+  };
 
   factory NotiChat.fromJson(String source) =>
       NotiChat.fromMap(json.decode(source) as Map<String, dynamic>);
 
+  String toJson() => json.encode(toMap());
+
   @override
-  List<Object?> get props =>
-      [chatId, senderId, receiverId, senderName, receiverName, message];
+  List<Object?> get props => [
+    chatId,
+    senderId,
+    receiverId,
+    senderName,
+    receiverName,
+    message,
+  ];
 }
 
 @pragma('vm:entry-point')
 class NotificationService {
-  static final _messageQueue = <String, ListQueue<Message>>{};
   static const int _maxMessages = 5;
+  static final Map<String, ListQueue<Message>> _messageQueue = {};
 
   static Future<void> init() async {
     final notificationPlugin = FlutterLocalNotificationsPlugin();
 
-    var initializationSettings = const InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
     );
 
-    await notificationPlugin.initialize(initializationSettings,
-        onDidReceiveBackgroundNotificationResponse: _handleNotificationAction);
+    await notificationPlugin.initialize(
+      initializationSettings,
+      onDidReceiveBackgroundNotificationResponse: _handleNotificationAction,
+    );
   }
 
   @pragma('vm:entry-point')
   static Future<void> showNotification(RemoteMessage? remoteMessage) async {
-    final notificationPlugin = FlutterLocalNotificationsPlugin();
     if (remoteMessage == null) return;
-    final messageData = remoteMessage.data;
 
+    final notificationPlugin = FlutterLocalNotificationsPlugin();
+    final messageData = remoteMessage.data;
     final chatNotification = NotiChat.fromMap(messageData);
     final messageKey = chatNotification.chatId;
 
-    final activeNotification =
-        await notificationPlugin.getActiveNotifications();
+    final activeNotifications = await notificationPlugin
+        .getActiveNotifications();
 
-    final bool isActiveMessages = activeNotification.isNotEmpty &&
-        activeNotification.any((element) => element.id == messageKey.hashCode);
+    final isActiveMessages =
+        activeNotifications.isNotEmpty &&
+        activeNotifications.any((n) => n.id == messageKey.hashCode);
 
     _messageQueue.putIfAbsent(messageKey, () => ListQueue(_maxMessages + 1));
 
@@ -104,23 +112,19 @@ class NotificationService {
       key: chatNotification.senderId,
     );
 
-    final message = Message(
-      chatNotification.message,
-      DateTime.now(),
-      sender,
-    );
+    final message = Message(chatNotification.message, DateTime.now(), sender);
 
     if (isActiveMessages) {
-      _messageQueue[messageKey]?.addLast(message);
+      _messageQueue[messageKey]!.addLast(message);
       if (_messageQueue[messageKey]!.length > _maxMessages) {
-        _messageQueue[messageKey]?.removeFirst();
+        _messageQueue[messageKey]!.removeFirst();
       }
     } else {
-      _messageQueue[messageKey]?.clear();
-      _messageQueue[messageKey]?.addLast(message);
+      _messageQueue[messageKey]!.clear();
+      _messageQueue[messageKey]!.addLast(message);
     }
 
-    List<Message> messageList = _messageQueue[messageKey]!.toList();
+    final messageList = _messageQueue[messageKey]!.toList();
 
     final inboxStyleInformation = MessagingStyleInformation(
       sender,
@@ -128,19 +132,17 @@ class NotificationService {
       messages: messageList,
     );
 
-    var androidNotification = AndroidNotificationDetails(
+    final androidNotification = AndroidNotificationDetails(
       'chat_channel',
       'Chat Notifications',
       styleInformation: inboxStyleInformation,
-      actions: [
-        const AndroidNotificationAction(
+      actions: const [
+        AndroidNotificationAction(
           'reply_action',
           'Reply',
           allowGeneratedReplies: true,
           inputs: [
-            AndroidNotificationActionInput(
-              label: 'Type your reply here',
-            ),
+            AndroidNotificationActionInput(label: 'Type your reply here'),
           ],
         ),
       ],
@@ -148,10 +150,12 @@ class NotificationService {
       priority: Priority.high,
     );
 
-    var notificationDetails = NotificationDetails(android: androidNotification);
+    final notificationDetails = NotificationDetails(
+      android: androidNotification,
+    );
 
     await notificationPlugin.show(
-      remoteMessage.data['chatId'].hashCode,
+      messageKey.hashCode,
       sender.name,
       message.text,
       notificationDetails,
@@ -160,17 +164,20 @@ class NotificationService {
   }
 
   @pragma('vm:entry-point')
-  static void _handleNotificationAction(NotificationResponse response) async {
+  static Future<void> _handleNotificationAction(
+    NotificationResponse response,
+  ) async {
     final inputText = response.input;
     log('Input Text: $inputText');
 
     if (inputText == null) return;
-    final chatNotificaiton = NotiChat.fromJson(response.payload!);
+
+    final chatNotification = NotiChat.fromJson(response.payload!);
 
     final chat = Chat(
-      id: chatNotificaiton.chatId,
-      toId: chatNotificaiton.senderId,
-      fromId: chatNotificaiton.receiverId,
+      id: const Uuid().v4(),
+      toId: chatNotification.senderId,
+      fromId: chatNotification.receiverId,
       msg: inputText,
       medias: const [],
       read: false,
@@ -186,22 +193,31 @@ class NotificationService {
       final connectivity = Connectivity();
       if (Firebase.apps.isEmpty) {
         await Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform);
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
         NetworkInfo.init(connectivity);
       }
+
       final firebaseAuth = FirebaseAuth.instance;
-      final apiService = ApiService.init(firebaseAuth);
+      final apiService = ApiService.init(
+        firebaseAuth,
+        'http://192.168.1.22:8000/',
+      );
       final socketIO = SocketIOService();
 
-      final chatRemoteDataSource =
-          ChatRemoteDataSourceImp(apiService, socketIO);
+      final chatRemoteDataSource = ChatRemoteDataSourceImp(
+        apiService,
+        socketIO,
+      );
+
       log('sending message: ${chatModel.toJson()}');
       await chatRemoteDataSource.sendMessageHttp(chatModel);
       log('message sent successfully');
-      final localDataBase = LocalDatabase();
-      await localDataBase.chatTableQuery.insertChat(chatModel);
+
+      final localDatabase = LocalDatabase();
+      await localDatabase.chatTableQuery.insertChat(chatModel);
     } on ServerException catch (e) {
-      log('Error sending message: ${e.message}');
+      log('Error sending message Http: ${e.message}');
     } catch (e) {
       log('Error: $e');
     }

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/src/chat/data/model/media_model.dart';
-import 'package:chat/src/chat/presentation/chat_bloc/chat_bloc.dart';
-import 'package:chat/src/chat/presentation/reply_cubit/reply_cubit.dart';
+import 'package:chat/src/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:chat/src/chat/presentation/bloc/reply_cubit/reply_cubit.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +128,7 @@ class _MessageFieldState extends State<MessageField> {
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 4, horizontal: 20),
                           filled: true,
+                          hoverColor: Colors.transparent,
                           fillColor: const Color.fromARGB(70, 171, 172, 173),
                           border: border,
                           errorBorder: border,

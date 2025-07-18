@@ -1,6 +1,6 @@
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
-import 'package:chat/src/chat/presentation/chat_bloc/chat_bloc.dart';
+import 'package:chat/src/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:chat/src/chat/presentation/screen/chatscreen.dart';
 import 'package:chat/src/chat/presentation/widgets/chat_container.dart';
 import 'package:chat/utils/dateformat/date_formatter.dart';

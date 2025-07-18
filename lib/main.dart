@@ -19,7 +19,6 @@ import 'package:chat/src/auth/presentation/screen/login_screen.dart';
 import 'package:chat/src/auth/presentation/screen/signup_screen.dart';
 import 'package:chat/src/chat/presentation/screen/chatscreen.dart';
 import 'package:chat/src/home/presentation/bloc/current_user_bloc/current_user_bloc.dart';
-import 'package:chat/src/home/presentation/bloc/last_chat_bloc/last_chat_bloc.dart';
 import 'package:chat/src/home/presentation/bloc/all_user_bloc/all_user_bloc.dart';
 import 'package:chat/src/home/presentation/screen/homescreen.dart';
 import 'package:chat/utils/constant/routes.dart';
@@ -76,17 +75,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         BlocProvider(create: (context) => serviceLocater<CurrentUserBloc>()),
         BlocProvider(create: (context) => serviceLocater<UserBloc>()),
         BlocProvider(
-          create: (context) => InteractedUserBloc(
-            serviceLocater(),
-            context.read<CurrentUserBloc>(),
-          ),
+          create: (context) =>
+              InteractedUserBloc(serviceLocater(), serviceLocater()),
         ),
-        BlocProvider(
-            create: (context) => LastChatBloc(
-                  serviceLocater(),
-                  serviceLocater(),
-                  context.read<InteractedUserBloc>(),
-                )),
         BlocProvider(
           create: (context) => serviceLocater<PendingChatBloc>(),
           lazy: false,
@@ -112,22 +103,29 @@ class AppInitial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(builder: (context) {
-      return BlocListener<AuthBloc, AuthState>(
+    return Builder(
+      builder: (context) {
+        return BlocListener<AuthBloc, AuthState>(
           listenWhen: (_, next) => next is! AuthInitial,
           listener: (context, state) {
             if (state is AuthLoggedIn) {
               FlutterNativeSplash.remove();
               Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.home, arguments: state.user, (route) => false);
+                Routes.home,
+                arguments: state.user,
+                (route) => false,
+              );
             } else {
               FlutterNativeSplash.remove();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(Routes.login, (route) => false);
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil(Routes.login, (route) => false);
             }
           },
-          child: const Scaffold());
-    });
+          child: const Scaffold(),
+        );
+      },
+    );
   }
 }
 
@@ -157,14 +155,10 @@ class AppRoutes {
               serviceLocater(),
               serviceLocater(),
               serviceLocater(),
-              serviceLocater(),
             ),
           ),
         ],
-        child: Chatscreen(
-          user: user,
-          currentUser: currentUser,
-        ),
+        child: Chatscreen(user: user, currentUser: currentUser),
       );
     },
   };
@@ -179,9 +173,7 @@ class UnkownRoute extends StatelessWidget {
     final name = settings.name ?? '';
 
     return Scaffold(
-      body: Center(
-        child: Text('jError 404\n/$name Page not found'),
-      ),
+      body: Center(child: Text('jError 404\n/$name Page not found')),
     );
   }
 }

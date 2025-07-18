@@ -1,25 +1,39 @@
+import 'dart:developer';
+
 import 'package:chat/core/common/model/api_response.dart';
+import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/exception/exception.dart';
+import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
 import 'package:chat/utils/database/daos/user_table_query.dart';
 import 'package:chat/utils/database/local_database.dart';
+import 'package:drift/native.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract interface class UserLocalDataSource {
-  Future<ApiResponse<UserModel>> getAllUser(
-      {required int limit, required int offset});
-  Stream<List<UserModel>> getUsersStream();
+  Future<ApiResponse<UserModel, UserPagination>> getAllUser({
+    required int limit,
+    required int offset,
+  });
+  Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
+  getInteractedUser({required int limit, required int offset});
   Future<UserModel> getUserById(String id);
   Future<UserModel> updateUser(UserModel user);
-  Future<ApiResponse<UserModel>> searchUser(
+  Future<ApiResponse<UserModel, UserPagination>> searchUser(
     String query, {
     required int limit,
     required int offset,
   });
   Future<void> saveUser(UserModel res);
+  Future<void> saveInteractedUser(UserModel user, ChatModel chat);
+  Future<void> saveInteractedUsers(
+    List<({UserModel user, ChatModel chat})> users,
+  );
   Future<void> deleteUser(String id);
   Future<UserModel> getCurrentUser();
   Future<void> saveUsers(List<UserModel> list);
+
+  Stream<List<({ChatModel chat, UserModel user})>> getInteractedUserStream();
 }
 
 class UserLocalDataSourceImp extends UserLocalDataSource {
@@ -27,98 +41,148 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   final FirebaseAuth _firebaseAuth;
 
   UserLocalDataSourceImp(LocalDatabase localDatabase, this._firebaseAuth)
-      : _userQuery = localDatabase.userTableQuery;
-  @override
-  Future<ApiResponse<UserModel>> getAllUser(
-      {required int limit, required int offset}) async {
+    : _userQuery = localDatabase.userTableQuery;
+
+  Future<T> _handleLocalException<T>(
+    Future<T> Function() fn, {
+    String context = '',
+  }) async {
     try {
-      final userId = _firebaseAuth.currentUser!.uid;
-      final users =
-          await _userQuery.getUsers(userId, limit: limit, offset: offset);
-      return users;
+      return await fn();
+    } on SqliteException catch (e) {
+      log(
+        'SQLite Exception: ${e.message}',
+        name: 'UserLocalDataSourceImp.$context',
+      );
+      throw CacheException(e.message);
     } catch (e) {
-      throw ServerException(e.toString());
+      log('Unexpected Exception: $e', name: 'UserLocalDataSourceImp.$context');
+      throw CacheException(e.toString());
     }
+  }
+
+  @override
+  Future<ApiResponse<UserModel, UserPagination>> getAllUser({
+    required int limit,
+    required int offset,
+  }) async {
+    return await _handleLocalException(() async {
+      final userId = _firebaseAuth.currentUser!.uid;
+      final users = await _userQuery.getUsers(
+        userId,
+        limit: limit,
+        offset: offset,
+      );
+      return users;
+    }, context: 'getAllUser');
   }
 
   @override
   Future<UserModel> getUserById(String id) async {
-    try {
+    return await _handleLocalException(() async {
       final user = await _userQuery.getUserById(id);
       return user;
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+    }, context: 'getUserById');
   }
 
   @override
-  Future<ApiResponse<UserModel>> searchUser(
+  Future<ApiResponse<UserModel, UserPagination>> searchUser(
     String query, {
     required int limit,
     required int offset,
   }) async {
-    try {
-      final users =
-          await _userQuery.searchUser(query, limit: limit, offset: offset);
+    return await _handleLocalException(() async {
+      final users = await _userQuery.searchUser(
+        query,
+        limit: limit,
+        offset: offset,
+      );
       return users;
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+    }, context: 'searchUser');
   }
 
   @override
   Future<UserModel> updateUser(UserModel user) async {
-    try {
+    return await _handleLocalException(() async {
+      final currentUser = await getCurrentUser();
+      if (currentUser.id != user.id) {
+        throw const ServerException('Cannot update user with different ID');
+      }
       await _userQuery.updateUser(user);
-      return user;
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+      return await _userQuery.getUserById(user.id);
+    }, context: 'updateUser');
   }
 
   @override
   Future<void> deleteUser(String id) async {
-    try {
+    return await _handleLocalException(() async {
       await _userQuery.deleteUser(id);
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+    }, context: 'deleteUser');
   }
 
   @override
   Future<UserModel> getCurrentUser() async {
-    try {
-      final userId = _firebaseAuth.currentUser!.uid;
+    return await _handleLocalException(() async {
+      final userId = _firebaseAuth.currentUser?.uid;
+      if (userId == null) {
+        throw const ServerException('No user is currently logged in');
+      }
       final user = await _userQuery.getUserById(userId);
       return user;
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+    }, context: 'getCurrentUser');
   }
 
   @override
   Future<void> saveUser(UserModel res) async {
-    try {
+    return await _handleLocalException(() async {
       await _userQuery.insertUser(res);
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+    }, context: 'saveUser');
   }
 
   @override
   Future<void> saveUsers(List<UserModel> list) async {
-    try {
+    return await _handleLocalException(() async {
       await _userQuery.insertUsers(list);
-    } catch (e) {
-      throw ServerException(e.toString());
-    }
+    }, context: 'saveUsers');
   }
 
   @override
-  Stream<List<UserModel>> getUsersStream() {
+  Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
+  getInteractedUser({required int limit, required int offset}) async {
+    return await _handleLocalException(() async {
+      final users = await _userQuery.getInteractedUsers(
+        limit: limit,
+        offset: offset,
+      );
+      return users;
+    }, context: 'getInteractedUser');
+  }
+
+  @override
+  Future<void> saveInteractedUser(UserModel user, ChatModel chat) async {
+    return await _handleLocalException(() async {
+      await _userQuery.insertInteractedUser(user, chat);
+    }, context: 'saveInteractedUser');
+  }
+
+  @override
+  Future<void> saveInteractedUsers(
+    List<({UserModel user, ChatModel chat})> users,
+  ) async {
+    return await _handleLocalException(() async {
+      await _userQuery.insertInteractedUsers(users);
+    }, context: 'saveInteractedUsers');
+  }
+
+  @override
+  Stream<List<({ChatModel chat, UserModel user})>> getInteractedUserStream() {
     try {
-      return _userQuery.getUsersStream();
+      return _userQuery.getInteractedUserStream();
+    } on SqliteException catch (e) {
+      log('SQLite Exception: ${e.message}', name: 'UserLocalDataSource');
+      throw ServerException(e.message);
     } catch (e) {
+      log('Unexpected Exception: $e', name: 'UserLocalDataSource');
       throw ServerException(e.toString());
     }
   }

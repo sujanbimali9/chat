@@ -15,9 +15,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final GetAllUsersUseCase _getAllUserUseCase;
   final SearchUserUseCase _searchUserUseCase;
   final GetAllUserLocalUseCase _getAllUserLocalUseCase;
-  Pagination _userPagination = const Pagination(offset: 0, limit: 20, total: 0);
-  Pagination _searchPagination =
-      const Pagination(offset: 0, limit: 20, total: 0);
+  UserPagination _userPagination = const UserPagination(
+    offset: 0,
+    limit: 20,
+    total: 0,
+  );
+  UserPagination _searchPagination = const UserPagination(
+    offset: 0,
+    limit: 20,
+    total: 0,
+  );
   final allUsers = <String, User>{};
   UserBloc(
     this._getAllUserUseCase,
@@ -38,30 +45,31 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   FutureOr<void> _getAllUser(Emitter<UserState> emit) async {
-    final result = await _getAllUserUseCase(GetUserParms(
-      limit: _userPagination.limit,
-      offset: _userPagination.offset,
-    ));
-    result.fold(
-      (l) {},
-      (res) {
-        final users = res.data;
-        _userPagination = res.pagination;
-        for (final user in users) {
-          allUsers[user.id] = user;
-        }
-
-        emit(UserState.loaded(allUsers.values.toList()));
-      },
+    final result = await _getAllUserUseCase(
+      GetUserParms(
+        limit: _userPagination.limit,
+        offset: _userPagination.offset,
+      ),
     );
+    result.fold((l) {}, (res) {
+      final users = res.data;
+      _userPagination = res.pagination;
+      for (final user in users) {
+        allUsers[user.id] = user;
+      }
+
+      emit(UserState.loaded(allUsers.values.toList()));
+    });
   }
 
   FutureOr<void> _searchUser(Emitter<UserState> emit, _SearchUser e) async {
-    final result = await _searchUserUseCase(SearchUserParams(
-      query: e.query,
-      limit: _searchPagination.limit,
-      offset: _searchPagination.offset,
-    ));
+    final result = await _searchUserUseCase(
+      SearchUserParams(
+        query: e.query,
+        limit: _searchPagination.limit,
+        offset: _searchPagination.offset,
+      ),
+    );
     final allUser = state.maybeWhen<List<User>>(
       orElse: () => [],
       loaded: (chats) => chats,
@@ -79,8 +87,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   FutureOr<void> _getUsersLocal(Emitter<UserState> emit) async {
-    final result =
-        await _getAllUserLocalUseCase(GetUserParms(limit: 30, offset: 0));
+    final result = await _getAllUserLocalUseCase(
+      GetUserParms(limit: 30, offset: 0),
+    );
     result.fold(
       (l) {
         emit(UserState.error(l.message));

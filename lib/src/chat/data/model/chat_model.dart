@@ -56,19 +56,4 @@ class ChatModel with _$ChatModel {
       status: e.status,
     );
   }
-  factory ChatModel.fromLastChatEntity(LastChatEntity e) {
-    return ChatModel(
-      id: e.id,
-      chatId: e.chatId,
-      msg: e.msg,
-      toId: e.toId,
-      read: e.read,
-      type: e.type,
-      fromId: e.fromId,
-      readTime: e.readTime,
-      sentTime: e.sentTime,
-      medias: e.medias,
-      status: e.status,
-    );
-  }
 }

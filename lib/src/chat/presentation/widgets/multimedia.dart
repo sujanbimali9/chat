@@ -22,7 +22,9 @@ class MultiMediaGrid extends MultiChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant MultiMediaGridRenderer renderObject) {
+    BuildContext context,
+    covariant MultiMediaGridRenderer renderObject,
+  ) {
     renderObject
       ..spacing = spacing
       ..maxAllowedPerRow = maxAllowedPerRow;
@@ -39,8 +41,8 @@ class MultiMediaGridRenderer extends RenderBox
   MultiMediaGridRenderer({
     required double spacing,
     required int maxAllowedPerRow,
-  })  : _maxAllowedPerRow = maxAllowedPerRow,
-        _spacing = spacing;
+  }) : _maxAllowedPerRow = maxAllowedPerRow,
+       _spacing = spacing;
 
   double _spacing;
 
@@ -77,8 +79,9 @@ class MultiMediaGridRenderer extends RenderBox
     }
 
     final widthConstraint = constraints.maxWidth;
-    final itemPerRow =
-        totalChild < maxAllowedPerRow ? totalChild : maxAllowedPerRow;
+    final itemPerRow = totalChild < maxAllowedPerRow
+        ? totalChild
+        : maxAllowedPerRow;
     final totalSpacing = spacing * (itemPerRow - 1);
     final availableWidthAfterSpacing = widthConstraint - totalSpacing;
     final itemWidth = availableWidthAfterSpacing / itemPerRow;
@@ -118,11 +121,12 @@ class MultiMediaGridRenderer extends RenderBox
     while (child != null) {
       final childParentData = child.parentData! as _MultiMediaGridChild;
       if (result.addWithPaintOffset(
-          offset: childParentData.offset,
-          position: position,
-          hitTest: (BoxHitTestResult result, Offset transformed) {
-            return child!.hitTest(result, position: transformed);
-          })) {
+        offset: childParentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          return child!.hitTest(result, position: transformed);
+        },
+      )) {
         return true;
       }
       child = childBefore(child);

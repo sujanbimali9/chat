@@ -1,10 +1,9 @@
-import 'package:chat/core/common/model/pagination.dart';
 import 'package:equatable/equatable.dart';
 
-class ApiResponse<T> extends Equatable {
+class ApiResponse<T, U> extends Equatable {
   final String? message;
   final List<T> data;
-  final Pagination pagination;
+  final U pagination;
   final ApiDataSource dataSource;
 
   const ApiResponse({
@@ -18,19 +17,22 @@ class ApiResponse<T> extends Equatable {
   List<Object?> get props => [pagination, message, data, dataSource];
 
   factory ApiResponse.fromJson(
-      Map<String, dynamic> map, T Function(Object?) fromJson,
-      {ApiDataSource? dataSource}) {
+    Map<String, dynamic> map,
+    T Function(dynamic) fromJson,
+    U Function(Map<String, dynamic>) fromJsonPagination, {
+    ApiDataSource? dataSource,
+  }) {
     return ApiResponse(
       message: map['message'],
       data: (map['data'] as List).map<T>(fromJson).toList(),
-      pagination: Pagination.fromJson(map['pagination']),
+      pagination: fromJsonPagination(map['pagination']),
       dataSource: dataSource ?? ApiDataSource.remote,
     );
   }
-  ApiResponse<T> copyWith({
+  ApiResponse<T, U> copyWith({
     String? message,
     List<T>? data,
-    Pagination? pagination,
+    U? pagination,
     ApiDataSource? dataSource,
   }) {
     return ApiResponse(
@@ -41,7 +43,7 @@ class ApiResponse<T> extends Equatable {
     );
   }
 
-  ApiResponse<X> map<X>(X Function(T) f) {
+  ApiResponse<X, U> map<X>(X Function(T) f) {
     return ApiResponse(
       message: message,
       data: data.map(f).toList(),
@@ -52,16 +54,14 @@ class ApiResponse<T> extends Equatable {
 
   Map<String, dynamic> toJson(
     Object? Function(T) toJson,
+    Object Function(U) paginationToJson,
   ) {
     return {
-      'pagination': pagination.toJson(),
+      'pagination': paginationToJson(pagination),
       'message': message,
       'data': data.map(toJson).toList(),
     };
   }
 }
 
-enum ApiDataSource {
-  remote,
-  local,
-}
+enum ApiDataSource { remote, local }

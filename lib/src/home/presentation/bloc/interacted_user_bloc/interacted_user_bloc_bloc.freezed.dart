@@ -23,6 +23,7 @@ mixin _$InteractedUserEvent {
     required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshUser,
     required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -32,6 +33,7 @@ mixin _$InteractedUserEvent {
     TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshUser,
     TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -41,6 +43,7 @@ mixin _$InteractedUserEvent {
     TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshUser,
     TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -52,6 +55,7 @@ mixin _$InteractedUserEvent {
     required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshUser value) refreshUser,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -61,6 +65,7 @@ mixin _$InteractedUserEvent {
     TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshUser value)? refreshUser,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -70,6 +75,7 @@ mixin _$InteractedUserEvent {
     TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshUser value)? refreshUser,
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -142,6 +148,7 @@ class _$GetInteractedUserImpl implements _GetInteractedUser {
     required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshUser,
     required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
   }) {
     return getInteractedUser();
   }
@@ -154,6 +161,7 @@ class _$GetInteractedUserImpl implements _GetInteractedUser {
     TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshUser,
     TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
   }) {
     return getInteractedUser?.call();
   }
@@ -166,6 +174,7 @@ class _$GetInteractedUserImpl implements _GetInteractedUser {
     TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshUser,
     TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (getInteractedUser != null) {
@@ -183,6 +192,7 @@ class _$GetInteractedUserImpl implements _GetInteractedUser {
     required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshUser value) refreshUser,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return getInteractedUser(this);
   }
@@ -195,6 +205,7 @@ class _$GetInteractedUserImpl implements _GetInteractedUser {
     TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshUser value)? refreshUser,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return getInteractedUser?.call(this);
   }
@@ -207,6 +218,7 @@ class _$GetInteractedUserImpl implements _GetInteractedUser {
     TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshUser value)? refreshUser,
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
     if (getInteractedUser != null) {
@@ -270,6 +282,7 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
     required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshUser,
     required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
   }) {
     return getInteractedUserLocal();
   }
@@ -282,6 +295,7 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
     TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshUser,
     TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
   }) {
     return getInteractedUserLocal?.call();
   }
@@ -294,6 +308,7 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
     TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshUser,
     TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (getInteractedUserLocal != null) {
@@ -311,6 +326,7 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
     required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshUser value) refreshUser,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return getInteractedUserLocal(this);
   }
@@ -323,6 +339,7 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
     TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshUser value)? refreshUser,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return getInteractedUserLocal?.call(this);
   }
@@ -335,6 +352,7 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
     TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshUser value)? refreshUser,
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
     if (getInteractedUserLocal != null) {
@@ -428,6 +446,7 @@ class _$SortUsersImpl implements _SortUsers {
     required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshUser,
     required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
   }) {
     return sortUsers(listChats);
   }
@@ -440,6 +459,7 @@ class _$SortUsersImpl implements _SortUsers {
     TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshUser,
     TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
   }) {
     return sortUsers?.call(listChats);
   }
@@ -452,6 +472,7 @@ class _$SortUsersImpl implements _SortUsers {
     TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshUser,
     TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (sortUsers != null) {
@@ -469,6 +490,7 @@ class _$SortUsersImpl implements _SortUsers {
     required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshUser value) refreshUser,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return sortUsers(this);
   }
@@ -481,6 +503,7 @@ class _$SortUsersImpl implements _SortUsers {
     TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshUser value)? refreshUser,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return sortUsers?.call(this);
   }
@@ -493,6 +516,7 @@ class _$SortUsersImpl implements _SortUsers {
     TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshUser value)? refreshUser,
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
     if (sortUsers != null) {
@@ -560,6 +584,7 @@ class _$RefreshUserImpl implements _RefreshUser {
     required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshUser,
     required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
   }) {
     return refreshUser();
   }
@@ -572,6 +597,7 @@ class _$RefreshUserImpl implements _RefreshUser {
     TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshUser,
     TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
   }) {
     return refreshUser?.call();
   }
@@ -584,6 +610,7 @@ class _$RefreshUserImpl implements _RefreshUser {
     TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshUser,
     TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (refreshUser != null) {
@@ -601,6 +628,7 @@ class _$RefreshUserImpl implements _RefreshUser {
     required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshUser value) refreshUser,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return refreshUser(this);
   }
@@ -613,6 +641,7 @@ class _$RefreshUserImpl implements _RefreshUser {
     TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshUser value)? refreshUser,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return refreshUser?.call(this);
   }
@@ -625,6 +654,7 @@ class _$RefreshUserImpl implements _RefreshUser {
     TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshUser value)? refreshUser,
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
     if (refreshUser != null) {
@@ -684,6 +714,7 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
     required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshUser,
     required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
   }) {
     return fetchMoreUser();
   }
@@ -696,6 +727,7 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
     TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshUser,
     TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
   }) {
     return fetchMoreUser?.call();
   }
@@ -708,6 +740,7 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
     TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshUser,
     TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (fetchMoreUser != null) {
@@ -725,6 +758,7 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
     required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshUser value) refreshUser,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return fetchMoreUser(this);
   }
@@ -737,6 +771,7 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
     TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshUser value)? refreshUser,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return fetchMoreUser?.call(this);
   }
@@ -749,6 +784,7 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
     TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshUser value)? refreshUser,
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
     if (fetchMoreUser != null) {
@@ -763,14 +799,192 @@ abstract class _FetchMoreUser implements InteractedUserEvent {
 }
 
 /// @nodoc
+abstract class _$$StateEmitterImplCopyWith<$Res> {
+  factory _$$StateEmitterImplCopyWith(
+          _$StateEmitterImpl value, $Res Function(_$StateEmitterImpl) then) =
+      __$$StateEmitterImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({InteractedUserState state});
+
+  $InteractedUserStateCopyWith<$Res> get state;
+}
+
+/// @nodoc
+class __$$StateEmitterImplCopyWithImpl<$Res>
+    extends _$InteractedUserEventCopyWithImpl<$Res, _$StateEmitterImpl>
+    implements _$$StateEmitterImplCopyWith<$Res> {
+  __$$StateEmitterImplCopyWithImpl(
+      _$StateEmitterImpl _value, $Res Function(_$StateEmitterImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of InteractedUserEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? state = null,
+  }) {
+    return _then(_$StateEmitterImpl(
+      null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as InteractedUserState,
+    ));
+  }
+
+  /// Create a copy of InteractedUserEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $InteractedUserStateCopyWith<$Res> get state {
+    return $InteractedUserStateCopyWith<$Res>(_value.state, (value) {
+      return _then(_value.copyWith(state: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$StateEmitterImpl implements _StateEmitter {
+  const _$StateEmitterImpl(this.state);
+
+  @override
+  final InteractedUserState state;
+
+  @override
+  String toString() {
+    return 'InteractedUserEvent.stateEmitter(state: $state)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$StateEmitterImpl &&
+            (identical(other.state, state) || other.state == state));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, state);
+
+  /// Create a copy of InteractedUserEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$StateEmitterImplCopyWith<_$StateEmitterImpl> get copyWith =>
+      __$$StateEmitterImplCopyWithImpl<_$StateEmitterImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() getInteractedUser,
+    required TResult Function() getInteractedUserLocal,
+    required TResult Function(List<Chat> listChats) sortUsers,
+    required TResult Function() refreshUser,
+    required TResult Function() fetchMoreUser,
+    required TResult Function(InteractedUserState state) stateEmitter,
+  }) {
+    return stateEmitter(state);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? getInteractedUser,
+    TResult? Function()? getInteractedUserLocal,
+    TResult? Function(List<Chat> listChats)? sortUsers,
+    TResult? Function()? refreshUser,
+    TResult? Function()? fetchMoreUser,
+    TResult? Function(InteractedUserState state)? stateEmitter,
+  }) {
+    return stateEmitter?.call(state);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? getInteractedUser,
+    TResult Function()? getInteractedUserLocal,
+    TResult Function(List<Chat> listChats)? sortUsers,
+    TResult Function()? refreshUser,
+    TResult Function()? fetchMoreUser,
+    TResult Function(InteractedUserState state)? stateEmitter,
+    required TResult orElse(),
+  }) {
+    if (stateEmitter != null) {
+      return stateEmitter(state);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_GetInteractedUser value) getInteractedUser,
+    required TResult Function(_GetInteractedUserLocal value)
+        getInteractedUserLocal,
+    required TResult Function(_SortUsers value) sortUsers,
+    required TResult Function(_RefreshUser value) refreshUser,
+    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_StateEmitter value) stateEmitter,
+  }) {
+    return stateEmitter(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_GetInteractedUser value)? getInteractedUser,
+    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_SortUsers value)? sortUsers,
+    TResult? Function(_RefreshUser value)? refreshUser,
+    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_StateEmitter value)? stateEmitter,
+  }) {
+    return stateEmitter?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_GetInteractedUser value)? getInteractedUser,
+    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_SortUsers value)? sortUsers,
+    TResult Function(_RefreshUser value)? refreshUser,
+    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_StateEmitter value)? stateEmitter,
+    required TResult orElse(),
+  }) {
+    if (stateEmitter != null) {
+      return stateEmitter(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _StateEmitter implements InteractedUserEvent {
+  const factory _StateEmitter(final InteractedUserState state) =
+      _$StateEmitterImpl;
+
+  InteractedUserState get state;
+
+  /// Create a copy of InteractedUserEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$StateEmitterImplCopyWith<_$StateEmitterImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$InteractedUserState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<User> users) loaded,
-    required TResult Function(List<User> users) fetchingMore,
+    required TResult Function(List<({Chat chat, User user})> data) loaded,
+    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -778,8 +992,8 @@ mixin _$InteractedUserState {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<User> users)? loaded,
-    TResult? Function(List<User> users)? fetchingMore,
+    TResult? Function(List<({Chat chat, User user})> data)? loaded,
+    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -787,8 +1001,8 @@ mixin _$InteractedUserState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<User> users)? loaded,
-    TResult Function(List<User> users)? fetchingMore,
+    TResult Function(List<({Chat chat, User user})> data)? loaded,
+    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -887,8 +1101,8 @@ class _$InitialImpl implements _Initial {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<User> users) loaded,
-    required TResult Function(List<User> users) fetchingMore,
+    required TResult Function(List<({Chat chat, User user})> data) loaded,
+    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
   }) {
     return initial();
   }
@@ -899,8 +1113,8 @@ class _$InitialImpl implements _Initial {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<User> users)? loaded,
-    TResult? Function(List<User> users)? fetchingMore,
+    TResult? Function(List<({Chat chat, User user})> data)? loaded,
+    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
   }) {
     return initial?.call();
   }
@@ -911,8 +1125,8 @@ class _$InitialImpl implements _Initial {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<User> users)? loaded,
-    TResult Function(List<User> users)? fetchingMore,
+    TResult Function(List<({Chat chat, User user})> data)? loaded,
+    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -1010,8 +1224,8 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<User> users) loaded,
-    required TResult Function(List<User> users) fetchingMore,
+    required TResult Function(List<({Chat chat, User user})> data) loaded,
+    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
   }) {
     return loading();
   }
@@ -1022,8 +1236,8 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<User> users)? loaded,
-    TResult? Function(List<User> users)? fetchingMore,
+    TResult? Function(List<({Chat chat, User user})> data)? loaded,
+    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
   }) {
     return loading?.call();
   }
@@ -1034,8 +1248,8 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<User> users)? loaded,
-    TResult Function(List<User> users)? fetchingMore,
+    TResult Function(List<({Chat chat, User user})> data)? loaded,
+    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -1160,8 +1374,8 @@ class _$ErrorImpl implements _Error {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<User> users) loaded,
-    required TResult Function(List<User> users) fetchingMore,
+    required TResult Function(List<({Chat chat, User user})> data) loaded,
+    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
   }) {
     return error(message);
   }
@@ -1172,8 +1386,8 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<User> users)? loaded,
-    TResult? Function(List<User> users)? fetchingMore,
+    TResult? Function(List<({Chat chat, User user})> data)? loaded,
+    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
   }) {
     return error?.call(message);
   }
@@ -1184,8 +1398,8 @@ class _$ErrorImpl implements _Error {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<User> users)? loaded,
-    TResult Function(List<User> users)? fetchingMore,
+    TResult Function(List<({Chat chat, User user})> data)? loaded,
+    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -1253,7 +1467,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
           _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
       __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<User> users});
+  $Res call({List<({Chat chat, User user})> data});
 }
 
 /// @nodoc
@@ -1269,13 +1483,13 @@ class __$$LoadedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? users = null,
+    Object? data = null,
   }) {
     return _then(_$LoadedImpl(
-      null == users
-          ? _value._users
-          : users // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+      null == data
+          ? _value._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as List<({Chat chat, User user})>,
     ));
   }
 }
@@ -1283,19 +1497,19 @@ class __$$LoadedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoadedImpl implements _Loaded {
-  const _$LoadedImpl(final List<User> users) : _users = users;
+  const _$LoadedImpl(final List<({Chat chat, User user})> data) : _data = data;
 
-  final List<User> _users;
+  final List<({Chat chat, User user})> _data;
   @override
-  List<User> get users {
-    if (_users is EqualUnmodifiableListView) return _users;
+  List<({Chat chat, User user})> get data {
+    if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_users);
+    return EqualUnmodifiableListView(_data);
   }
 
   @override
   String toString() {
-    return 'InteractedUserState.loaded(users: $users)';
+    return 'InteractedUserState.loaded(data: $data)';
   }
 
   @override
@@ -1303,12 +1517,12 @@ class _$LoadedImpl implements _Loaded {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedImpl &&
-            const DeepCollectionEquality().equals(other._users, _users));
+            const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_users));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
   /// Create a copy of InteractedUserState
   /// with the given fields replaced by the non-null parameter values.
@@ -1324,10 +1538,10 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<User> users) loaded,
-    required TResult Function(List<User> users) fetchingMore,
+    required TResult Function(List<({Chat chat, User user})> data) loaded,
+    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
   }) {
-    return loaded(users);
+    return loaded(data);
   }
 
   @override
@@ -1336,10 +1550,10 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<User> users)? loaded,
-    TResult? Function(List<User> users)? fetchingMore,
+    TResult? Function(List<({Chat chat, User user})> data)? loaded,
+    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
   }) {
-    return loaded?.call(users);
+    return loaded?.call(data);
   }
 
   @override
@@ -1348,12 +1562,12 @@ class _$LoadedImpl implements _Loaded {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<User> users)? loaded,
-    TResult Function(List<User> users)? fetchingMore,
+    TResult Function(List<({Chat chat, User user})> data)? loaded,
+    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(users);
+      return loaded(data);
     }
     return orElse();
   }
@@ -1400,9 +1614,10 @@ class _$LoadedImpl implements _Loaded {
 }
 
 abstract class _Loaded implements InteractedUserState {
-  const factory _Loaded(final List<User> users) = _$LoadedImpl;
+  const factory _Loaded(final List<({Chat chat, User user})> data) =
+      _$LoadedImpl;
 
-  List<User> get users;
+  List<({Chat chat, User user})> get data;
 
   /// Create a copy of InteractedUserState
   /// with the given fields replaced by the non-null parameter values.
@@ -1417,7 +1632,7 @@ abstract class _$$FetchingMoreImplCopyWith<$Res> {
           _$FetchingMoreImpl value, $Res Function(_$FetchingMoreImpl) then) =
       __$$FetchingMoreImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<User> users});
+  $Res call({List<({Chat chat, User user})> data});
 }
 
 /// @nodoc
@@ -1433,13 +1648,13 @@ class __$$FetchingMoreImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? users = null,
+    Object? data = null,
   }) {
     return _then(_$FetchingMoreImpl(
-      null == users
-          ? _value._users
-          : users // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+      null == data
+          ? _value._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as List<({Chat chat, User user})>,
     ));
   }
 }
@@ -1447,19 +1662,20 @@ class __$$FetchingMoreImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$FetchingMoreImpl implements _FetchingMore {
-  const _$FetchingMoreImpl(final List<User> users) : _users = users;
+  const _$FetchingMoreImpl(final List<({Chat chat, User user})> data)
+      : _data = data;
 
-  final List<User> _users;
+  final List<({Chat chat, User user})> _data;
   @override
-  List<User> get users {
-    if (_users is EqualUnmodifiableListView) return _users;
+  List<({Chat chat, User user})> get data {
+    if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_users);
+    return EqualUnmodifiableListView(_data);
   }
 
   @override
   String toString() {
-    return 'InteractedUserState.fetchingMore(users: $users)';
+    return 'InteractedUserState.fetchingMore(data: $data)';
   }
 
   @override
@@ -1467,12 +1683,12 @@ class _$FetchingMoreImpl implements _FetchingMore {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FetchingMoreImpl &&
-            const DeepCollectionEquality().equals(other._users, _users));
+            const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_users));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
   /// Create a copy of InteractedUserState
   /// with the given fields replaced by the non-null parameter values.
@@ -1488,10 +1704,10 @@ class _$FetchingMoreImpl implements _FetchingMore {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<User> users) loaded,
-    required TResult Function(List<User> users) fetchingMore,
+    required TResult Function(List<({Chat chat, User user})> data) loaded,
+    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
   }) {
-    return fetchingMore(users);
+    return fetchingMore(data);
   }
 
   @override
@@ -1500,10 +1716,10 @@ class _$FetchingMoreImpl implements _FetchingMore {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<User> users)? loaded,
-    TResult? Function(List<User> users)? fetchingMore,
+    TResult? Function(List<({Chat chat, User user})> data)? loaded,
+    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
   }) {
-    return fetchingMore?.call(users);
+    return fetchingMore?.call(data);
   }
 
   @override
@@ -1512,12 +1728,12 @@ class _$FetchingMoreImpl implements _FetchingMore {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<User> users)? loaded,
-    TResult Function(List<User> users)? fetchingMore,
+    TResult Function(List<({Chat chat, User user})> data)? loaded,
+    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (fetchingMore != null) {
-      return fetchingMore(users);
+      return fetchingMore(data);
     }
     return orElse();
   }
@@ -1564,9 +1780,10 @@ class _$FetchingMoreImpl implements _FetchingMore {
 }
 
 abstract class _FetchingMore implements InteractedUserState {
-  const factory _FetchingMore(final List<User> users) = _$FetchingMoreImpl;
+  const factory _FetchingMore(final List<({Chat chat, User user})> data) =
+      _$FetchingMoreImpl;
 
-  List<User> get users;
+  List<({Chat chat, User user})> get data;
 
   /// Create a copy of InteractedUserState
   /// with the given fields replaced by the non-null parameter values.

@@ -89,7 +89,10 @@ class _LoginFormState extends State<LoginForm> {
                 },
                 child: const Text(
                   'Don\'t have a account?',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const Spacer(),

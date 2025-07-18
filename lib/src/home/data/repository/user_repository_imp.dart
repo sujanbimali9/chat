@@ -1,7 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:fpdart/fpdart.dart';
+
 import 'package:chat/core/common/model/api_response.dart';
+import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/core/exception/exception.dart';
 import 'package:chat/core/failure/failure.dart';
@@ -10,7 +14,6 @@ import 'package:chat/src/home/data/datasource/user_remote_data_source.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
 import 'package:chat/src/home/domain/repository/user_repository.dart';
 import 'package:chat/utils/helper/network_info.dart';
-import 'package:fpdart/fpdart.dart';
 
 class UserRepositoryImp implements UserRepository {
   final UserRemoteDataSource _userRemoteDataSource;
@@ -23,147 +26,162 @@ class UserRepositoryImp implements UserRepository {
     this._networkInfo,
   );
 
-  @override
-  Future<Either<Failure, ApiResponse<User>>> getAllUsers(
-      {required int limit, required int offset}) async {
+  Future<Either<Failure, T>> _handleException<T>(
+    Future<T> Function() fn, {
+    String context = '',
+  }) async {
     try {
-      final users =
-          await _userRemoteDataSource.getAllUsers(limit: limit, offset: offset);
-
-      await _userLocalDataSource.saveUsers(users.data);
-      return right(users.map(User.fromUserModel));
+      final result = await fn();
+      return right(result);
     } on ServerException catch (e) {
+      log('Server Exception: ${e.message}', name: 'UserRepository.$context');
+      return left(Failure(e.message));
+    } on CacheException catch (e) {
+      log('Cache Exception: ${e.message}', name: 'UserRepository.$context');
       return left(Failure(e.message));
     } catch (e) {
+      log('Unexpected Exception: $e', name: 'UserRepository.$context');
       return left(Failure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, ApiResponse<User>>> getInteractedUser(
-      {required int limit, required int offset}) async {
-    try {
+  Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUsers({
+    required int limit,
+    required int offset,
+  }) async {
+    return await _handleException(() async {
+      final users = await _userRemoteDataSource.getAllUsers(
+        limit: limit,
+        offset: offset,
+      );
+
+      await _userLocalDataSource.saveUsers(users.data);
+      return users.map(User.fromUserModel);
+    }, context: 'getAllUsers');
+  }
+
+  @override
+  Future<Either<Failure, ApiResponse<({User user, Chat chat}), UserPagination>>>
+  getInteractedUser({required int limit, required int offset}) async {
+    return await _handleException(() async {
       final users = await _userRemoteDataSource.getInteractedUser(
         limit: limit,
         offset: offset,
       );
-      return right(users.map(User.fromUserModel));
+      await _userLocalDataSource.saveInteractedUsers(users.data);
+      return users.map(
+        (e) => (
+          user: User.fromUserModel(e.user),
+          chat: Chat.fromChatModel(e.chat),
+        ),
+      );
+    });
+  }
+
+  @override
+  Either<Failure, Stream<List<({Chat chat, User user})>>>
+  getInteractedUserStream() {
+    try {
+      final stream = _userLocalDataSource.getInteractedUserStream();
+      return right(
+        stream.map((data) {
+          return data
+              .map(
+                (e) => (
+                  chat: Chat.fromChatModel(e.chat),
+                  user: User.fromUserModel(e.user),
+                ),
+              )
+              .toList();
+        }),
+      );
     } on ServerException catch (e) {
-      log('GetInteractedUser error: $e');
+      log('GetInteractedUserStream error: $e');
       return left(Failure(e.message));
     } catch (e) {
-      log('GetInteractedUser error: $e');
+      log('GetInteractedUserStream error: $e');
       return left(Failure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, ApiResponse<User>>> searchUser(
+  Future<Either<Failure, ApiResponse<User, UserPagination>>> searchUser(
     String query, {
     required int limit,
     required int offset,
   }) async {
-    try {
+    return await _handleException(() async {
       if (!_networkInfo.checkConnection()) {
-        final res = await _userLocalDataSource.searchUser(query,
-            limit: limit, offset: offset);
-        if (res.data.isNotEmpty) {
-          return right(res.map((e) => User.fromUserModel(e)));
+        final res = await _userLocalDataSource.searchUser(
+          query,
+          limit: limit,
+          offset: offset,
+        );
+        if (res.data.isEmpty) {
+          throw const ServerException('No internet connection');
         }
-        return left(Failure('No internet connection'));
+        return res.map((e) => User.fromUserModel(e));
       }
-      final res = await _userRemoteDataSource.searchUser(query,
-          limit: limit, offset: offset);
-      return right(
-        res.map(User.fromUserModel),
+      final res = await _userRemoteDataSource.searchUser(
+        query,
+        limit: limit,
+        offset: offset,
       );
-    } on ServerException catch (e) {
-      return left(Failure(e.message));
-    } catch (e) {
-      return left(Failure(e.toString()));
-    }
+      return res.map(User.fromUserModel);
+    }, context: 'searchUser');
   }
 
   @override
   Future<Either<Failure, User>> updateProfileImage(File file) async {
-    try {
+    return await _handleException(() async {
       if (!_networkInfo.checkConnection()) {
-        return left(Failure('No internet connection'));
+        throw const ServerException('No internet connection');
       }
       final res = await _userRemoteDataSource.updateProfileImage(file);
-      await _userLocalDataSource.updateUser(res);
-      return right(User.fromUserModel(res));
-    } on ServerException catch (e) {
-      return left(Failure(e.message));
-    } catch (e) {
-      return left(Failure(e.toString()));
-    }
+      await _userLocalDataSource.saveUser(res);
+      return User.fromUserModel(res);
+    }, context: 'updateProfileImage');
   }
 
   @override
   Future<Either<Failure, User>> updateUser(User user) async {
-    try {
+    return await _handleException(() async {
       if (!_networkInfo.checkConnection()) {
-        return left(Failure('No internet connection'));
+        throw const ServerException('No internet connection');
       }
-      final res =
-          await _userRemoteDataSource.updateUser(UserModel.fromUser(user));
+      final res = await _userRemoteDataSource.updateUser(
+        UserModel.fromUser(user),
+      );
       await _userLocalDataSource.updateUser(res);
-      return right(User.fromUserModel(res));
-    } on ServerException catch (e) {
-      return left(Failure(e.message));
-    } catch (e) {
-      return left(Failure(e.toString()));
-    }
+      return User.fromUserModel(res);
+    }, context: 'updateUser');
   }
 
   @override
   Future<Either<Failure, User>> getCurretUser() async {
-    try {
+    return await _handleException(() async {
       if (!_networkInfo.checkConnection()) {
         final res = await _userLocalDataSource.getCurrentUser();
-        return right(User.fromUserModel(res));
+        return User.fromUserModel(res);
       }
-
       final res = await _userRemoteDataSource.getCurrentUser();
       await _userLocalDataSource.saveUser(res);
-      return right(User.fromUserModel(res));
-    } on ServerException catch (e) {
-      return left(Failure(e.message));
-    } catch (e) {
-      return left(Failure(e.toString()));
-    }
+      return User.fromUserModel(res);
+    }, context: 'getCurretUser');
   }
 
   @override
-  Either<Failure, Stream<List<User>>> getUsersStream() {
-    try {
-      final res = _userLocalDataSource.getUsersStream();
-      return right(res.map((e) => e.map(User.fromUserModel).toList()));
-    } on ServerException catch (e) {
-      log('GetUsersStream error: $e');
-      return left(Failure(e.message));
-    } catch (e) {
-      log('GetUsersStream error: $e');
-      return left(Failure(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, ApiResponse<User>>> getAllUserLocal(
-      {required int limit, required int offset}) async {
-    try {
+  Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUserLocal({
+    required int limit,
+    required int offset,
+  }) async {
+    return await _handleException(() async {
       final res = await _userLocalDataSource.getAllUser(
         limit: limit,
         offset: offset,
       );
-      return right(res.map(User.fromUserModel));
-    } on ServerException catch (e) {
-      log('GetAllUserLocal error: $e');
-      return left(Failure(e.message));
-    } catch (e) {
-      log('GetAllUserLocal error: $e');
-      return left(Failure(e.toString()));
-    }
+      return res.map(User.fromUserModel);
+    }, context: 'getAllUserLocal');
   }
 }

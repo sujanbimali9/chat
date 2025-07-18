@@ -1,43 +1,41 @@
-import 'package:chat/core/common/model/user.dart';
-import 'package:chat/dependency.dart';
-import 'package:chat/src/home/presentation/bloc/current_user_bloc/current_user_bloc.dart';
-import 'package:chat/src/home/presentation/bloc/interacted_user_bloc/interacted_user_bloc_bloc.dart';
-import 'package:chat/src/home/presentation/bloc/last_chat_bloc/last_chat_bloc.dart';
-import 'package:chat/src/home/presentation/bloc/all_user_bloc/all_user_bloc.dart';
-import 'package:chat/src/home/presentation/widgets/app_bar.dart';
-import 'package:chat/src/home/presentation/widgets/current_user_profile_image.dart';
-import 'package:chat/src/home/presentation/widgets/user_tile.dart';
-import 'package:chat/utils/constant/constant.dart';
-import 'package:chat/utils/generator/id_generator.dart';
-import 'package:chat/utils/services/socket_io.dart';
+import 'package:chat/core/common/model/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:chat/core/common/model/user.dart';
+import 'package:chat/dependency.dart';
+import 'package:chat/src/home/presentation/bloc/all_user_bloc/all_user_bloc.dart';
+import 'package:chat/src/home/presentation/bloc/current_user_bloc/current_user_bloc.dart';
+import 'package:chat/src/home/presentation/bloc/interacted_user_bloc/interacted_user_bloc_bloc.dart';
+import 'package:chat/src/home/presentation/widgets/app_bar.dart';
+import 'package:chat/src/home/presentation/widgets/current_user_profile_image.dart';
+import 'package:chat/src/home/presentation/widgets/user_tile.dart';
+import 'package:chat/utils/constant/constant.dart';
+import 'package:chat/utils/services/socket_io.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.user});
   final User user;
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final ScrollController scrollController;
-  late final ValueNotifier<int> selectedIndex;
+  late final ScrollController scrollController = ScrollController();
+  late final ValueNotifier<int> selectedIndex = ValueNotifier(0);
+
   @override
   void initState() {
-    scrollController = ScrollController();
+    super.initState();
     scrollController.addListener(_scrollListener);
     serviceLocater<SocketIOService>().init(widget.user.id);
-
-    selectedIndex = ValueNotifier(0);
-    super.initState();
   }
 
   void _scrollListener() {
-    if (scrollController.position.atEdge) {
-      if (scrollController.position.pixels != 0) {}
-    }
+    if (scrollController.position.atEdge &&
+        scrollController.position.pixels != 0) {}
   }
 
   @override
@@ -53,16 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: TAppBar(
         toolbarHeight: 75.h,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-          const SizedBox(width: 8),
-          const CurrentUserProfileImage(),
-        ],
         showLeading: false,
         title: Text(
           "Chats",
           style: Theme.of(context).textTheme.headlineLarge,
         ),
+        actions: const [
+          CurrentUserProfileImage(),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -72,63 +68,29 @@ class _HomeScreenState extends State<HomeScreen> {
               loaded: (e) => e.user,
               imageUploading: (e) => e.user,
             );
+
             if (currentUser == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            return ValueListenableBuilder(
-                valueListenable: selectedIndex,
-                builder: (context, value, child) => value == 0
-                    ? BlocBuilder<InteractedUserBloc, InteractedUserState>(
-                        builder: (context, state) {
-                          final users = state.mapOrNull(
-                            loaded: (e) => e.users,
-                            fetchingMore: (value) => value.users,
-                          );
-                          return state.map<Widget>(
-                            initial: (e) => const Center(
-                                child: CircularProgressIndicator()),
-                            loading: (e) => const Center(
-                                child: CircularProgressIndicator()),
-                            error: (w) => const Center(child: Text('Error')),
-                            loaded: (e) =>
-                                _buildInteractedUserList(users!, currentUser),
-                            fetchingMore: (e) =>
-                                _buildInteractedUserList(users!, currentUser),
-                          );
-                        },
-                      )
-                    : BlocBuilder<UserBloc, UserState>(
-                        builder: (context, state) {
-                          final users = state.mapOrNull(
-                            loaded: (e) => e.users,
-                            fetchingMore: (value) => value.users,
-                          );
-                          return state.map<Widget>(
-                            initial: (e) => const Center(
-                                child: CircularProgressIndicator()),
-                            loading: (e) => const Center(
-                                child: CircularProgressIndicator()),
-                            error: (w) => const Center(child: Text('Error')),
-                            loaded: (e) =>
-                                _buildInteractedUserList(users!, currentUser),
-                            fetchingMore: (e) =>
-                                _buildInteractedUserList(users!, currentUser),
-                            searchedUser: (e) =>
-                                _buildAllUserList(e.allUser, currentUser),
-                          );
-                        },
-                      ));
+
+            return ValueListenableBuilder<int>(
+              valueListenable: selectedIndex,
+              builder: (context, value, _) {
+                return [
+                  _buildInteractedUsers(context),
+                  _buildAllUsers(context)
+                ][value];
+              },
+            );
           },
         ),
       ),
-      bottomNavigationBar: ValueListenableBuilder(
+      bottomNavigationBar: ValueListenableBuilder<int>(
         valueListenable: selectedIndex,
-        builder: (context, value, child) => NavigationBar(
+        builder: (context, value, _) => NavigationBar(
           height: 70,
           selectedIndex: value,
-          onDestinationSelected: (value) {
-            selectedIndex.value = value;
-          },
+          onDestinationSelected: (index) => selectedIndex.value = index,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.chat),
@@ -144,78 +106,100 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _buildAllUserList(List<User> users, User currentUser) {
-    return Column(
-      children: [
-        TextField(
-          decoration: InputDecoration(
-            hintText: "Search",
-            prefixIcon: const Icon(Icons.search),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: Colors.grey.shade200,
+  Widget _buildInteractedUsers(BuildContext context) {
+    return BlocBuilder<InteractedUserBloc, InteractedUserState>(
+      builder: (context, state) {
+        return state.maybeMap(
+          loaded: (data) => _buildChatList(usersWithChats: data.data),
+          fetchingMore: (data) => _buildChatList(usersWithChats: data.data),
+          error: (_) => const Center(child: Text('Error')),
+          orElse: () => const Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+
+  Widget _buildAllUsers(
+    BuildContext context,
+  ) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        final users = state.mapOrNull(
+          loaded: (e) => e.users,
+          fetchingMore: (e) => e.users,
+        );
+
+        return state.maybeMap(
+          searchedUser: (e) => _buildChatListWithSearch(
+            e.allUser,
           ),
-        ),
-        BlocBuilder<LastChatBloc, LastChatState>(
-          builder: (context, state) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<UserBloc>().add(const UserEvent.refreshUser());
-              },
-              child: ListView.builder(
-                controller: scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final lastChats = state.mapOrNull(loaded: (e) => e.chat);
-                  final user = users[index];
-                  return UserTile(
-                    user: user,
-                    lastChat: lastChats?[IdGenerator.getConversionId(
-                      user.id,
-                      currentUser.id,
-                    )],
-                  );
-                },
-              ),
-            );
-          },
-        ),
+          loaded: (_) => _buildChatListWithSearch(users!),
+          fetchingMore: (_) => _buildChatListWithSearch(users!),
+          error: (_) => const Center(child: Text('Error')),
+          orElse: () => const Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+
+  Widget _buildChatListWithSearch(List<User> users) {
+    return Column(
+      spacing: 10,
+      children: [
+        _buildSearchField(),
+        Expanded(child: _buildChatList(users: users)),
       ],
     );
   }
 
-  _buildInteractedUserList(List<User> users, User currentUser) {
-    return BlocBuilder<LastChatBloc, LastChatState>(
-      builder: (context, state) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            context.read<UserBloc>().add(const UserEvent.refreshUser());
-            context
-                .read<LastChatBloc>()
-                .add(const LastChatEvent.refreshLastChat());
-          },
-          child: ListView.builder(
-            controller: scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final lastChats = state.mapOrNull(loaded: (e) => e.chat);
-              final user = users[index];
-              return UserTile(
-                user: user,
-                lastChat: lastChats?[IdGenerator.getConversionId(
-                  user.id,
-                  currentUser.id,
-                )],
-              );
-            },
+  Widget _buildSearchField() {
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(30.r),
+      borderSide: BorderSide(width: 1, color: Colors.grey.shade400),
+    );
+    return SizedBox(
+      height: 40,
+      child: TextField(
+        cursorHeight: 15,
+        decoration: InputDecoration(
+          hintText: "Search",
+          hintStyle: TextStyle(
+            fontSize: 16.sp,
+            color: Colors.grey,
           ),
-        );
+          prefixIcon: const Icon(Icons.search),
+          enabledBorder: border,
+          focusedBorder: border,
+          border: border,
+          isDense: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatList({
+    List<User>? users,
+    List<({User user, Chat chat})>? usersWithChats,
+  }) {
+    final isInteractedList = usersWithChats != null;
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<UserBloc>().add(const UserEvent.refreshUser());
       },
+      child: ListView.builder(
+        controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: isInteractedList ? usersWithChats.length : users!.length,
+        itemBuilder: (context, index) {
+          if (isInteractedList) {
+            final entry = usersWithChats[index];
+            return UserTile(user: entry.user, lastChat: entry.chat);
+          } else {
+            final user = users![index];
+            return UserTile(user: user);
+          }
+        },
+      ),
     );
   }
 }

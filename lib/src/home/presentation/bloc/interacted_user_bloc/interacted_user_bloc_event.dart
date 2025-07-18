@@ -9,4 +9,6 @@ class InteractedUserEvent with _$InteractedUserEvent {
       _SortUsers;
   const factory InteractedUserEvent.refreshUser() = _RefreshUser;
   const factory InteractedUserEvent.fetchMoreUser() = _FetchMoreUser;
+  const factory InteractedUserEvent.stateEmitter(InteractedUserState state) =
+      _StateEmitter;
 }
