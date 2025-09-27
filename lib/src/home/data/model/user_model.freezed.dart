@@ -12,7 +12,8 @@ part of 'user_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) {
   return _UserModel.fromJson(json);
@@ -45,16 +46,17 @@ abstract class $UserModelCopyWith<$Res> {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
-  $Res call(
-      {String id,
-      String name,
-      String? email,
-      String profileImage,
-      DateTime createdAt,
-      DateTime lastActive,
-      bool isOnline,
-      bool showOnlineStatus,
-      String? phone});
+  $Res call({
+    String id,
+    String name,
+    String? email,
+    String profileImage,
+    DateTime createdAt,
+    DateTime lastActive,
+    bool isOnline,
+    bool showOnlineStatus,
+    String? phone,
+  });
 }
 
 /// @nodoc
@@ -82,44 +84,47 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? showOnlineStatus = null,
     Object? phone = freezed,
   }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: freezed == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as String?,
-      profileImage: null == profileImage
-          ? _value.profileImage
-          : profileImage // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      lastActive: null == lastActive
-          ? _value.lastActive
-          : lastActive // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      isOnline: null == isOnline
-          ? _value.isOnline
-          : isOnline // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showOnlineStatus: null == showOnlineStatus
-          ? _value.showOnlineStatus
-          : showOnlineStatus // ignore: cast_nullable_to_non_nullable
-              as bool,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String,
+            email: freezed == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            profileImage: null == profileImage
+                ? _value.profileImage
+                : profileImage // ignore: cast_nullable_to_non_nullable
+                      as String,
+            createdAt: null == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            lastActive: null == lastActive
+                ? _value.lastActive
+                : lastActive // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            isOnline: null == isOnline
+                ? _value.isOnline
+                : isOnline // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            showOnlineStatus: null == showOnlineStatus
+                ? _value.showOnlineStatus
+                : showOnlineStatus // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            phone: freezed == phone
+                ? _value.phone
+                : phone // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -127,20 +132,22 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
 abstract class _$$UserModelImplCopyWith<$Res>
     implements $UserModelCopyWith<$Res> {
   factory _$$UserModelImplCopyWith(
-          _$UserModelImpl value, $Res Function(_$UserModelImpl) then) =
-      __$$UserModelImplCopyWithImpl<$Res>;
+    _$UserModelImpl value,
+    $Res Function(_$UserModelImpl) then,
+  ) = __$$UserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String id,
-      String name,
-      String? email,
-      String profileImage,
-      DateTime createdAt,
-      DateTime lastActive,
-      bool isOnline,
-      bool showOnlineStatus,
-      String? phone});
+  $Res call({
+    String id,
+    String name,
+    String? email,
+    String profileImage,
+    DateTime createdAt,
+    DateTime lastActive,
+    bool isOnline,
+    bool showOnlineStatus,
+    String? phone,
+  });
 }
 
 /// @nodoc
@@ -148,8 +155,9 @@ class __$$UserModelImplCopyWithImpl<$Res>
     extends _$UserModelCopyWithImpl<$Res, _$UserModelImpl>
     implements _$$UserModelImplCopyWith<$Res> {
   __$$UserModelImplCopyWithImpl(
-      _$UserModelImpl _value, $Res Function(_$UserModelImpl) _then)
-      : super(_value, _then);
+    _$UserModelImpl _value,
+    $Res Function(_$UserModelImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -166,60 +174,63 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? showOnlineStatus = null,
     Object? phone = freezed,
   }) {
-    return _then(_$UserModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: freezed == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as String?,
-      profileImage: null == profileImage
-          ? _value.profileImage
-          : profileImage // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      lastActive: null == lastActive
-          ? _value.lastActive
-          : lastActive // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      isOnline: null == isOnline
-          ? _value.isOnline
-          : isOnline // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showOnlineStatus: null == showOnlineStatus
-          ? _value.showOnlineStatus
-          : showOnlineStatus // ignore: cast_nullable_to_non_nullable
-              as bool,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _$UserModelImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        email: freezed == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        profileImage: null == profileImage
+            ? _value.profileImage
+            : profileImage // ignore: cast_nullable_to_non_nullable
+                  as String,
+        createdAt: null == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        lastActive: null == lastActive
+            ? _value.lastActive
+            : lastActive // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        isOnline: null == isOnline
+            ? _value.isOnline
+            : isOnline // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        showOnlineStatus: null == showOnlineStatus
+            ? _value.showOnlineStatus
+            : showOnlineStatus // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        phone: freezed == phone
+            ? _value.phone
+            : phone // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$UserModelImpl implements _UserModel {
-  const _$UserModelImpl(
-      {required this.id,
-      required this.name,
-      this.email,
-      required this.profileImage,
-      required this.createdAt,
-      required this.lastActive,
-      this.isOnline = true,
-      required this.showOnlineStatus,
-      this.phone});
+  const _$UserModelImpl({
+    required this.id,
+    required this.name,
+    this.email,
+    required this.profileImage,
+    required this.createdAt,
+    required this.lastActive,
+    this.isOnline = true,
+    required this.showOnlineStatus,
+    this.phone,
+  });
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
@@ -272,8 +283,18 @@ class _$UserModelImpl implements _UserModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email, profileImage,
-      createdAt, lastActive, isOnline, showOnlineStatus, phone);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    name,
+    email,
+    profileImage,
+    createdAt,
+    lastActive,
+    isOnline,
+    showOnlineStatus,
+    phone,
+  );
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -285,23 +306,22 @@ class _$UserModelImpl implements _UserModel {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$UserModelImplToJson(
-      this,
-    );
+    return _$$UserModelImplToJson(this);
   }
 }
 
 abstract class _UserModel implements UserModel {
-  const factory _UserModel(
-      {required final String id,
-      required final String name,
-      final String? email,
-      required final String profileImage,
-      required final DateTime createdAt,
-      required final DateTime lastActive,
-      final bool isOnline,
-      required final bool showOnlineStatus,
-      final String? phone}) = _$UserModelImpl;
+  const factory _UserModel({
+    required final String id,
+    required final String name,
+    final String? email,
+    required final String profileImage,
+    required final DateTime createdAt,
+    required final DateTime lastActive,
+    final bool isOnline,
+    required final bool showOnlineStatus,
+    final String? phone,
+  }) = _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;

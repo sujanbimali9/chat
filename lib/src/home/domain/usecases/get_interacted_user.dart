@@ -8,7 +8,7 @@ import 'package:chat/src/home/domain/repository/user_repository.dart';
 import 'package:chat/src/home/domain/usecases/get_user.dart';
 import 'package:fpdart/fpdart.dart';
 
-class GetInteractedUserUseCase
+class GetConverstationHistoryUserUseCase
     implements
         UseCase<
           ApiResponse<({User user, Chat chat}), UserPagination>,
@@ -16,12 +16,12 @@ class GetInteractedUserUseCase
         > {
   final UserRepository _userRepository;
 
-  GetInteractedUserUseCase(this._userRepository);
+  GetConverstationHistoryUserUseCase(this._userRepository);
 
   @override
   Future<Either<Failure, ApiResponse<({User user, Chat chat}), UserPagination>>>
   call(GetUserParms parm) async {
-    return await _userRepository.getInteractedUser(
+    return await _userRepository.getConversationHistory(
       limit: parm.limit,
       offset: parm.offset,
     );

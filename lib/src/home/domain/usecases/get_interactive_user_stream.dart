@@ -6,15 +6,16 @@ import 'package:chat/src/auth/domain/usecases/logout.dart';
 import 'package:chat/src/home/domain/repository/user_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
-class GetInteractedUserUseCaseStream
+class GetConversationHistoryUseCaseStream
     implements UseCaseStream<List<({User user, Chat chat})>, NoParams> {
   final UserRepository _userRepository;
 
-  GetInteractedUserUseCaseStream(this._userRepository);
+  GetConversationHistoryUseCaseStream(this._userRepository);
 
   @override
   Either<Failure, Stream<List<({Chat chat, User user})>>> call(
-      NoParams params) {
-    return _userRepository.getInteractedUserStream();
+    NoParams params,
+  ) {
+    return _userRepository.getConversationHistoryStream();
   }
 }

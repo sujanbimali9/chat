@@ -1,7 +1,5 @@
-import 'package:chat/src/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:chat/src/chat/presentation/widgets/chat_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/chat/presentation/widgets/app_bar.dart';
@@ -9,28 +7,10 @@ import 'package:chat/src/chat/presentation/widgets/message_field.dart';
 import 'package:chat/src/chat/presentation/widgets/profile_image.dart';
 import 'package:chat/utils/dateformat/date_formatter.dart';
 
-class Chatscreen extends StatefulWidget {
-  const Chatscreen({
-    super.key,
-    required this.user,
-    required this.currentUser,
-  });
+class Chatscreen extends StatelessWidget {
+  const Chatscreen({super.key, required this.user, required this.currentUser});
   final User user;
   final User currentUser;
-
-  @override
-  State<Chatscreen> createState() => _ChatscreenState();
-}
-
-class _ChatscreenState extends State<Chatscreen> {
-  @override
-  void initState() {
-    context.read<ChatBloc>().add(UpdateReadStatus(
-          chatId: widget.user.id,
-          userId: widget.currentUser.id,
-        ));
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +20,7 @@ class _ChatscreenState extends State<Chatscreen> {
       body: Column(
         children: [
           Expanded(
-            child: ChatBody(
-              user: widget.user,
-              currentUser: widget.currentUser,
-            ),
+            child: ChatBody(user: user, currentUser: currentUser),
           ),
           const MessageField(),
         ],
@@ -64,8 +41,8 @@ class _ChatscreenState extends State<Chatscreen> {
               height: 40,
               width: 40,
               fit: BoxFit.cover,
-              showActive: widget.user.showOnlineStatus,
-              image: widget.user.profileImage,
+              showActive: user.showOnlineStatus,
+              image: user.profileImage,
               isNetwork: true,
             ),
             const SizedBox(width: 5),
@@ -75,18 +52,18 @@ class _ChatscreenState extends State<Chatscreen> {
                 children: [
                   Flexible(
                     child: Text(
-                      widget.user.name.split(' ').first,
+                      user.name.split(' ').first,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
-                  if (widget.user.showOnlineStatus) const Text('online'),
-                  if (!widget.user.showOnlineStatus)
+                  if (user.showOnlineStatus) const Text('online'),
+                  if (!user.showOnlineStatus)
                     Text(
-                      DateFormatter.format(widget.user.lastActive),
+                      DateFormatter.format(user.lastActive),
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall,
-                    )
+                    ),
                 ],
               ),
             ),

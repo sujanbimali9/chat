@@ -17,10 +17,10 @@ class UserTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName('InteractedUserEntity')
+@DataClassName('ConversationHistoryEntity')
 @TableIndex(name: 'userIdIndex', columns: {#userId})
 @TableIndex(name: 'chatIdIndex', columns: {#chatId})
-class InteractedUserTable extends Table {
+class ConversationHistoryTable extends Table {
   TextColumn get userId => text().references(UserTable, #id)();
   DateTimeColumn get lastInteractedAt => dateTime()();
   TextColumn get chatId => text()();

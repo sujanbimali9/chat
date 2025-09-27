@@ -16,7 +16,7 @@ abstract interface class UserLocalDataSource {
     required int offset,
   });
   Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
-  getInteractedUser({required int limit, required int offset});
+  getConversationHistory({required int limit, required int offset});
   Future<UserModel> getUserById(String id);
   Future<UserModel> updateUser(UserModel user);
   Future<ApiResponse<UserModel, UserPagination>> searchUser(
@@ -25,15 +25,16 @@ abstract interface class UserLocalDataSource {
     required int offset,
   });
   Future<void> saveUser(UserModel res);
-  Future<void> saveInteractedUser(UserModel user, ChatModel chat);
-  Future<void> saveInteractedUsers(
+  Future<void> saveConversationHistory(UserModel user, ChatModel chat);
+  Future<void> saveConversationsHistory(
     List<({UserModel user, ChatModel chat})> users,
   );
   Future<void> deleteUser(String id);
   Future<UserModel> getCurrentUser();
   Future<void> saveUsers(List<UserModel> list);
 
-  Stream<List<({ChatModel chat, UserModel user})>> getInteractedUserStream();
+  Stream<List<({ChatModel chat, UserModel user})>>
+  getConversationHistoryStream();
 }
 
 class UserLocalDataSourceImp extends UserLocalDataSource {
@@ -148,9 +149,9 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
 
   @override
   Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
-  getInteractedUser({required int limit, required int offset}) async {
+  getConversationHistory({required int limit, required int offset}) async {
     return await _handleLocalException(() async {
-      final users = await _userQuery.getInteractedUsers(
+      final users = await _userQuery.getConversationHistory(
         limit: limit,
         offset: offset,
       );
@@ -159,23 +160,24 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   }
 
   @override
-  Future<void> saveInteractedUser(UserModel user, ChatModel chat) async {
+  Future<void> saveConversationHistory(UserModel user, ChatModel chat) async {
     return await _handleLocalException(() async {
-      await _userQuery.insertInteractedUser(user, chat);
+      await _userQuery.insertConversationHistory(user, chat);
     }, context: 'saveInteractedUser');
   }
 
   @override
-  Future<void> saveInteractedUsers(
+  Future<void> saveConversationsHistory(
     List<({UserModel user, ChatModel chat})> users,
   ) async {
     return await _handleLocalException(() async {
-      await _userQuery.insertInteractedUsers(users);
+      await _userQuery.insertConversationsHistory(users);
     }, context: 'saveInteractedUsers');
   }
 
   @override
-  Stream<List<({ChatModel chat, UserModel user})>> getInteractedUserStream() {
+  Stream<List<({ChatModel chat, UserModel user})>>
+  getConversationHistoryStream() {
     try {
       return _userQuery.getInteractedUserStream();
     } on SqliteException catch (e) {

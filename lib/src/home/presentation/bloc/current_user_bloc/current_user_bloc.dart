@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat/core/common/model/user.dart';
-import 'package:chat/src/auth/domain/usecases/logout.dart';
 import 'package:chat/src/home/domain/usecases/get_current_user.dart';
 import 'package:chat/src/home/domain/usecases/update_profile_image.dart';
 import 'package:chat/src/home/domain/usecases/update_user.dart';
@@ -34,14 +33,18 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
   }
 
   FutureOr<void> _getCurrentUser(
-      Emitter<CurrentUserState> emit, _GetCurrentUser e) async {
+    Emitter<CurrentUserState> emit,
+    _GetCurrentUser e,
+  ) async {
     final currentUser = state.maybeWhen(
       orElse: () => null,
       loaded: (user) => user,
       imageUploading: (user) => user,
     );
-    final result = await _getCurrentUserUseCase(NoParams());
-    result.fold(
+    final localUser = await _getCurrentUserUseCase(
+      const GetCurrentUserParams(local: true),
+    );
+    localUser.fold(
       (l) {
         emit(CurrentUserState.error(currentUser, l.message));
       },
@@ -49,10 +52,23 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
         emit(CurrentUserState.loaded(r));
       },
     );
+
+    final remoteUser = await _getCurrentUserUseCase(
+      const GetCurrentUserParams(),
+    );
+    remoteUser.fold((l) {}, (r) {
+      if (currentUser == null || currentUser.id != r.id) {
+        emit(CurrentUserState.loaded(r));
+      } else {
+        emit(CurrentUserState.imageUploading(r));
+      }
+    });
   }
 
   FutureOr<void> _updateCurrentUser(
-      Emitter<CurrentUserState> emit, _UpdateCurrentUser e) async {
+    Emitter<CurrentUserState> emit,
+    _UpdateCurrentUser e,
+  ) async {
     final currentUser = state.maybeWhen(
       orElse: () => null,
       loaded: (user) => user,
@@ -70,7 +86,9 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
   }
 
   FutureOr<void> _updateImage(
-      Emitter<CurrentUserState> emit, _UpdateImage e) async {
+    Emitter<CurrentUserState> emit,
+    _UpdateImage e,
+  ) async {
     final currentUser = state.maybeWhen(
       orElse: () => null,
       loaded: (user) => user,

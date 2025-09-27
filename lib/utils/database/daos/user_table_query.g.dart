@@ -6,6 +6,6 @@ part of 'user_table_query.dart';
 mixin _$UserTableQueryMixin on DatabaseAccessor<LocalDatabase> {
   $UserTableTable get userTable => attachedDatabase.userTable;
   $ChatTableTable get chatTable => attachedDatabase.chatTable;
-  $InteractedUserTableTable get interactedUserTable =>
-      attachedDatabase.interactedUserTable;
+  $ConversationHistoryTableTable get conversationHistoryTable =>
+      attachedDatabase.conversationHistoryTable;
 }

@@ -12,7 +12,8 @@ part of 'current_user_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$CurrentUserEvent {
@@ -21,52 +22,47 @@ mixin _$CurrentUserEvent {
     required TResult Function() getCurrentUser,
     required TResult Function(User user) updateCurrentUser,
     required TResult Function(String image) updateImage,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getCurrentUser,
     TResult? Function(User user)? updateCurrentUser,
     TResult? Function(String image)? updateImage,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getCurrentUser,
     TResult Function(User user)? updateCurrentUser,
     TResult Function(String image)? updateImage,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetCurrentUser value) getCurrentUser,
     required TResult Function(_UpdateCurrentUser value) updateCurrentUser,
     required TResult Function(_UpdateImage value) updateImage,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetCurrentUser value)? getCurrentUser,
     TResult? Function(_UpdateCurrentUser value)? updateCurrentUser,
     TResult? Function(_UpdateImage value)? updateImage,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetCurrentUser value)? getCurrentUser,
     TResult Function(_UpdateCurrentUser value)? updateCurrentUser,
     TResult Function(_UpdateImage value)? updateImage,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CurrentUserEventCopyWith<$Res> {
   factory $CurrentUserEventCopyWith(
-          CurrentUserEvent value, $Res Function(CurrentUserEvent) then) =
-      _$CurrentUserEventCopyWithImpl<$Res, CurrentUserEvent>;
+    CurrentUserEvent value,
+    $Res Function(CurrentUserEvent) then,
+  ) = _$CurrentUserEventCopyWithImpl<$Res, CurrentUserEvent>;
 }
 
 /// @nodoc
@@ -85,9 +81,10 @@ class _$CurrentUserEventCopyWithImpl<$Res, $Val extends CurrentUserEvent>
 
 /// @nodoc
 abstract class _$$GetCurrentUserImplCopyWith<$Res> {
-  factory _$$GetCurrentUserImplCopyWith(_$GetCurrentUserImpl value,
-          $Res Function(_$GetCurrentUserImpl) then) =
-      __$$GetCurrentUserImplCopyWithImpl<$Res>;
+  factory _$$GetCurrentUserImplCopyWith(
+    _$GetCurrentUserImpl value,
+    $Res Function(_$GetCurrentUserImpl) then,
+  ) = __$$GetCurrentUserImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -95,8 +92,9 @@ class __$$GetCurrentUserImplCopyWithImpl<$Res>
     extends _$CurrentUserEventCopyWithImpl<$Res, _$GetCurrentUserImpl>
     implements _$$GetCurrentUserImplCopyWith<$Res> {
   __$$GetCurrentUserImplCopyWithImpl(
-      _$GetCurrentUserImpl _value, $Res Function(_$GetCurrentUserImpl) _then)
-      : super(_value, _then);
+    _$GetCurrentUserImpl _value,
+    $Res Function(_$GetCurrentUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -196,9 +194,10 @@ abstract class _GetCurrentUser implements CurrentUserEvent {
 
 /// @nodoc
 abstract class _$$UpdateCurrentUserImplCopyWith<$Res> {
-  factory _$$UpdateCurrentUserImplCopyWith(_$UpdateCurrentUserImpl value,
-          $Res Function(_$UpdateCurrentUserImpl) then) =
-      __$$UpdateCurrentUserImplCopyWithImpl<$Res>;
+  factory _$$UpdateCurrentUserImplCopyWith(
+    _$UpdateCurrentUserImpl value,
+    $Res Function(_$UpdateCurrentUserImpl) then,
+  ) = __$$UpdateCurrentUserImplCopyWithImpl<$Res>;
   @useResult
   $Res call({User user});
 }
@@ -207,23 +206,24 @@ abstract class _$$UpdateCurrentUserImplCopyWith<$Res> {
 class __$$UpdateCurrentUserImplCopyWithImpl<$Res>
     extends _$CurrentUserEventCopyWithImpl<$Res, _$UpdateCurrentUserImpl>
     implements _$$UpdateCurrentUserImplCopyWith<$Res> {
-  __$$UpdateCurrentUserImplCopyWithImpl(_$UpdateCurrentUserImpl _value,
-      $Res Function(_$UpdateCurrentUserImpl) _then)
-      : super(_value, _then);
+  __$$UpdateCurrentUserImplCopyWithImpl(
+    _$UpdateCurrentUserImpl _value,
+    $Res Function(_$UpdateCurrentUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? user = null,
-  }) {
-    return _then(_$UpdateCurrentUserImpl(
-      null == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User,
-    ));
+  $Res call({Object? user = null}) {
+    return _then(
+      _$UpdateCurrentUserImpl(
+        null == user
+            ? _value.user
+            : user // ignore: cast_nullable_to_non_nullable
+                  as User,
+      ),
+    );
   }
 }
 
@@ -258,7 +258,9 @@ class _$UpdateCurrentUserImpl implements _UpdateCurrentUser {
   @pragma('vm:prefer-inline')
   _$$UpdateCurrentUserImplCopyWith<_$UpdateCurrentUserImpl> get copyWith =>
       __$$UpdateCurrentUserImplCopyWithImpl<_$UpdateCurrentUserImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -344,8 +346,9 @@ abstract class _UpdateCurrentUser implements CurrentUserEvent {
 /// @nodoc
 abstract class _$$UpdateImageImplCopyWith<$Res> {
   factory _$$UpdateImageImplCopyWith(
-          _$UpdateImageImpl value, $Res Function(_$UpdateImageImpl) then) =
-      __$$UpdateImageImplCopyWithImpl<$Res>;
+    _$UpdateImageImpl value,
+    $Res Function(_$UpdateImageImpl) then,
+  ) = __$$UpdateImageImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String image});
 }
@@ -355,22 +358,23 @@ class __$$UpdateImageImplCopyWithImpl<$Res>
     extends _$CurrentUserEventCopyWithImpl<$Res, _$UpdateImageImpl>
     implements _$$UpdateImageImplCopyWith<$Res> {
   __$$UpdateImageImplCopyWithImpl(
-      _$UpdateImageImpl _value, $Res Function(_$UpdateImageImpl) _then)
-      : super(_value, _then);
+    _$UpdateImageImpl _value,
+    $Res Function(_$UpdateImageImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? image = null,
-  }) {
-    return _then(_$UpdateImageImpl(
-      null == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? image = null}) {
+    return _then(
+      _$UpdateImageImpl(
+        null == image
+            ? _value.image
+            : image // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -496,8 +500,7 @@ mixin _$CurrentUserState {
     required TResult Function(User? user, String message) error,
     required TResult Function(User user) loaded,
     required TResult Function(User user) imageUploading,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -505,8 +508,7 @@ mixin _$CurrentUserState {
     TResult? Function(User? user, String message)? error,
     TResult? Function(User user)? loaded,
     TResult? Function(User user)? imageUploading,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -515,8 +517,7 @@ mixin _$CurrentUserState {
     TResult Function(User user)? loaded,
     TResult Function(User user)? imageUploading,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
@@ -524,8 +525,7 @@ mixin _$CurrentUserState {
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_ImageUploading value) imageUploading,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
@@ -533,8 +533,7 @@ mixin _$CurrentUserState {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_ImageUploading value)? imageUploading,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
@@ -543,15 +542,15 @@ mixin _$CurrentUserState {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_ImageUploading value)? imageUploading,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CurrentUserStateCopyWith<$Res> {
   factory $CurrentUserStateCopyWith(
-          CurrentUserState value, $Res Function(CurrentUserState) then) =
-      _$CurrentUserStateCopyWithImpl<$Res, CurrentUserState>;
+    CurrentUserState value,
+    $Res Function(CurrentUserState) then,
+  ) = _$CurrentUserStateCopyWithImpl<$Res, CurrentUserState>;
 }
 
 /// @nodoc
@@ -571,8 +570,9 @@ class _$CurrentUserStateCopyWithImpl<$Res, $Val extends CurrentUserState>
 /// @nodoc
 abstract class _$$InitialImplCopyWith<$Res> {
   factory _$$InitialImplCopyWith(
-          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
-      __$$InitialImplCopyWithImpl<$Res>;
+    _$InitialImpl value,
+    $Res Function(_$InitialImpl) then,
+  ) = __$$InitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -580,8 +580,9 @@ class __$$InitialImplCopyWithImpl<$Res>
     extends _$CurrentUserStateCopyWithImpl<$Res, _$InitialImpl>
     implements _$$InitialImplCopyWith<$Res> {
   __$$InitialImplCopyWithImpl(
-      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
-      : super(_value, _then);
+    _$InitialImpl _value,
+    $Res Function(_$InitialImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserState
   /// with the given fields replaced by the non-null parameter values.
@@ -694,8 +695,9 @@ abstract class _Initial implements CurrentUserState {
 /// @nodoc
 abstract class _$$LoadingImplCopyWith<$Res> {
   factory _$$LoadingImplCopyWith(
-          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
-      __$$LoadingImplCopyWithImpl<$Res>;
+    _$LoadingImpl value,
+    $Res Function(_$LoadingImpl) then,
+  ) = __$$LoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -703,8 +705,9 @@ class __$$LoadingImplCopyWithImpl<$Res>
     extends _$CurrentUserStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
-      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
-      : super(_value, _then);
+    _$LoadingImpl _value,
+    $Res Function(_$LoadingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserState
   /// with the given fields replaced by the non-null parameter values.
@@ -817,8 +820,9 @@ abstract class _Loading implements CurrentUserState {
 /// @nodoc
 abstract class _$$ErrorImplCopyWith<$Res> {
   factory _$$ErrorImplCopyWith(
-          _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
-      __$$ErrorImplCopyWithImpl<$Res>;
+    _$ErrorImpl value,
+    $Res Function(_$ErrorImpl) then,
+  ) = __$$ErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({User? user, String message});
 }
@@ -828,27 +832,27 @@ class __$$ErrorImplCopyWithImpl<$Res>
     extends _$CurrentUserStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
-      _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
-      : super(_value, _then);
+    _$ErrorImpl _value,
+    $Res Function(_$ErrorImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? user = freezed,
-    Object? message = null,
-  }) {
-    return _then(_$ErrorImpl(
-      freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User?,
-      null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? user = freezed, Object? message = null}) {
+    return _then(
+      _$ErrorImpl(
+        freezed == user
+            ? _value.user
+            : user // ignore: cast_nullable_to_non_nullable
+                  as User?,
+        null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -984,8 +988,9 @@ abstract class _Error implements CurrentUserState {
 /// @nodoc
 abstract class _$$LoadedImplCopyWith<$Res> {
   factory _$$LoadedImplCopyWith(
-          _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
-      __$$LoadedImplCopyWithImpl<$Res>;
+    _$LoadedImpl value,
+    $Res Function(_$LoadedImpl) then,
+  ) = __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({User user});
 }
@@ -995,22 +1000,23 @@ class __$$LoadedImplCopyWithImpl<$Res>
     extends _$CurrentUserStateCopyWithImpl<$Res, _$LoadedImpl>
     implements _$$LoadedImplCopyWith<$Res> {
   __$$LoadedImplCopyWithImpl(
-      _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
-      : super(_value, _then);
+    _$LoadedImpl _value,
+    $Res Function(_$LoadedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? user = null,
-  }) {
-    return _then(_$LoadedImpl(
-      null == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User,
-    ));
+  $Res call({Object? user = null}) {
+    return _then(
+      _$LoadedImpl(
+        null == user
+            ? _value.user
+            : user // ignore: cast_nullable_to_non_nullable
+                  as User,
+      ),
+    );
   }
 }
 
@@ -1141,9 +1147,10 @@ abstract class _Loaded implements CurrentUserState {
 
 /// @nodoc
 abstract class _$$ImageUploadingImplCopyWith<$Res> {
-  factory _$$ImageUploadingImplCopyWith(_$ImageUploadingImpl value,
-          $Res Function(_$ImageUploadingImpl) then) =
-      __$$ImageUploadingImplCopyWithImpl<$Res>;
+  factory _$$ImageUploadingImplCopyWith(
+    _$ImageUploadingImpl value,
+    $Res Function(_$ImageUploadingImpl) then,
+  ) = __$$ImageUploadingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({User user});
 }
@@ -1153,22 +1160,23 @@ class __$$ImageUploadingImplCopyWithImpl<$Res>
     extends _$CurrentUserStateCopyWithImpl<$Res, _$ImageUploadingImpl>
     implements _$$ImageUploadingImplCopyWith<$Res> {
   __$$ImageUploadingImplCopyWithImpl(
-      _$ImageUploadingImpl _value, $Res Function(_$ImageUploadingImpl) _then)
-      : super(_value, _then);
+    _$ImageUploadingImpl _value,
+    $Res Function(_$ImageUploadingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CurrentUserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? user = null,
-  }) {
-    return _then(_$ImageUploadingImpl(
-      null == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User,
-    ));
+  $Res call({Object? user = null}) {
+    return _then(
+      _$ImageUploadingImpl(
+        null == user
+            ? _value.user
+            : user // ignore: cast_nullable_to_non_nullable
+                  as User,
+      ),
+    );
   }
 }
 
@@ -1203,7 +1211,9 @@ class _$ImageUploadingImpl implements _ImageUploading {
   @pragma('vm:prefer-inline')
   _$$ImageUploadingImplCopyWith<_$ImageUploadingImpl> get copyWith =>
       __$$ImageUploadingImplCopyWithImpl<_$ImageUploadingImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs

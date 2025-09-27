@@ -9,11 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserTile extends StatelessWidget {
-  const UserTile({
-    super.key,
-    this.lastChat,
-    required this.user,
-  });
+  const UserTile({super.key, this.lastChat, required this.user});
 
   final User user;
   final Chat? lastChat;
@@ -28,40 +24,49 @@ class UserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        dense: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8))),
-        onTap: () {
-          final currentUser = context.read<CurrentUserBloc>().state.mapOrNull(
-                loaded: (e) => e.user,
-                imageUploading: (e) => e.user,
-              );
-          if (currentUser == null) {
-            return;
-          }
-          Navigator.of(context).pushNamed(Routes.chat, arguments: {
-            'user': user,
-            'currentUser': currentUser,
-          });
-        },
-        trailing:
-            user.isOnline ? null : Text(DateFormatter.format(user.lastActive)),
-        title: Text(user.name, style: Theme.of(context).textTheme.bodyLarge),
-        subtitle: lastChat != null
-            ? Text(lastMessage,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium)
-            : null,
-        leading: ProfileImage(
-          showActive: user.showOnlineStatus,
-          fit: BoxFit.cover,
-          width: 40,
-          isNetwork: user.profileImage.isNotEmpty,
-          image: user.profileImage.isNotEmpty ? user.profileImage : TIcons.user,
-          height: 40,
-        ));
+      dense: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      onTap: () {
+        final currentUser = context.read<CurrentUserBloc>().state.mapOrNull(
+          loaded: (e) => e.user,
+          imageUploading: (e) => e.user,
+        );
+        if (currentUser == null) {
+          return;
+        }
+        Navigator.of(context).pushNamed(
+          Routes.chat,
+          arguments: {'user': user, 'currentUser': currentUser},
+        );
+      },
+      trailing: user.isOnline
+          ? null
+          : Text(DateFormatter.format(user.lastActive)),
+      title: Text(user.name, style: Theme.of(context).textTheme.bodyLarge),
+      subtitle: lastChat != null
+          ? Text(
+              lastMessage,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight:
+                    (lastChat!.toId == user.id) ||
+                        (lastChat!.read && lastChat!.readTime != null)
+                    ? FontWeight.normal
+                    : FontWeight.bold,
+              ),
+            )
+          : null,
+      leading: ProfileImage(
+        showActive: user.showOnlineStatus,
+        fit: BoxFit.cover,
+        width: 40,
+        isNetwork: user.profileImage.isNotEmpty,
+        image: user.profileImage.isNotEmpty ? user.profileImage : TIcons.user,
+        height: 40,
+      ),
+    );
   }
 }

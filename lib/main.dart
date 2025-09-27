@@ -1,7 +1,8 @@
 import 'package:chat/src/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:chat/src/chat/presentation/bloc/pending_chat_bloc/pending_chat_bloc.dart';
 import 'package:chat/src/chat/presentation/bloc/reply_cubit/reply_cubit.dart';
-import 'package:chat/src/home/presentation/bloc/interacted_user_bloc/interacted_user_bloc_bloc.dart';
+import 'package:chat/src/home/presentation/bloc/conversation_history_bloc/conversation_history_bloc.dart';
+import 'package:chat/src/home/presentation/bloc/sync_chat/sync_chat_bloc.dart';
 import 'package:chat/utils/notification/notification_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,8 +28,8 @@ import 'package:chat/utils/notification/fcm_notification.dart';
 import 'package:chat/utils/theme/theme.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: bindings);
+  final bindings = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: bindings);
   NetworkInfo.init(Connectivity());
   await ScreenUtil.ensureScreenSize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -72,27 +73,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => serviceLocater<AuthBloc>()),
-        BlocProvider(create: (context) => serviceLocater<CurrentUserBloc>()),
-        BlocProvider(create: (context) => serviceLocater<UserBloc>()),
-        BlocProvider(
-          create: (context) =>
-              InteractedUserBloc(serviceLocater(), serviceLocater()),
-        ),
-        BlocProvider(
-          create: (context) => serviceLocater<PendingChatBloc>(),
-          lazy: false,
-        ),
       ],
-      child: MaterialApp(
-        theme: TTheme.theme,
-        darkTheme: TTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        routes: AppRoutes.routes,
-        builder: (context, child) {
-          ScreenUtil.init(context);
-          return child!;
+      child: ValueListenableBuilder(
+        valueListenable: TTheme.theme,
+        builder: (context, value, child) {
+          return AnimatedTheme(
+            data: value == ThemeMode.light
+                ? TTheme.lightTheme
+                : TTheme.darkTheme,
+            curve: Curves.easeIn,
+            child: MaterialApp(
+              theme: TTheme.lightTheme,
+              darkTheme: TTheme.darkTheme,
+              themeMode: value,
+              routes: AppRoutes.routes,
+              builder: (context, child) {
+                ScreenUtil.init(context);
+
+                return child!;
+              },
+              home: const AppInitial(),
+            ),
+          );
         },
-        home: const AppInitial(),
       ),
     );
   }
@@ -136,7 +139,25 @@ class AppRoutes {
     Routes.forgetPassword: (context) => const ForgetPasswordScreen(),
     Routes.home: (context) {
       final user = ModalRoute.of(context)?.settings.arguments as User;
-      return HomeScreen(user: user);
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => serviceLocater<CurrentUserBloc>()),
+          BlocProvider(create: (context) => serviceLocater<UserBloc>()),
+          BlocProvider(
+            create: (context) =>
+                ConversationHistoryBloc(serviceLocater(), serviceLocater()),
+          ),
+          BlocProvider(
+            create: (context) => serviceLocater<PendingChatBloc>(),
+            lazy: false,
+          ),
+          BlocProvider(
+            create: (context) => SyncChatBloc(serviceLocater()),
+            lazy: false,
+          ),
+        ],
+        child: HomeScreen(user: user),
+      );
     },
     Routes.chat: (context) {
       final parms =
@@ -151,7 +172,6 @@ class AppRoutes {
               replyCubit: context.read<ReplyCubit>(),
               userId: user.id,
               currentUserId: currentUser.id,
-              serviceLocater(),
               serviceLocater(),
               serviceLocater(),
               serviceLocater(),

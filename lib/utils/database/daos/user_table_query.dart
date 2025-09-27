@@ -10,7 +10,7 @@ import 'package:drift/drift.dart';
 
 part 'user_table_query.g.dart';
 
-@DriftAccessor(tables: [UserTable, InteractedUserTable])
+@DriftAccessor(tables: [UserTable, ConversationHistoryTable])
 class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     with _$UserTableQueryMixin {
   UserTableQuery(super.db);
@@ -45,12 +45,14 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
   }
 
   Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
-  getInteractedUsers({required int limit, required int offset}) async {
+  getConversationHistory({required int limit, required int offset}) async {
     final result =
-        await (select(interactedUserTable)..limit(limit, offset: offset)).join([
+        await (select(
+          conversationHistoryTable,
+        )..limit(limit, offset: offset)).join([
           innerJoin(
             userTable,
-            userTable.id.equalsExp(interactedUserTable.userId),
+            userTable.id.equalsExp(conversationHistoryTable.userId),
           ),
         ]).get();
 
@@ -59,7 +61,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
       final chat = ChatModel.fromJson(row.readTable(chatTable).toJson());
       return (user: user, chat: chat);
     }).toList();
-    final total = await getTotalInteractedUserCount();
+    final total = await getTotalConversationHistoryCount();
     return ApiResponse(
       data: data,
       dataSource: ApiDataSource.local,
@@ -79,10 +81,10 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     return result.data['count'] as int;
   }
 
-  Future<int> getTotalInteractedUserCount() async {
+  Future<int> getTotalConversationHistoryCount() async {
     final result = await customSelect(
-      'SELECT COUNT(*) as count FROM interacted_user_table',
-      readsFrom: {interactedUserTable},
+      'SELECT COUNT(*) as count FROM conversation_history_table',
+      readsFrom: {conversationHistoryTable},
     ).getSingle();
 
     return result.data['count'] as int;
@@ -147,10 +149,10 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     await delete(userTable).go();
   }
 
-  Future<void> insertInteractedUser(UserModel user, ChatModel chat) async {
+  Future<void> insertConversationHistory(UserModel user, ChatModel chat) async {
     transaction(() async {
-      await into(interactedUserTable).insert(
-        InteractedUserEntity(
+      await into(conversationHistoryTable).insert(
+        ConversationHistoryEntity(
           userId: user.id,
           lastInteractedAt: chat.sentTime,
           chatId: chat.chatId,
@@ -174,7 +176,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     });
   }
 
-  Future<void> insertInteractedUsers(
+  Future<void> insertConversationsHistory(
     List<({UserModel user, ChatModel chat})> data,
   ) async {
     transaction(() async {
@@ -201,10 +203,10 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
         );
 
         batch.insertAll(
-          interactedUserTable,
+          conversationHistoryTable,
           data
               .map(
-                (e) => InteractedUserEntity(
+                (e) => ConversationHistoryEntity(
                   userId: e.user.id,
                   lastInteractedAt: e.chat.sentTime,
                   chatId: e.chat.chatId,
@@ -220,13 +222,13 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
 
   Future<void> insertLastChat(ChatModel chat) async {
     final data = await (select(
-      interactedUserTable,
+      conversationHistoryTable,
     )..where((e) => e.chatId.equals(chat.chatId))).getSingleOrNull();
     if (data != null && data.lastInteractedAt.isBefore(chat.sentTime)) {
       await (update(
-        interactedUserTable,
+        conversationHistoryTable,
       )..where((e) => e.chatId.equals(chat.chatId))).write(
-        InteractedUserEntity(
+        ConversationHistoryEntity(
           userId: data.userId,
           lastInteractedAt: chat.sentTime,
           chatId: chat.chatId,
@@ -242,8 +244,8 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
 
     //   if (user == null) return;
 
-    //   await into(interactedUserTable).insert(
-    //     InteractedUserEntity(
+    //   await into(conversationHistoryTable).insert(
+    //     ConversationHistoryEntity(
     //       userId: chat.fromId,
     //       lastInteractedAt: chat.sentTime,
     //       chatId: chat.chatId,
@@ -255,7 +257,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
   }
 
   Stream<List<({UserModel user, ChatModel chat})>> getInteractedUserStream() {
-    return (select(interactedUserTable)
+    return (select(conversationHistoryTable)
           ..orderBy([
             (tbl) => OrderingTerm(
               expression: tbl.lastInteractedAt,
@@ -266,11 +268,11 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
         .join([
           innerJoin(
             userTable,
-            userTable.id.equalsExp(interactedUserTable.userId),
+            userTable.id.equalsExp(conversationHistoryTable.userId),
           ),
           innerJoin(
             chatTable,
-            chatTable.id.equalsExp(interactedUserTable.lastMessage),
+            chatTable.id.equalsExp(conversationHistoryTable.lastMessage),
           ),
         ])
         .watch()

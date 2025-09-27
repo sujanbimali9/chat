@@ -11,7 +11,6 @@ import 'package:chat/src/chat/data/model/media_model.dart';
 import 'package:chat/src/chat/domain/usecase/get_chat.dart';
 import 'package:chat/src/chat/domain/usecase/get_chat_stream.dart';
 import 'package:chat/src/chat/domain/usecase/send_message.dart';
-import 'package:chat/src/chat/domain/usecase/update_read_status.dart';
 import 'package:chat/src/chat/presentation/bloc/reply_cubit/reply_cubit.dart';
 import 'package:chat/utils/generator/id_generator.dart';
 import 'package:equatable/equatable.dart';
@@ -23,7 +22,6 @@ part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final GetChatStreamUseCase _getChatStreamUseCase;
-  final UpdateReadStatusUserCase _updateReadStatusUseCase;
   final SendChatUseCase _sendChatUseCase;
   final GetChatUseCase _getChatsUseCase;
   final ReplyCubit _replyCubit;
@@ -39,7 +37,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc(
     this._getChatStreamUseCase,
     this._sendChatUseCase,
-    this._updateReadStatusUseCase,
     this._getChatsUseCase, {
     required String userId,
     required String currentUserId,
@@ -49,25 +46,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
        _userId = userId,
        _chatId = IdGenerator.getConversionId(userId, currentUserId),
        super(const ChatInitial([])) {
-    on<ChatEvent>((event, emit) async {
-      if (event is FetchMore) {
-        await _fetchMore(emit);
-      } else if (event is SendChat) {
-        await _sendChat(
-          event.text,
-          event.type,
-          event.medias,
-          event.mediaType,
-          emit,
-        );
-      } else if (event is ListenForNewChats) {
-        _listenForNewChats();
-      } else if (event is UpdateReadStatus) {
-        await _updateReadStatus(event.chatId, event.userId);
-      } else if (event is StateEmitter) {
-        emit(event.state);
-      }
+    on<FetchMore>((event, emit) async {
+      await _fetchMore(emit);
     });
+    on<SendChat>((event, emit) async {
+      await _sendChat(
+        event.text,
+        event.type,
+        event.medias,
+        event.mediaType,
+        emit,
+      );
+    });
+    on<ListenForNewChats>((event, emit) {
+      _listenForNewChats();
+    });
+    on<StateEmitter>((event, emit) {
+      emit(event.state);
+    });
+
     _initListeners();
   }
 
@@ -190,12 +187,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     res.fold(
       (failure) => log('Error sending chats: ${failure.message}'),
       (message) => emit(ChatLoaded(mergeChatList(state.chats, [message]))),
-    );
-  }
-
-  FutureOr<void> _updateReadStatus(String chatId, String userId) async {
-    await _updateReadStatusUseCase(
-      UpdateReadStatusParams(chatId: chatId, userId: userId),
     );
   }
 

@@ -12,7 +12,8 @@ part of 'all_user_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$UserEvent {
@@ -23,8 +24,7 @@ mixin _$UserEvent {
     required TResult Function() getAllUserLocal,
     required TResult Function() fetchMoreUser,
     required TResult Function() refreshUser,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getAllUser,
@@ -32,8 +32,7 @@ mixin _$UserEvent {
     TResult? Function()? getAllUserLocal,
     TResult? Function()? fetchMoreUser,
     TResult? Function()? refreshUser,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getAllUser,
@@ -42,8 +41,7 @@ mixin _$UserEvent {
     TResult Function()? fetchMoreUser,
     TResult Function()? refreshUser,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetAllUser value) getAllUser,
@@ -51,8 +49,7 @@ mixin _$UserEvent {
     required TResult Function(_GetAllUserLocal value) getAllUserLocal,
     required TResult Function(_FetchMoreUser value) fetchMoreUser,
     required TResult Function(_RefreshUser value) refreshUser,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetAllUser value)? getAllUser,
@@ -60,8 +57,7 @@ mixin _$UserEvent {
     TResult? Function(_GetAllUserLocal value)? getAllUserLocal,
     TResult? Function(_FetchMoreUser value)? fetchMoreUser,
     TResult? Function(_RefreshUser value)? refreshUser,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetAllUser value)? getAllUser,
@@ -70,8 +66,7 @@ mixin _$UserEvent {
     TResult Function(_FetchMoreUser value)? fetchMoreUser,
     TResult Function(_RefreshUser value)? refreshUser,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -97,8 +92,9 @@ class _$UserEventCopyWithImpl<$Res, $Val extends UserEvent>
 /// @nodoc
 abstract class _$$GetAllUserImplCopyWith<$Res> {
   factory _$$GetAllUserImplCopyWith(
-          _$GetAllUserImpl value, $Res Function(_$GetAllUserImpl) then) =
-      __$$GetAllUserImplCopyWithImpl<$Res>;
+    _$GetAllUserImpl value,
+    $Res Function(_$GetAllUserImpl) then,
+  ) = __$$GetAllUserImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -106,8 +102,9 @@ class __$$GetAllUserImplCopyWithImpl<$Res>
     extends _$UserEventCopyWithImpl<$Res, _$GetAllUserImpl>
     implements _$$GetAllUserImplCopyWith<$Res> {
   __$$GetAllUserImplCopyWithImpl(
-      _$GetAllUserImpl _value, $Res Function(_$GetAllUserImpl) _then)
-      : super(_value, _then);
+    _$GetAllUserImpl _value,
+    $Res Function(_$GetAllUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -220,8 +217,9 @@ abstract class _GetAllUser implements UserEvent {
 /// @nodoc
 abstract class _$$SearchUserImplCopyWith<$Res> {
   factory _$$SearchUserImplCopyWith(
-          _$SearchUserImpl value, $Res Function(_$SearchUserImpl) then) =
-      __$$SearchUserImplCopyWithImpl<$Res>;
+    _$SearchUserImpl value,
+    $Res Function(_$SearchUserImpl) then,
+  ) = __$$SearchUserImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String query});
 }
@@ -231,22 +229,23 @@ class __$$SearchUserImplCopyWithImpl<$Res>
     extends _$UserEventCopyWithImpl<$Res, _$SearchUserImpl>
     implements _$$SearchUserImplCopyWith<$Res> {
   __$$SearchUserImplCopyWithImpl(
-      _$SearchUserImpl _value, $Res Function(_$SearchUserImpl) _then)
-      : super(_value, _then);
+    _$SearchUserImpl _value,
+    $Res Function(_$SearchUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? query = null,
-  }) {
-    return _then(_$SearchUserImpl(
-      null == query
-          ? _value.query
-          : query // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? query = null}) {
+    return _then(
+      _$SearchUserImpl(
+        null == query
+            ? _value.query
+            : query // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -377,9 +376,10 @@ abstract class _SearchUser implements UserEvent {
 
 /// @nodoc
 abstract class _$$GetAllUserLocalImplCopyWith<$Res> {
-  factory _$$GetAllUserLocalImplCopyWith(_$GetAllUserLocalImpl value,
-          $Res Function(_$GetAllUserLocalImpl) then) =
-      __$$GetAllUserLocalImplCopyWithImpl<$Res>;
+  factory _$$GetAllUserLocalImplCopyWith(
+    _$GetAllUserLocalImpl value,
+    $Res Function(_$GetAllUserLocalImpl) then,
+  ) = __$$GetAllUserLocalImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -387,8 +387,9 @@ class __$$GetAllUserLocalImplCopyWithImpl<$Res>
     extends _$UserEventCopyWithImpl<$Res, _$GetAllUserLocalImpl>
     implements _$$GetAllUserLocalImplCopyWith<$Res> {
   __$$GetAllUserLocalImplCopyWithImpl(
-      _$GetAllUserLocalImpl _value, $Res Function(_$GetAllUserLocalImpl) _then)
-      : super(_value, _then);
+    _$GetAllUserLocalImpl _value,
+    $Res Function(_$GetAllUserLocalImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -501,8 +502,9 @@ abstract class _GetAllUserLocal implements UserEvent {
 /// @nodoc
 abstract class _$$FetchMoreUserImplCopyWith<$Res> {
   factory _$$FetchMoreUserImplCopyWith(
-          _$FetchMoreUserImpl value, $Res Function(_$FetchMoreUserImpl) then) =
-      __$$FetchMoreUserImplCopyWithImpl<$Res>;
+    _$FetchMoreUserImpl value,
+    $Res Function(_$FetchMoreUserImpl) then,
+  ) = __$$FetchMoreUserImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -510,8 +512,9 @@ class __$$FetchMoreUserImplCopyWithImpl<$Res>
     extends _$UserEventCopyWithImpl<$Res, _$FetchMoreUserImpl>
     implements _$$FetchMoreUserImplCopyWith<$Res> {
   __$$FetchMoreUserImplCopyWithImpl(
-      _$FetchMoreUserImpl _value, $Res Function(_$FetchMoreUserImpl) _then)
-      : super(_value, _then);
+    _$FetchMoreUserImpl _value,
+    $Res Function(_$FetchMoreUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -624,8 +627,9 @@ abstract class _FetchMoreUser implements UserEvent {
 /// @nodoc
 abstract class _$$RefreshUserImplCopyWith<$Res> {
   factory _$$RefreshUserImplCopyWith(
-          _$RefreshUserImpl value, $Res Function(_$RefreshUserImpl) then) =
-      __$$RefreshUserImplCopyWithImpl<$Res>;
+    _$RefreshUserImpl value,
+    $Res Function(_$RefreshUserImpl) then,
+  ) = __$$RefreshUserImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -633,8 +637,9 @@ class __$$RefreshUserImplCopyWithImpl<$Res>
     extends _$UserEventCopyWithImpl<$Res, _$RefreshUserImpl>
     implements _$$RefreshUserImplCopyWith<$Res> {
   __$$RefreshUserImplCopyWithImpl(
-      _$RefreshUserImpl _value, $Res Function(_$RefreshUserImpl) _then)
-      : super(_value, _then);
+    _$RefreshUserImpl _value,
+    $Res Function(_$RefreshUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -752,11 +757,10 @@ mixin _$UserState {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -765,8 +769,7 @@ mixin _$UserState {
     TResult? Function(List<User> searchUser, List<User> allUser)? searchedUser,
     TResult? Function(List<User> users)? loaded,
     TResult? Function(List<User> users)? fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -776,8 +779,7 @@ mixin _$UserState {
     TResult Function(List<User> users)? loaded,
     TResult Function(List<User> users)? fetchingMore,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
@@ -786,8 +788,7 @@ mixin _$UserState {
     required TResult Function(_SearchedUser value) searchedUser,
     required TResult Function(_LocalUser value) loaded,
     required TResult Function(_FetchingMore value) fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
@@ -796,8 +797,7 @@ mixin _$UserState {
     TResult? Function(_SearchedUser value)? searchedUser,
     TResult? Function(_LocalUser value)? loaded,
     TResult? Function(_FetchingMore value)? fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
@@ -807,8 +807,7 @@ mixin _$UserState {
     TResult Function(_LocalUser value)? loaded,
     TResult Function(_FetchingMore value)? fetchingMore,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -834,8 +833,9 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
 /// @nodoc
 abstract class _$$InitialImplCopyWith<$Res> {
   factory _$$InitialImplCopyWith(
-          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
-      __$$InitialImplCopyWithImpl<$Res>;
+    _$InitialImpl value,
+    $Res Function(_$InitialImpl) then,
+  ) = __$$InitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -843,8 +843,9 @@ class __$$InitialImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$InitialImpl>
     implements _$$InitialImplCopyWith<$Res> {
   __$$InitialImplCopyWithImpl(
-      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
-      : super(_value, _then);
+    _$InitialImpl _value,
+    $Res Function(_$InitialImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
@@ -876,7 +877,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
   }) {
@@ -964,8 +965,9 @@ abstract class _Initial implements UserState {
 /// @nodoc
 abstract class _$$LoadingImplCopyWith<$Res> {
   factory _$$LoadingImplCopyWith(
-          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
-      __$$LoadingImplCopyWithImpl<$Res>;
+    _$LoadingImpl value,
+    $Res Function(_$LoadingImpl) then,
+  ) = __$$LoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -973,8 +975,9 @@ class __$$LoadingImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
-      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
-      : super(_value, _then);
+    _$LoadingImpl _value,
+    $Res Function(_$LoadingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
@@ -1006,7 +1009,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
   }) {
@@ -1094,8 +1097,9 @@ abstract class _Loading implements UserState {
 /// @nodoc
 abstract class _$$ErrorImplCopyWith<$Res> {
   factory _$$ErrorImplCopyWith(
-          _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
-      __$$ErrorImplCopyWithImpl<$Res>;
+    _$ErrorImpl value,
+    $Res Function(_$ErrorImpl) then,
+  ) = __$$ErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
@@ -1105,22 +1109,23 @@ class __$$ErrorImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
-      _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
-      : super(_value, _then);
+    _$ErrorImpl _value,
+    $Res Function(_$ErrorImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? message = null,
-  }) {
-    return _then(_$ErrorImpl(
-      null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? message = null}) {
+    return _then(
+      _$ErrorImpl(
+        null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -1163,7 +1168,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
   }) {
@@ -1259,8 +1264,9 @@ abstract class _Error implements UserState {
 /// @nodoc
 abstract class _$$SearchedUserImplCopyWith<$Res> {
   factory _$$SearchedUserImplCopyWith(
-          _$SearchedUserImpl value, $Res Function(_$SearchedUserImpl) then) =
-      __$$SearchedUserImplCopyWithImpl<$Res>;
+    _$SearchedUserImpl value,
+    $Res Function(_$SearchedUserImpl) then,
+  ) = __$$SearchedUserImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<User> searchUser, List<User> allUser});
 }
@@ -1270,27 +1276,27 @@ class __$$SearchedUserImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$SearchedUserImpl>
     implements _$$SearchedUserImplCopyWith<$Res> {
   __$$SearchedUserImplCopyWithImpl(
-      _$SearchedUserImpl _value, $Res Function(_$SearchedUserImpl) _then)
-      : super(_value, _then);
+    _$SearchedUserImpl _value,
+    $Res Function(_$SearchedUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? searchUser = null,
-    Object? allUser = null,
-  }) {
-    return _then(_$SearchedUserImpl(
-      null == searchUser
-          ? _value._searchUser
-          : searchUser // ignore: cast_nullable_to_non_nullable
-              as List<User>,
-      null == allUser
-          ? _value._allUser
-          : allUser // ignore: cast_nullable_to_non_nullable
-              as List<User>,
-    ));
+  $Res call({Object? searchUser = null, Object? allUser = null}) {
+    return _then(
+      _$SearchedUserImpl(
+        null == searchUser
+            ? _value._searchUser
+            : searchUser // ignore: cast_nullable_to_non_nullable
+                  as List<User>,
+        null == allUser
+            ? _value._allUser
+            : allUser // ignore: cast_nullable_to_non_nullable
+                  as List<User>,
+      ),
+    );
   }
 }
 
@@ -1298,9 +1304,10 @@ class __$$SearchedUserImplCopyWithImpl<$Res>
 
 class _$SearchedUserImpl implements _SearchedUser {
   const _$SearchedUserImpl(
-      final List<User> searchUser, final List<User> allUser)
-      : _searchUser = searchUser,
-        _allUser = allUser;
+    final List<User> searchUser,
+    final List<User> allUser,
+  ) : _searchUser = searchUser,
+      _allUser = allUser;
 
   final List<User> _searchUser;
   @override
@@ -1328,16 +1335,19 @@ class _$SearchedUserImpl implements _SearchedUser {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SearchedUserImpl &&
-            const DeepCollectionEquality()
-                .equals(other._searchUser, _searchUser) &&
+            const DeepCollectionEquality().equals(
+              other._searchUser,
+              _searchUser,
+            ) &&
             const DeepCollectionEquality().equals(other._allUser, _allUser));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_searchUser),
-      const DeepCollectionEquality().hash(_allUser));
+    runtimeType,
+    const DeepCollectionEquality().hash(_searchUser),
+    const DeepCollectionEquality().hash(_allUser),
+  );
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
@@ -1354,7 +1364,7 @@ class _$SearchedUserImpl implements _SearchedUser {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
   }) {
@@ -1437,8 +1447,9 @@ class _$SearchedUserImpl implements _SearchedUser {
 
 abstract class _SearchedUser implements UserState {
   const factory _SearchedUser(
-          final List<User> searchUser, final List<User> allUser) =
-      _$SearchedUserImpl;
+    final List<User> searchUser,
+    final List<User> allUser,
+  ) = _$SearchedUserImpl;
 
   List<User> get searchUser;
   List<User> get allUser;
@@ -1453,8 +1464,9 @@ abstract class _SearchedUser implements UserState {
 /// @nodoc
 abstract class _$$LocalUserImplCopyWith<$Res> {
   factory _$$LocalUserImplCopyWith(
-          _$LocalUserImpl value, $Res Function(_$LocalUserImpl) then) =
-      __$$LocalUserImplCopyWithImpl<$Res>;
+    _$LocalUserImpl value,
+    $Res Function(_$LocalUserImpl) then,
+  ) = __$$LocalUserImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<User> users});
 }
@@ -1464,22 +1476,23 @@ class __$$LocalUserImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$LocalUserImpl>
     implements _$$LocalUserImplCopyWith<$Res> {
   __$$LocalUserImplCopyWithImpl(
-      _$LocalUserImpl _value, $Res Function(_$LocalUserImpl) _then)
-      : super(_value, _then);
+    _$LocalUserImpl _value,
+    $Res Function(_$LocalUserImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? users = null,
-  }) {
-    return _then(_$LocalUserImpl(
-      null == users
-          ? _value._users
-          : users // ignore: cast_nullable_to_non_nullable
-              as List<User>,
-    ));
+  $Res call({Object? users = null}) {
+    return _then(
+      _$LocalUserImpl(
+        null == users
+            ? _value._users
+            : users // ignore: cast_nullable_to_non_nullable
+                  as List<User>,
+      ),
+    );
   }
 }
 
@@ -1528,7 +1541,7 @@ class _$LocalUserImpl implements _LocalUser {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
   }) {
@@ -1624,8 +1637,9 @@ abstract class _LocalUser implements UserState {
 /// @nodoc
 abstract class _$$FetchingMoreImplCopyWith<$Res> {
   factory _$$FetchingMoreImplCopyWith(
-          _$FetchingMoreImpl value, $Res Function(_$FetchingMoreImpl) then) =
-      __$$FetchingMoreImplCopyWithImpl<$Res>;
+    _$FetchingMoreImpl value,
+    $Res Function(_$FetchingMoreImpl) then,
+  ) = __$$FetchingMoreImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<User> users});
 }
@@ -1635,22 +1649,23 @@ class __$$FetchingMoreImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$FetchingMoreImpl>
     implements _$$FetchingMoreImplCopyWith<$Res> {
   __$$FetchingMoreImplCopyWithImpl(
-      _$FetchingMoreImpl _value, $Res Function(_$FetchingMoreImpl) _then)
-      : super(_value, _then);
+    _$FetchingMoreImpl _value,
+    $Res Function(_$FetchingMoreImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? users = null,
-  }) {
-    return _then(_$FetchingMoreImpl(
-      null == users
-          ? _value._users
-          : users // ignore: cast_nullable_to_non_nullable
-              as List<User>,
-    ));
+  $Res call({Object? users = null}) {
+    return _then(
+      _$FetchingMoreImpl(
+        null == users
+            ? _value._users
+            : users // ignore: cast_nullable_to_non_nullable
+                  as List<User>,
+      ),
+    );
   }
 }
 
@@ -1699,7 +1714,7 @@ class _$FetchingMoreImpl implements _FetchingMore {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<User> searchUser, List<User> allUser)
-        searchedUser,
+    searchedUser,
     required TResult Function(List<User> users) loaded,
     required TResult Function(List<User> users) fetchingMore,
   }) {

@@ -20,20 +20,19 @@ class SocketIOService {
 
   static late Socket _socket;
 
-  Future<void> init(String userId,
-      {String url = 'http://192.168.1.22:8000'}) async {
+  Future<void> init(String userId) async {
     try {
       final token = await FirebaseMessaging.instance.getToken();
       _socket = io(
-        url,
+        const String.fromEnvironment(
+          'BASE_URL',
+          defaultValue: 'http://192.168.1.22:8000/',
+        ),
         OptionBuilder()
             .setTransports(['websocket'])
             .enableAutoConnect()
             .setReconnectionDelay(5000)
-            .setAuth({
-              'userId': userId,
-              'pushToken': token,
-            })
+            .setAuth({'userId': userId, 'pushToken': token})
             .build(),
       );
 
@@ -41,9 +40,15 @@ class SocketIOService {
         _chatStreamController?.add(data);
       });
 
+      _socket.on('connect', (_) {
+        log('Socket connected');
+      });
+
       _socket.on('connect_error', (error) {});
 
-      _socket.on('disconnect', (_) {});
+      _socket.on('disconnect', (_) {
+        log('Socket disconnected');
+      });
     } catch (e) {
       log('Error initializing socket: $e');
     }

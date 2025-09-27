@@ -12,7 +12,8 @@ part of 'media_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 MediaModel _$MediaModelFromJson(Map<String, dynamic> json) {
   return _MediaModel.fromJson(json);
@@ -37,8 +38,9 @@ mixin _$MediaModel {
 /// @nodoc
 abstract class $MediaModelCopyWith<$Res> {
   factory $MediaModelCopyWith(
-          MediaModel value, $Res Function(MediaModel) then) =
-      _$MediaModelCopyWithImpl<$Res, MediaModel>;
+    MediaModel value,
+    $Res Function(MediaModel) then,
+  ) = _$MediaModelCopyWithImpl<$Res, MediaModel>;
   @useResult
   $Res call({String url, MediaType type, MediaMetaDataModel metadata});
 
@@ -64,20 +66,23 @@ class _$MediaModelCopyWithImpl<$Res, $Val extends MediaModel>
     Object? type = null,
     Object? metadata = null,
   }) {
-    return _then(_value.copyWith(
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as MediaType,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as MediaMetaDataModel,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            url: null == url
+                ? _value.url
+                : url // ignore: cast_nullable_to_non_nullable
+                      as String,
+            type: null == type
+                ? _value.type
+                : type // ignore: cast_nullable_to_non_nullable
+                      as MediaType,
+            metadata: null == metadata
+                ? _value.metadata
+                : metadata // ignore: cast_nullable_to_non_nullable
+                      as MediaMetaDataModel,
+          )
+          as $Val,
+    );
   }
 
   /// Create a copy of MediaModel
@@ -95,8 +100,9 @@ class _$MediaModelCopyWithImpl<$Res, $Val extends MediaModel>
 abstract class _$$MediaModelImplCopyWith<$Res>
     implements $MediaModelCopyWith<$Res> {
   factory _$$MediaModelImplCopyWith(
-          _$MediaModelImpl value, $Res Function(_$MediaModelImpl) then) =
-      __$$MediaModelImplCopyWithImpl<$Res>;
+    _$MediaModelImpl value,
+    $Res Function(_$MediaModelImpl) then,
+  ) = __$$MediaModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String url, MediaType type, MediaMetaDataModel metadata});
@@ -110,8 +116,9 @@ class __$$MediaModelImplCopyWithImpl<$Res>
     extends _$MediaModelCopyWithImpl<$Res, _$MediaModelImpl>
     implements _$$MediaModelImplCopyWith<$Res> {
   __$$MediaModelImplCopyWithImpl(
-      _$MediaModelImpl _value, $Res Function(_$MediaModelImpl) _then)
-      : super(_value, _then);
+    _$MediaModelImpl _value,
+    $Res Function(_$MediaModelImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of MediaModel
   /// with the given fields replaced by the non-null parameter values.
@@ -122,28 +129,33 @@ class __$$MediaModelImplCopyWithImpl<$Res>
     Object? type = null,
     Object? metadata = null,
   }) {
-    return _then(_$MediaModelImpl(
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as MediaType,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as MediaMetaDataModel,
-    ));
+    return _then(
+      _$MediaModelImpl(
+        url: null == url
+            ? _value.url
+            : url // ignore: cast_nullable_to_non_nullable
+                  as String,
+        type: null == type
+            ? _value.type
+            : type // ignore: cast_nullable_to_non_nullable
+                  as MediaType,
+        metadata: null == metadata
+            ? _value.metadata
+            : metadata // ignore: cast_nullable_to_non_nullable
+                  as MediaMetaDataModel,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$MediaModelImpl implements _MediaModel {
-  _$MediaModelImpl(
-      {required this.url, required this.type, required this.metadata});
+  _$MediaModelImpl({
+    required this.url,
+    required this.type,
+    required this.metadata,
+  });
 
   factory _$MediaModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$MediaModelImplFromJson(json);
@@ -185,17 +197,16 @@ class _$MediaModelImpl implements _MediaModel {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$MediaModelImplToJson(
-      this,
-    );
+    return _$$MediaModelImplToJson(this);
   }
 }
 
 abstract class _MediaModel implements MediaModel {
-  factory _MediaModel(
-      {required final String url,
-      required final MediaType type,
-      required final MediaMetaDataModel metadata}) = _$MediaModelImpl;
+  factory _MediaModel({
+    required final String url,
+    required final MediaType type,
+    required final MediaMetaDataModel metadata,
+  }) = _$MediaModelImpl;
 
   factory _MediaModel.fromJson(Map<String, dynamic> json) =
       _$MediaModelImpl.fromJson;

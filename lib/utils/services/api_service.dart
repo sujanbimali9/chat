@@ -6,34 +6,41 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class ApiService {
   static ApiService? _instance;
-  ApiService._(String baseUrl, this._firebaseAuth) {
+  ApiService._(this._firebaseAuth) {
+    const baseUrl = String.fromEnvironment(
+      'BASE_URL',
+      defaultValue: 'http://192.168.1.22:8000/',
+    );
     _dio = Dio();
     _dio.options
       ..baseUrl = '$baseUrl/api/'
       ..connectTimeout = const Duration(seconds: 30)
       ..receiveTimeout = const Duration(seconds: 30)
       ..headers = {'Content-Type': 'application/json'};
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final user = _firebaseAuth.currentUser;
-        if (user != null) {
-          final token = await user.getIdToken();
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        return handler.next(options);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final user = _firebaseAuth.currentUser;
+          if (user != null) {
+            final token = await user.getIdToken();
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+      ),
+    );
   }
 
-  static ApiService init(FirebaseAuth firebaseAuth, String baseUrl) {
-    _instance ??= ApiService._(baseUrl, firebaseAuth);
+  static ApiService init(FirebaseAuth firebaseAuth) {
+    _instance ??= ApiService._(firebaseAuth);
     return instance;
   }
 
   static ApiService get instance {
     if (_instance != null) return _instance!;
     throw Exception(
-        'ApiService not initialized. Call ApiService.init() first.');
+      'ApiService not initialized. Call ApiService.init() first.',
+    );
   }
 
   late final Dio _dio;

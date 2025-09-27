@@ -10,8 +10,9 @@ _$MediaModelImpl _$$MediaModelImplFromJson(Map<String, dynamic> json) =>
     _$MediaModelImpl(
       url: json['url'] as String,
       type: $enumDecode(_$MediaTypeEnumMap, json['type']),
-      metadata:
-          MediaMetaDataModel.fromJson(json['metadata'] as Map<String, dynamic>),
+      metadata: MediaMetaDataModel.fromJson(
+        json['metadata'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$$MediaModelImplToJson(_$MediaModelImpl instance) =>

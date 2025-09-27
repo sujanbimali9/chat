@@ -40,8 +40,9 @@ class _MessageFieldState extends State<MessageField> {
   }
 
   final border = const OutlineInputBorder(
-      borderSide: BorderSide.none,
-      borderRadius: BorderRadius.all(Radius.circular(40)));
+    borderSide: BorderSide.none,
+    borderRadius: BorderRadius.all(Radius.circular(40)),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +51,21 @@ class _MessageFieldState extends State<MessageField> {
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          BlocConsumer<ReplyCubit, ReplyState>(listener: (context, state) {
-            if (state is Replying) {
-              focusNode.requestFocus();
-            }
-          }, listenWhen: (previous, current) {
-            return current is Replying || previous is ReplyInitial;
-          }, builder: (context, state) {
-            return state is Replying
-                ? buildReplyingTo(context, state.chat)
-                : const SizedBox();
-          }),
+          BlocConsumer<ReplyCubit, ReplyState>(
+            listener: (context, state) {
+              if (state is Replying) {
+                focusNode.requestFocus();
+              }
+            },
+            listenWhen: (previous, current) {
+              return current is Replying || previous is ReplyInitial;
+            },
+            builder: (context, state) {
+              return state is Replying
+                  ? buildReplyingTo(context, state.chat)
+                  : const SizedBox();
+            },
+          ),
           Container(
             margin: const EdgeInsets.only(bottom: 7),
             child: Row(
@@ -71,42 +76,51 @@ class _MessageFieldState extends State<MessageField> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       MessageFieldIcons(
-                          onPressed: () async {
-                            final path = await pickFile(FileType.any);
-                            if (!context.mounted || path == null) return;
+                        onPressed: () async {
+                          final path = await pickFile(FileType.any);
+                          if (!context.mounted || path == null) return;
 
-                            context.read<ChatBloc>().add(SendChat(
-                                  '',
-                                  type: ChatType.media,
-                                  medias: path,
-                                  mediaType: MediaType.file,
-                                ));
-                          },
-                          icon: const Icon(Icons.drive_folder_upload_outlined)),
+                          context.read<ChatBloc>().add(
+                            SendChat(
+                              '',
+                              type: ChatType.media,
+                              medias: path,
+                              mediaType: MediaType.file,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.drive_folder_upload_outlined),
+                      ),
                       MessageFieldIcons(
-                          onPressed: () async {
-                            final path = await pickFile(FileType.image);
-                            if (!context.mounted || path == null) return;
-                            context.read<ChatBloc>().add(SendChat(
-                                  '',
-                                  type: ChatType.media,
-                                  medias: path,
-                                  mediaType: MediaType.image,
-                                ));
-                          },
-                          icon: const Icon(Icons.image)),
+                        onPressed: () async {
+                          final path = await pickFile(FileType.image);
+                          if (!context.mounted || path == null) return;
+                          context.read<ChatBloc>().add(
+                            SendChat(
+                              '',
+                              type: ChatType.media,
+                              medias: path,
+                              mediaType: MediaType.image,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.image),
+                      ),
                       MessageFieldIcons(
-                          onPressed: () async {
-                            final path = await pickFile(FileType.video);
-                            if (!context.mounted || path == null) return;
-                            context.read<ChatBloc>().add(SendChat(
-                                  '',
-                                  type: ChatType.media,
-                                  medias: path,
-                                  mediaType: MediaType.video,
-                                ));
-                          },
-                          icon: const Icon(Icons.video_library_rounded)),
+                        onPressed: () async {
+                          final path = await pickFile(FileType.video);
+                          if (!context.mounted || path == null) return;
+                          context.read<ChatBloc>().add(
+                            SendChat(
+                              '',
+                              type: ChatType.media,
+                              medias: path,
+                              mediaType: MediaType.video,
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.video_library_rounded),
+                      ),
                     ],
                   ),
                 ),
@@ -120,13 +134,16 @@ class _MessageFieldState extends State<MessageField> {
                         focusNode: focusNode,
                         onSubmitted: (value) async {
                           context.read<ChatBloc>().add(
-                              SendChat(controller.text, type: ChatType.text));
+                            SendChat(controller.text, type: ChatType.text),
+                          );
                           controller.clear();
                         },
                         cursorHeight: 20,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 20),
+                            vertical: 4,
+                            horizontal: 20,
+                          ),
                           filled: true,
                           hoverColor: Colors.transparent,
                           fillColor: const Color.fromARGB(70, 171, 172, 173),
@@ -143,13 +160,14 @@ class _MessageFieldState extends State<MessageField> {
                   ),
                 ),
                 MessageFieldIcons(
-                    onPressed: () {
-                      context
-                          .read<ChatBloc>()
-                          .add(SendChat(controller.text, type: ChatType.text));
-                      controller.clear();
-                    },
-                    icon: const Icon(Icons.send, color: TColors.primary)),
+                  onPressed: () {
+                    context.read<ChatBloc>().add(
+                      SendChat(controller.text, type: ChatType.text),
+                    );
+                    controller.clear();
+                  },
+                  icon: const Icon(Icons.send, color: TColors.primary),
+                ),
               ],
             ),
           ),
@@ -162,9 +180,7 @@ class _MessageFieldState extends State<MessageField> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       margin: const EdgeInsets.only(bottom: 5),
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 47, 48, 48),
-      ),
+      decoration: const BoxDecoration(color: Color.fromARGB(255, 47, 48, 48)),
       child: Row(
         children: [
           const Icon(Icons.reply, color: TColors.primary),
@@ -225,10 +241,14 @@ class _MessageFieldState extends State<MessageField> {
     try {
       final picker = FilePicker.platform;
       FilePickerResult? result = switch (type) {
-        FileType.image =>
-          await picker.pickFiles(type: FileType.image, allowMultiple: true),
-        FileType.video =>
-          await picker.pickFiles(type: FileType.video, allowMultiple: true),
+        FileType.image => await picker.pickFiles(
+          type: FileType.image,
+          allowMultiple: true,
+        ),
+        FileType.video => await picker.pickFiles(
+          type: FileType.video,
+          allowMultiple: true,
+        ),
         _ => await picker.pickFiles(allowMultiple: true),
       };
       if (result != null) {

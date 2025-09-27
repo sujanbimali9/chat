@@ -23,7 +23,7 @@ LazyDatabase _openConnection() {
 }
 
 @DriftDatabase(
-  tables: [UserTable, ChatTable, InteractedUserTable],
+  tables: [UserTable, ChatTable, ConversationHistoryTable],
   daos: [ChatTableQuery, UserTableQuery],
 )
 class LocalDatabase extends _$LocalDatabase {
@@ -51,7 +51,7 @@ class LocalDatabase extends _$LocalDatabase {
     transaction(() async {
       await delete(userTable).go();
       await delete(chatTable).go();
-      await delete(interactedUserTable).go();
+      await delete(conversationHistoryTable).go();
     });
   }
 }

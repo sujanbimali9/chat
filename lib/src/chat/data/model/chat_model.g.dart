@@ -23,8 +23,9 @@ _$ChatModelImpl _$$ChatModelImplFromJson(Map<String, dynamic> json) =>
           .map((e) => MediaModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       status: $enumDecode(_$MessageStatusEnumMap, json['status']),
-      replyTo:
-          json['replyTo'] == null ? null : ChatModel.fromJson(json['replyTo']),
+      replyTo: json['replyTo'] == null
+          ? null
+          : ChatModel.fromJson(json['replyTo']),
     );
 
 Map<String, dynamic> _$$ChatModelImplToJson(_$ChatModelImpl instance) =>
@@ -43,10 +44,7 @@ Map<String, dynamic> _$$ChatModelImplToJson(_$ChatModelImpl instance) =>
       'replyTo': instance.replyTo,
     };
 
-const _$ChatTypeEnumMap = {
-  ChatType.text: 'text',
-  ChatType.media: 'media',
-};
+const _$ChatTypeEnumMap = {ChatType.text: 'text', ChatType.media: 'media'};
 
 const _$MessageStatusEnumMap = {
   MessageStatus.sending: 'sending',

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'interacted_user_bloc_bloc.dart';
+part of 'conversation_history_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,263 +12,144 @@ part of 'interacted_user_bloc_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
-mixin _$InteractedUserEvent {
+mixin _$ConversationHistoryEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
     required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
-  }) =>
-      throw _privateConstructorUsedError;
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
     TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
-  }) =>
-      throw _privateConstructorUsedError;
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
     TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
     required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
     required TResult Function(_StateEmitter value) stateEmitter,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult? Function(_StateEmitter value)? stateEmitter,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $InteractedUserEventCopyWith<$Res> {
-  factory $InteractedUserEventCopyWith(
-          InteractedUserEvent value, $Res Function(InteractedUserEvent) then) =
-      _$InteractedUserEventCopyWithImpl<$Res, InteractedUserEvent>;
+abstract class $ConversationHistoryEventCopyWith<$Res> {
+  factory $ConversationHistoryEventCopyWith(
+    ConversationHistoryEvent value,
+    $Res Function(ConversationHistoryEvent) then,
+  ) = _$ConversationHistoryEventCopyWithImpl<$Res, ConversationHistoryEvent>;
 }
 
 /// @nodoc
-class _$InteractedUserEventCopyWithImpl<$Res, $Val extends InteractedUserEvent>
-    implements $InteractedUserEventCopyWith<$Res> {
-  _$InteractedUserEventCopyWithImpl(this._value, this._then);
+class _$ConversationHistoryEventCopyWithImpl<
+  $Res,
+  $Val extends ConversationHistoryEvent
+>
+    implements $ConversationHistoryEventCopyWith<$Res> {
+  _$ConversationHistoryEventCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
-abstract class _$$GetInteractedUserImplCopyWith<$Res> {
-  factory _$$GetInteractedUserImplCopyWith(_$GetInteractedUserImpl value,
-          $Res Function(_$GetInteractedUserImpl) then) =
-      __$$GetInteractedUserImplCopyWithImpl<$Res>;
+abstract class _$$GetConversationHistoryImplCopyWith<$Res> {
+  factory _$$GetConversationHistoryImplCopyWith(
+    _$GetConversationHistoryImpl value,
+    $Res Function(_$GetConversationHistoryImpl) then,
+  ) = __$$GetConversationHistoryImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$GetInteractedUserImplCopyWithImpl<$Res>
-    extends _$InteractedUserEventCopyWithImpl<$Res, _$GetInteractedUserImpl>
-    implements _$$GetInteractedUserImplCopyWith<$Res> {
-  __$$GetInteractedUserImplCopyWithImpl(_$GetInteractedUserImpl _value,
-      $Res Function(_$GetInteractedUserImpl) _then)
-      : super(_value, _then);
+class __$$GetConversationHistoryImplCopyWithImpl<$Res>
+    extends
+        _$ConversationHistoryEventCopyWithImpl<
+          $Res,
+          _$GetConversationHistoryImpl
+        >
+    implements _$$GetConversationHistoryImplCopyWith<$Res> {
+  __$$GetConversationHistoryImplCopyWithImpl(
+    _$GetConversationHistoryImpl _value,
+    $Res Function(_$GetConversationHistoryImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$GetInteractedUserImpl implements _GetInteractedUser {
-  const _$GetInteractedUserImpl();
+class _$GetConversationHistoryImpl implements _GetConversationHistory {
+  const _$GetConversationHistoryImpl();
 
   @override
   String toString() {
-    return 'InteractedUserEvent.getInteractedUser()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$GetInteractedUserImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
-  }) {
-    return getInteractedUser();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
-  }) {
-    return getInteractedUser?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
-    required TResult orElse(),
-  }) {
-    if (getInteractedUser != null) {
-      return getInteractedUser();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
-    required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
-    required TResult Function(_StateEmitter value) stateEmitter,
-  }) {
-    return getInteractedUser(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
-    TResult? Function(_StateEmitter value)? stateEmitter,
-  }) {
-    return getInteractedUser?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
-    TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
-    TResult Function(_StateEmitter value)? stateEmitter,
-    required TResult orElse(),
-  }) {
-    if (getInteractedUser != null) {
-      return getInteractedUser(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _GetInteractedUser implements InteractedUserEvent {
-  const factory _GetInteractedUser() = _$GetInteractedUserImpl;
-}
-
-/// @nodoc
-abstract class _$$GetInteractedUserLocalImplCopyWith<$Res> {
-  factory _$$GetInteractedUserLocalImplCopyWith(
-          _$GetInteractedUserLocalImpl value,
-          $Res Function(_$GetInteractedUserLocalImpl) then) =
-      __$$GetInteractedUserLocalImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$GetInteractedUserLocalImplCopyWithImpl<$Res>
-    extends _$InteractedUserEventCopyWithImpl<$Res,
-        _$GetInteractedUserLocalImpl>
-    implements _$$GetInteractedUserLocalImplCopyWith<$Res> {
-  __$$GetInteractedUserLocalImplCopyWithImpl(
-      _$GetInteractedUserLocalImpl _value,
-      $Res Function(_$GetInteractedUserLocalImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of InteractedUserEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
-  const _$GetInteractedUserLocalImpl();
-
-  @override
-  String toString() {
-    return 'InteractedUserEvent.getInteractedUserLocal()';
+    return 'ConversationHistoryEvent.getConversationHistory()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GetInteractedUserLocalImpl);
+            other is _$GetConversationHistoryImpl);
   }
 
   @override
@@ -277,42 +158,42 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
     required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
   }) {
-    return getInteractedUserLocal();
+    return getConversationHistory();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
     TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
   }) {
-    return getInteractedUserLocal?.call();
+    return getConversationHistory?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
     TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
     required TResult orElse(),
   }) {
-    if (getInteractedUserLocal != null) {
-      return getInteractedUserLocal();
+    if (getConversationHistory != null) {
+      return getConversationHistory();
     }
     return orElse();
   }
@@ -320,82 +201,242 @@ class _$GetInteractedUserLocalImpl implements _GetInteractedUserLocal {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
     required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
     required TResult Function(_StateEmitter value) stateEmitter,
   }) {
-    return getInteractedUserLocal(this);
+    return getConversationHistory(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
-    return getInteractedUserLocal?.call(this);
+    return getConversationHistory?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
-    if (getInteractedUserLocal != null) {
-      return getInteractedUserLocal(this);
+    if (getConversationHistory != null) {
+      return getConversationHistory(this);
     }
     return orElse();
   }
 }
 
-abstract class _GetInteractedUserLocal implements InteractedUserEvent {
-  const factory _GetInteractedUserLocal() = _$GetInteractedUserLocalImpl;
+abstract class _GetConversationHistory implements ConversationHistoryEvent {
+  const factory _GetConversationHistory() = _$GetConversationHistoryImpl;
+}
+
+/// @nodoc
+abstract class _$$GetConversationHistoryLocalImplCopyWith<$Res> {
+  factory _$$GetConversationHistoryLocalImplCopyWith(
+    _$GetConversationHistoryLocalImpl value,
+    $Res Function(_$GetConversationHistoryLocalImpl) then,
+  ) = __$$GetConversationHistoryLocalImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$GetConversationHistoryLocalImplCopyWithImpl<$Res>
+    extends
+        _$ConversationHistoryEventCopyWithImpl<
+          $Res,
+          _$GetConversationHistoryLocalImpl
+        >
+    implements _$$GetConversationHistoryLocalImplCopyWith<$Res> {
+  __$$GetConversationHistoryLocalImplCopyWithImpl(
+    _$GetConversationHistoryLocalImpl _value,
+    $Res Function(_$GetConversationHistoryLocalImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ConversationHistoryEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$GetConversationHistoryLocalImpl
+    implements _GetConversationHistoryLocal {
+  const _$GetConversationHistoryLocalImpl();
+
+  @override
+  String toString() {
+    return 'ConversationHistoryEvent.getConversationHistoryLocal()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GetConversationHistoryLocalImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
+    required TResult Function(List<Chat> listChats) sortUsers,
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
+  }) {
+    return getConversationHistoryLocal();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
+    TResult? Function(List<Chat> listChats)? sortUsers,
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
+  }) {
+    return getConversationHistoryLocal?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
+    TResult Function(List<Chat> listChats)? sortUsers,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
+    required TResult orElse(),
+  }) {
+    if (getConversationHistoryLocal != null) {
+      return getConversationHistoryLocal();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
+    required TResult Function(_SortUsers value) sortUsers,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
+    required TResult Function(_StateEmitter value) stateEmitter,
+  }) {
+    return getConversationHistoryLocal(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
+    TResult? Function(_SortUsers value)? sortUsers,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
+    TResult? Function(_StateEmitter value)? stateEmitter,
+  }) {
+    return getConversationHistoryLocal?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
+    TResult Function(_SortUsers value)? sortUsers,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
+    TResult Function(_StateEmitter value)? stateEmitter,
+    required TResult orElse(),
+  }) {
+    if (getConversationHistoryLocal != null) {
+      return getConversationHistoryLocal(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _GetConversationHistoryLocal
+    implements ConversationHistoryEvent {
+  const factory _GetConversationHistoryLocal() =
+      _$GetConversationHistoryLocalImpl;
 }
 
 /// @nodoc
 abstract class _$$SortUsersImplCopyWith<$Res> {
   factory _$$SortUsersImplCopyWith(
-          _$SortUsersImpl value, $Res Function(_$SortUsersImpl) then) =
-      __$$SortUsersImplCopyWithImpl<$Res>;
+    _$SortUsersImpl value,
+    $Res Function(_$SortUsersImpl) then,
+  ) = __$$SortUsersImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<Chat> listChats});
 }
 
 /// @nodoc
 class __$$SortUsersImplCopyWithImpl<$Res>
-    extends _$InteractedUserEventCopyWithImpl<$Res, _$SortUsersImpl>
+    extends _$ConversationHistoryEventCopyWithImpl<$Res, _$SortUsersImpl>
     implements _$$SortUsersImplCopyWith<$Res> {
   __$$SortUsersImplCopyWithImpl(
-      _$SortUsersImpl _value, $Res Function(_$SortUsersImpl) _then)
-      : super(_value, _then);
+    _$SortUsersImpl _value,
+    $Res Function(_$SortUsersImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? listChats = null,
-  }) {
-    return _then(_$SortUsersImpl(
-      null == listChats
-          ? _value._listChats
-          : listChats // ignore: cast_nullable_to_non_nullable
-              as List<Chat>,
-    ));
+  $Res call({Object? listChats = null}) {
+    return _then(
+      _$SortUsersImpl(
+        null == listChats
+            ? _value._listChats
+            : listChats // ignore: cast_nullable_to_non_nullable
+                  as List<Chat>,
+      ),
+    );
   }
 }
 
@@ -414,7 +455,7 @@ class _$SortUsersImpl implements _SortUsers {
 
   @override
   String toString() {
-    return 'InteractedUserEvent.sortUsers(listChats: $listChats)';
+    return 'ConversationHistoryEvent.sortUsers(listChats: $listChats)';
   }
 
   @override
@@ -422,15 +463,17 @@ class _$SortUsersImpl implements _SortUsers {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SortUsersImpl &&
-            const DeepCollectionEquality()
-                .equals(other._listChats, _listChats));
+            const DeepCollectionEquality().equals(
+              other._listChats,
+              _listChats,
+            ));
   }
 
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_listChats));
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -441,12 +484,12 @@ class _$SortUsersImpl implements _SortUsers {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
     required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
   }) {
     return sortUsers(listChats);
   }
@@ -454,12 +497,12 @@ class _$SortUsersImpl implements _SortUsers {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
     TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
   }) {
     return sortUsers?.call(listChats);
   }
@@ -467,12 +510,12 @@ class _$SortUsersImpl implements _SortUsers {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
     TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (sortUsers != null) {
@@ -484,12 +527,15 @@ class _$SortUsersImpl implements _SortUsers {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
     required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
     required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return sortUsers(this);
@@ -498,11 +544,14 @@ class _$SortUsersImpl implements _SortUsers {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return sortUsers?.call(this);
@@ -511,11 +560,14 @@ class _$SortUsersImpl implements _SortUsers {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
@@ -526,12 +578,12 @@ class _$SortUsersImpl implements _SortUsers {
   }
 }
 
-abstract class _SortUsers implements InteractedUserEvent {
+abstract class _SortUsers implements ConversationHistoryEvent {
   const factory _SortUsers(final List<Chat> listChats) = _$SortUsersImpl;
 
   List<Chat> get listChats;
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SortUsersImplCopyWith<_$SortUsersImpl> get copyWith =>
@@ -539,38 +591,45 @@ abstract class _SortUsers implements InteractedUserEvent {
 }
 
 /// @nodoc
-abstract class _$$RefreshUserImplCopyWith<$Res> {
-  factory _$$RefreshUserImplCopyWith(
-          _$RefreshUserImpl value, $Res Function(_$RefreshUserImpl) then) =
-      __$$RefreshUserImplCopyWithImpl<$Res>;
+abstract class _$$RefreshConversationHistoryImplCopyWith<$Res> {
+  factory _$$RefreshConversationHistoryImplCopyWith(
+    _$RefreshConversationHistoryImpl value,
+    $Res Function(_$RefreshConversationHistoryImpl) then,
+  ) = __$$RefreshConversationHistoryImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$RefreshUserImplCopyWithImpl<$Res>
-    extends _$InteractedUserEventCopyWithImpl<$Res, _$RefreshUserImpl>
-    implements _$$RefreshUserImplCopyWith<$Res> {
-  __$$RefreshUserImplCopyWithImpl(
-      _$RefreshUserImpl _value, $Res Function(_$RefreshUserImpl) _then)
-      : super(_value, _then);
+class __$$RefreshConversationHistoryImplCopyWithImpl<$Res>
+    extends
+        _$ConversationHistoryEventCopyWithImpl<
+          $Res,
+          _$RefreshConversationHistoryImpl
+        >
+    implements _$$RefreshConversationHistoryImplCopyWith<$Res> {
+  __$$RefreshConversationHistoryImplCopyWithImpl(
+    _$RefreshConversationHistoryImpl _value,
+    $Res Function(_$RefreshConversationHistoryImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$RefreshUserImpl implements _RefreshUser {
-  const _$RefreshUserImpl();
+class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
+  const _$RefreshConversationHistoryImpl();
 
   @override
   String toString() {
-    return 'InteractedUserEvent.refreshUser()';
+    return 'ConversationHistoryEvent.refreshConversationHistory()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$RefreshUserImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$RefreshConversationHistoryImpl);
   }
 
   @override
@@ -579,42 +638,42 @@ class _$RefreshUserImpl implements _RefreshUser {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
     required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
   }) {
-    return refreshUser();
+    return refreshConversationHistory();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
     TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
   }) {
-    return refreshUser?.call();
+    return refreshConversationHistory?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
     TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
     required TResult orElse(),
   }) {
-    if (refreshUser != null) {
-      return refreshUser();
+    if (refreshConversationHistory != null) {
+      return refreshConversationHistory();
     }
     return orElse();
   }
@@ -622,85 +681,103 @@ class _$RefreshUserImpl implements _RefreshUser {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
     required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
     required TResult Function(_StateEmitter value) stateEmitter,
   }) {
-    return refreshUser(this);
+    return refreshConversationHistory(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
-    return refreshUser?.call(this);
+    return refreshConversationHistory?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
-    if (refreshUser != null) {
-      return refreshUser(this);
+    if (refreshConversationHistory != null) {
+      return refreshConversationHistory(this);
     }
     return orElse();
   }
 }
 
-abstract class _RefreshUser implements InteractedUserEvent {
-  const factory _RefreshUser() = _$RefreshUserImpl;
+abstract class _RefreshConversationHistory implements ConversationHistoryEvent {
+  const factory _RefreshConversationHistory() =
+      _$RefreshConversationHistoryImpl;
 }
 
 /// @nodoc
-abstract class _$$FetchMoreUserImplCopyWith<$Res> {
-  factory _$$FetchMoreUserImplCopyWith(
-          _$FetchMoreUserImpl value, $Res Function(_$FetchMoreUserImpl) then) =
-      __$$FetchMoreUserImplCopyWithImpl<$Res>;
+abstract class _$$FetchMoreConversationHistoryImplCopyWith<$Res> {
+  factory _$$FetchMoreConversationHistoryImplCopyWith(
+    _$FetchMoreConversationHistoryImpl value,
+    $Res Function(_$FetchMoreConversationHistoryImpl) then,
+  ) = __$$FetchMoreConversationHistoryImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$FetchMoreUserImplCopyWithImpl<$Res>
-    extends _$InteractedUserEventCopyWithImpl<$Res, _$FetchMoreUserImpl>
-    implements _$$FetchMoreUserImplCopyWith<$Res> {
-  __$$FetchMoreUserImplCopyWithImpl(
-      _$FetchMoreUserImpl _value, $Res Function(_$FetchMoreUserImpl) _then)
-      : super(_value, _then);
+class __$$FetchMoreConversationHistoryImplCopyWithImpl<$Res>
+    extends
+        _$ConversationHistoryEventCopyWithImpl<
+          $Res,
+          _$FetchMoreConversationHistoryImpl
+        >
+    implements _$$FetchMoreConversationHistoryImplCopyWith<$Res> {
+  __$$FetchMoreConversationHistoryImplCopyWithImpl(
+    _$FetchMoreConversationHistoryImpl _value,
+    $Res Function(_$FetchMoreConversationHistoryImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$FetchMoreUserImpl implements _FetchMoreUser {
-  const _$FetchMoreUserImpl();
+class _$FetchMoreConversationHistoryImpl
+    implements _FetchMoreConversationHistory {
+  const _$FetchMoreConversationHistoryImpl();
 
   @override
   String toString() {
-    return 'InteractedUserEvent.fetchMoreUser()';
+    return 'ConversationHistoryEvent.fetchMoreConversationHistory()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$FetchMoreUserImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$FetchMoreConversationHistoryImpl);
   }
 
   @override
@@ -709,42 +786,42 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
     required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
   }) {
-    return fetchMoreUser();
+    return fetchMoreConversationHistory();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
     TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
   }) {
-    return fetchMoreUser?.call();
+    return fetchMoreConversationHistory?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
     TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
     required TResult orElse(),
   }) {
-    if (fetchMoreUser != null) {
-      return fetchMoreUser();
+    if (fetchMoreConversationHistory != null) {
+      return fetchMoreConversationHistory();
     }
     return orElse();
   }
@@ -752,92 +829,105 @@ class _$FetchMoreUserImpl implements _FetchMoreUser {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
     required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
     required TResult Function(_StateEmitter value) stateEmitter,
   }) {
-    return fetchMoreUser(this);
+    return fetchMoreConversationHistory(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
-    return fetchMoreUser?.call(this);
+    return fetchMoreConversationHistory?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
-    if (fetchMoreUser != null) {
-      return fetchMoreUser(this);
+    if (fetchMoreConversationHistory != null) {
+      return fetchMoreConversationHistory(this);
     }
     return orElse();
   }
 }
 
-abstract class _FetchMoreUser implements InteractedUserEvent {
-  const factory _FetchMoreUser() = _$FetchMoreUserImpl;
+abstract class _FetchMoreConversationHistory
+    implements ConversationHistoryEvent {
+  const factory _FetchMoreConversationHistory() =
+      _$FetchMoreConversationHistoryImpl;
 }
 
 /// @nodoc
 abstract class _$$StateEmitterImplCopyWith<$Res> {
   factory _$$StateEmitterImplCopyWith(
-          _$StateEmitterImpl value, $Res Function(_$StateEmitterImpl) then) =
-      __$$StateEmitterImplCopyWithImpl<$Res>;
+    _$StateEmitterImpl value,
+    $Res Function(_$StateEmitterImpl) then,
+  ) = __$$StateEmitterImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({InteractedUserState state});
+  $Res call({ConversationHistory state});
 
-  $InteractedUserStateCopyWith<$Res> get state;
+  $ConversationHistoryCopyWith<$Res> get state;
 }
 
 /// @nodoc
 class __$$StateEmitterImplCopyWithImpl<$Res>
-    extends _$InteractedUserEventCopyWithImpl<$Res, _$StateEmitterImpl>
+    extends _$ConversationHistoryEventCopyWithImpl<$Res, _$StateEmitterImpl>
     implements _$$StateEmitterImplCopyWith<$Res> {
   __$$StateEmitterImplCopyWithImpl(
-      _$StateEmitterImpl _value, $Res Function(_$StateEmitterImpl) _then)
-      : super(_value, _then);
+    _$StateEmitterImpl _value,
+    $Res Function(_$StateEmitterImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? state = null,
-  }) {
-    return _then(_$StateEmitterImpl(
-      null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as InteractedUserState,
-    ));
+  $Res call({Object? state = null}) {
+    return _then(
+      _$StateEmitterImpl(
+        null == state
+            ? _value.state
+            : state // ignore: cast_nullable_to_non_nullable
+                  as ConversationHistory,
+      ),
+    );
   }
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $InteractedUserStateCopyWith<$Res> get state {
-    return $InteractedUserStateCopyWith<$Res>(_value.state, (value) {
+  $ConversationHistoryCopyWith<$Res> get state {
+    return $ConversationHistoryCopyWith<$Res>(_value.state, (value) {
       return _then(_value.copyWith(state: value));
     });
   }
@@ -849,11 +939,11 @@ class _$StateEmitterImpl implements _StateEmitter {
   const _$StateEmitterImpl(this.state);
 
   @override
-  final InteractedUserState state;
+  final ConversationHistory state;
 
   @override
   String toString() {
-    return 'InteractedUserEvent.stateEmitter(state: $state)';
+    return 'ConversationHistoryEvent.stateEmitter(state: $state)';
   }
 
   @override
@@ -867,7 +957,7 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   int get hashCode => Object.hash(runtimeType, state);
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -878,12 +968,12 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() getInteractedUser,
-    required TResult Function() getInteractedUserLocal,
+    required TResult Function() getConversationHistory,
+    required TResult Function() getConversationHistoryLocal,
     required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshUser,
-    required TResult Function() fetchMoreUser,
-    required TResult Function(InteractedUserState state) stateEmitter,
+    required TResult Function() refreshConversationHistory,
+    required TResult Function() fetchMoreConversationHistory,
+    required TResult Function(ConversationHistory state) stateEmitter,
   }) {
     return stateEmitter(state);
   }
@@ -891,12 +981,12 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getInteractedUser,
-    TResult? Function()? getInteractedUserLocal,
+    TResult? Function()? getConversationHistory,
+    TResult? Function()? getConversationHistoryLocal,
     TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshUser,
-    TResult? Function()? fetchMoreUser,
-    TResult? Function(InteractedUserState state)? stateEmitter,
+    TResult? Function()? refreshConversationHistory,
+    TResult? Function()? fetchMoreConversationHistory,
+    TResult? Function(ConversationHistory state)? stateEmitter,
   }) {
     return stateEmitter?.call(state);
   }
@@ -904,12 +994,12 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getInteractedUser,
-    TResult Function()? getInteractedUserLocal,
+    TResult Function()? getConversationHistory,
+    TResult Function()? getConversationHistoryLocal,
     TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshUser,
-    TResult Function()? fetchMoreUser,
-    TResult Function(InteractedUserState state)? stateEmitter,
+    TResult Function()? refreshConversationHistory,
+    TResult Function()? fetchMoreConversationHistory,
+    TResult Function(ConversationHistory state)? stateEmitter,
     required TResult orElse(),
   }) {
     if (stateEmitter != null) {
@@ -921,12 +1011,15 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetInteractedUser value) getInteractedUser,
-    required TResult Function(_GetInteractedUserLocal value)
-        getInteractedUserLocal,
+    required TResult Function(_GetConversationHistory value)
+    getConversationHistory,
+    required TResult Function(_GetConversationHistoryLocal value)
+    getConversationHistoryLocal,
     required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshUser value) refreshUser,
-    required TResult Function(_FetchMoreUser value) fetchMoreUser,
+    required TResult Function(_RefreshConversationHistory value)
+    refreshConversationHistory,
+    required TResult Function(_FetchMoreConversationHistory value)
+    fetchMoreConversationHistory,
     required TResult Function(_StateEmitter value) stateEmitter,
   }) {
     return stateEmitter(this);
@@ -935,11 +1028,14 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetInteractedUser value)? getInteractedUser,
-    TResult? Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult? Function(_GetConversationHistory value)? getConversationHistory,
+    TResult? Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshUser value)? refreshUser,
-    TResult? Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult? Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult? Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult? Function(_StateEmitter value)? stateEmitter,
   }) {
     return stateEmitter?.call(this);
@@ -948,11 +1044,14 @@ class _$StateEmitterImpl implements _StateEmitter {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetInteractedUser value)? getInteractedUser,
-    TResult Function(_GetInteractedUserLocal value)? getInteractedUserLocal,
+    TResult Function(_GetConversationHistory value)? getConversationHistory,
+    TResult Function(_GetConversationHistoryLocal value)?
+    getConversationHistoryLocal,
     TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshUser value)? refreshUser,
-    TResult Function(_FetchMoreUser value)? fetchMoreUser,
+    TResult Function(_RefreshConversationHistory value)?
+    refreshConversationHistory,
+    TResult Function(_FetchMoreConversationHistory value)?
+    fetchMoreConversationHistory,
     TResult Function(_StateEmitter value)? stateEmitter,
     required TResult orElse(),
   }) {
@@ -963,13 +1062,13 @@ class _$StateEmitterImpl implements _StateEmitter {
   }
 }
 
-abstract class _StateEmitter implements InteractedUserEvent {
-  const factory _StateEmitter(final InteractedUserState state) =
+abstract class _StateEmitter implements ConversationHistoryEvent {
+  const factory _StateEmitter(final ConversationHistory state) =
       _$StateEmitterImpl;
 
-  InteractedUserState get state;
+  ConversationHistory get state;
 
-  /// Create a copy of InteractedUserEvent
+  /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$StateEmitterImplCopyWith<_$StateEmitterImpl> get copyWith =>
@@ -977,7 +1076,7 @@ abstract class _StateEmitter implements InteractedUserEvent {
 }
 
 /// @nodoc
-mixin _$InteractedUserState {
+mixin _$ConversationHistory {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
@@ -985,8 +1084,7 @@ mixin _$InteractedUserState {
     required TResult Function(String message) error,
     required TResult Function(List<({Chat chat, User user})> data) loaded,
     required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -994,8 +1092,7 @@ mixin _$InteractedUserState {
     TResult? Function(String message)? error,
     TResult? Function(List<({Chat chat, User user})> data)? loaded,
     TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -1004,8 +1101,7 @@ mixin _$InteractedUserState {
     TResult Function(List<({Chat chat, User user})> data)? loaded,
     TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
@@ -1013,8 +1109,7 @@ mixin _$InteractedUserState {
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_FetchingMore value) fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
@@ -1022,8 +1117,7 @@ mixin _$InteractedUserState {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_FetchingMore value)? fetchingMore,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
@@ -1032,47 +1126,49 @@ mixin _$InteractedUserState {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_FetchingMore value)? fetchingMore,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $InteractedUserStateCopyWith<$Res> {
-  factory $InteractedUserStateCopyWith(
-          InteractedUserState value, $Res Function(InteractedUserState) then) =
-      _$InteractedUserStateCopyWithImpl<$Res, InteractedUserState>;
+abstract class $ConversationHistoryCopyWith<$Res> {
+  factory $ConversationHistoryCopyWith(
+    ConversationHistory value,
+    $Res Function(ConversationHistory) then,
+  ) = _$ConversationHistoryCopyWithImpl<$Res, ConversationHistory>;
 }
 
 /// @nodoc
-class _$InteractedUserStateCopyWithImpl<$Res, $Val extends InteractedUserState>
-    implements $InteractedUserStateCopyWith<$Res> {
-  _$InteractedUserStateCopyWithImpl(this._value, this._then);
+class _$ConversationHistoryCopyWithImpl<$Res, $Val extends ConversationHistory>
+    implements $ConversationHistoryCopyWith<$Res> {
+  _$ConversationHistoryCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 abstract class _$$InitialImplCopyWith<$Res> {
   factory _$$InitialImplCopyWith(
-          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
-      __$$InitialImplCopyWithImpl<$Res>;
+    _$InitialImpl value,
+    $Res Function(_$InitialImpl) then,
+  ) = __$$InitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$InitialImplCopyWithImpl<$Res>
-    extends _$InteractedUserStateCopyWithImpl<$Res, _$InitialImpl>
+    extends _$ConversationHistoryCopyWithImpl<$Res, _$InitialImpl>
     implements _$$InitialImplCopyWith<$Res> {
   __$$InitialImplCopyWithImpl(
-      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
-      : super(_value, _then);
+    _$InitialImpl _value,
+    $Res Function(_$InitialImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -1083,7 +1179,7 @@ class _$InitialImpl implements _Initial {
 
   @override
   String toString() {
-    return 'InteractedUserState.initial()';
+    return 'ConversationHistory.initial()';
   }
 
   @override
@@ -1176,26 +1272,28 @@ class _$InitialImpl implements _Initial {
   }
 }
 
-abstract class _Initial implements InteractedUserState {
+abstract class _Initial implements ConversationHistory {
   const factory _Initial() = _$InitialImpl;
 }
 
 /// @nodoc
 abstract class _$$LoadingImplCopyWith<$Res> {
   factory _$$LoadingImplCopyWith(
-          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
-      __$$LoadingImplCopyWithImpl<$Res>;
+    _$LoadingImpl value,
+    $Res Function(_$LoadingImpl) then,
+  ) = __$$LoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$InteractedUserStateCopyWithImpl<$Res, _$LoadingImpl>
+    extends _$ConversationHistoryCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
-      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
-      : super(_value, _then);
+    _$LoadingImpl _value,
+    $Res Function(_$LoadingImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -1206,7 +1304,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'InteractedUserState.loading()';
+    return 'ConversationHistory.loading()';
   }
 
   @override
@@ -1299,40 +1397,42 @@ class _$LoadingImpl implements _Loading {
   }
 }
 
-abstract class _Loading implements InteractedUserState {
+abstract class _Loading implements ConversationHistory {
   const factory _Loading() = _$LoadingImpl;
 }
 
 /// @nodoc
 abstract class _$$ErrorImplCopyWith<$Res> {
   factory _$$ErrorImplCopyWith(
-          _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
-      __$$ErrorImplCopyWithImpl<$Res>;
+    _$ErrorImpl value,
+    $Res Function(_$ErrorImpl) then,
+  ) = __$$ErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
 class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$InteractedUserStateCopyWithImpl<$Res, _$ErrorImpl>
+    extends _$ConversationHistoryCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
-      _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
-      : super(_value, _then);
+    _$ErrorImpl _value,
+    $Res Function(_$ErrorImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? message = null,
-  }) {
-    return _then(_$ErrorImpl(
-      null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? message = null}) {
+    return _then(
+      _$ErrorImpl(
+        null == message
+            ? _value.message
+            : message // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -1346,7 +1446,7 @@ class _$ErrorImpl implements _Error {
 
   @override
   String toString() {
-    return 'InteractedUserState.error(message: $message)';
+    return 'ConversationHistory.error(message: $message)';
   }
 
   @override
@@ -1360,7 +1460,7 @@ class _$ErrorImpl implements _Error {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -1449,12 +1549,12 @@ class _$ErrorImpl implements _Error {
   }
 }
 
-abstract class _Error implements InteractedUserState {
+abstract class _Error implements ConversationHistory {
   const factory _Error(final String message) = _$ErrorImpl;
 
   String get message;
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
@@ -1464,33 +1564,35 @@ abstract class _Error implements InteractedUserState {
 /// @nodoc
 abstract class _$$LoadedImplCopyWith<$Res> {
   factory _$$LoadedImplCopyWith(
-          _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
-      __$$LoadedImplCopyWithImpl<$Res>;
+    _$LoadedImpl value,
+    $Res Function(_$LoadedImpl) then,
+  ) = __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<({Chat chat, User user})> data});
 }
 
 /// @nodoc
 class __$$LoadedImplCopyWithImpl<$Res>
-    extends _$InteractedUserStateCopyWithImpl<$Res, _$LoadedImpl>
+    extends _$ConversationHistoryCopyWithImpl<$Res, _$LoadedImpl>
     implements _$$LoadedImplCopyWith<$Res> {
   __$$LoadedImplCopyWithImpl(
-      _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
-      : super(_value, _then);
+    _$LoadedImpl _value,
+    $Res Function(_$LoadedImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_$LoadedImpl(
-      null == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<({Chat chat, User user})>,
-    ));
+  $Res call({Object? data = null}) {
+    return _then(
+      _$LoadedImpl(
+        null == data
+            ? _value._data
+            : data // ignore: cast_nullable_to_non_nullable
+                  as List<({Chat chat, User user})>,
+      ),
+    );
   }
 }
 
@@ -1509,7 +1611,7 @@ class _$LoadedImpl implements _Loaded {
 
   @override
   String toString() {
-    return 'InteractedUserState.loaded(data: $data)';
+    return 'ConversationHistory.loaded(data: $data)';
   }
 
   @override
@@ -1524,7 +1626,7 @@ class _$LoadedImpl implements _Loaded {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -1613,13 +1715,13 @@ class _$LoadedImpl implements _Loaded {
   }
 }
 
-abstract class _Loaded implements InteractedUserState {
+abstract class _Loaded implements ConversationHistory {
   const factory _Loaded(final List<({Chat chat, User user})> data) =
       _$LoadedImpl;
 
   List<({Chat chat, User user})> get data;
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
@@ -1629,33 +1731,35 @@ abstract class _Loaded implements InteractedUserState {
 /// @nodoc
 abstract class _$$FetchingMoreImplCopyWith<$Res> {
   factory _$$FetchingMoreImplCopyWith(
-          _$FetchingMoreImpl value, $Res Function(_$FetchingMoreImpl) then) =
-      __$$FetchingMoreImplCopyWithImpl<$Res>;
+    _$FetchingMoreImpl value,
+    $Res Function(_$FetchingMoreImpl) then,
+  ) = __$$FetchingMoreImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<({Chat chat, User user})> data});
 }
 
 /// @nodoc
 class __$$FetchingMoreImplCopyWithImpl<$Res>
-    extends _$InteractedUserStateCopyWithImpl<$Res, _$FetchingMoreImpl>
+    extends _$ConversationHistoryCopyWithImpl<$Res, _$FetchingMoreImpl>
     implements _$$FetchingMoreImplCopyWith<$Res> {
   __$$FetchingMoreImplCopyWithImpl(
-      _$FetchingMoreImpl _value, $Res Function(_$FetchingMoreImpl) _then)
-      : super(_value, _then);
+    _$FetchingMoreImpl _value,
+    $Res Function(_$FetchingMoreImpl) _then,
+  ) : super(_value, _then);
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_$FetchingMoreImpl(
-      null == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<({Chat chat, User user})>,
-    ));
+  $Res call({Object? data = null}) {
+    return _then(
+      _$FetchingMoreImpl(
+        null == data
+            ? _value._data
+            : data // ignore: cast_nullable_to_non_nullable
+                  as List<({Chat chat, User user})>,
+      ),
+    );
   }
 }
 
@@ -1663,7 +1767,7 @@ class __$$FetchingMoreImplCopyWithImpl<$Res>
 
 class _$FetchingMoreImpl implements _FetchingMore {
   const _$FetchingMoreImpl(final List<({Chat chat, User user})> data)
-      : _data = data;
+    : _data = data;
 
   final List<({Chat chat, User user})> _data;
   @override
@@ -1675,7 +1779,7 @@ class _$FetchingMoreImpl implements _FetchingMore {
 
   @override
   String toString() {
-    return 'InteractedUserState.fetchingMore(data: $data)';
+    return 'ConversationHistory.fetchingMore(data: $data)';
   }
 
   @override
@@ -1690,7 +1794,7 @@ class _$FetchingMoreImpl implements _FetchingMore {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -1779,13 +1883,13 @@ class _$FetchingMoreImpl implements _FetchingMore {
   }
 }
 
-abstract class _FetchingMore implements InteractedUserState {
+abstract class _FetchingMore implements ConversationHistory {
   const factory _FetchingMore(final List<({Chat chat, User user})> data) =
       _$FetchingMoreImpl;
 
   List<({Chat chat, User user})> get data;
 
-  /// Create a copy of InteractedUserState
+  /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FetchingMoreImplCopyWith<_$FetchingMoreImpl> get copyWith =>

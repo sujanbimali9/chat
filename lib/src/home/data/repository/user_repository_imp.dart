@@ -63,13 +63,13 @@ class UserRepositoryImp implements UserRepository {
 
   @override
   Future<Either<Failure, ApiResponse<({User user, Chat chat}), UserPagination>>>
-  getInteractedUser({required int limit, required int offset}) async {
+  getConversationHistory({required int limit, required int offset}) async {
     return await _handleException(() async {
-      final users = await _userRemoteDataSource.getInteractedUser(
+      final users = await _userRemoteDataSource.getConversationHistory(
         limit: limit,
         offset: offset,
       );
-      await _userLocalDataSource.saveInteractedUsers(users.data);
+      await _userLocalDataSource.saveConversationsHistory(users.data);
       return users.map(
         (e) => (
           user: User.fromUserModel(e.user),
@@ -81,9 +81,9 @@ class UserRepositoryImp implements UserRepository {
 
   @override
   Either<Failure, Stream<List<({Chat chat, User user})>>>
-  getInteractedUserStream() {
+  getConversationHistoryStream() {
     try {
-      final stream = _userLocalDataSource.getInteractedUserStream();
+      final stream = _userLocalDataSource.getConversationHistoryStream();
       return right(
         stream.map((data) {
           return data
@@ -159,9 +159,9 @@ class UserRepositoryImp implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, User>> getCurretUser() async {
+  Future<Either<Failure, User>> getCurretUser({required bool local}) async {
     return await _handleException(() async {
-      if (!_networkInfo.checkConnection()) {
+      if (local) {
         final res = await _userLocalDataSource.getCurrentUser();
         return User.fromUserModel(res);
       }

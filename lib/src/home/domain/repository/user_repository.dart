@@ -13,12 +13,12 @@ abstract interface class UserRepository {
     required int offset,
   });
   Future<Either<Failure, ApiResponse<({User user, Chat chat}), UserPagination>>>
-  getInteractedUser({required int limit, required int offset});
+  getConversationHistory({required int limit, required int offset});
   Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUserLocal({
     required int limit,
     required int offset,
   });
-  Future<Either<Failure, User>> getCurretUser();
+  Future<Either<Failure, User>> getCurretUser({required bool local});
   Future<Either<Failure, User>> updateUser(User user);
   Future<Either<Failure, ApiResponse<User, UserPagination>>> searchUser(
     String query, {
@@ -28,5 +28,5 @@ abstract interface class UserRepository {
   Future<Either<Failure, User>> updateProfileImage(File file);
 
   Either<Failure, Stream<List<({Chat chat, User user})>>>
-  getInteractedUserStream();
+  getConversationHistoryStream();
 }

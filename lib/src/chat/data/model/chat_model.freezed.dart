@@ -12,7 +12,8 @@ part of 'chat_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 ChatModel _$ChatModelFromJson(Map<String, dynamic> json) {
   return _ChatModel.fromJson(json);
@@ -48,19 +49,20 @@ abstract class $ChatModelCopyWith<$Res> {
   factory $ChatModelCopyWith(ChatModel value, $Res Function(ChatModel) then) =
       _$ChatModelCopyWithImpl<$Res, ChatModel>;
   @useResult
-  $Res call(
-      {String id,
-      String chatId,
-      String msg,
-      bool read,
-      ChatType type,
-      String toId,
-      String fromId,
-      DateTime? readTime,
-      DateTime sentTime,
-      List<MediaModel> medias,
-      MessageStatus status,
-      ChatModel? replyTo});
+  $Res call({
+    String id,
+    String chatId,
+    String msg,
+    bool read,
+    ChatType type,
+    String toId,
+    String fromId,
+    DateTime? readTime,
+    DateTime sentTime,
+    List<MediaModel> medias,
+    MessageStatus status,
+    ChatModel? replyTo,
+  });
 
   $ChatModelCopyWith<$Res>? get replyTo;
 }
@@ -93,56 +95,59 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
     Object? status = null,
     Object? replyTo = freezed,
   }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      chatId: null == chatId
-          ? _value.chatId
-          : chatId // ignore: cast_nullable_to_non_nullable
-              as String,
-      msg: null == msg
-          ? _value.msg
-          : msg // ignore: cast_nullable_to_non_nullable
-              as String,
-      read: null == read
-          ? _value.read
-          : read // ignore: cast_nullable_to_non_nullable
-              as bool,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as ChatType,
-      toId: null == toId
-          ? _value.toId
-          : toId // ignore: cast_nullable_to_non_nullable
-              as String,
-      fromId: null == fromId
-          ? _value.fromId
-          : fromId // ignore: cast_nullable_to_non_nullable
-              as String,
-      readTime: freezed == readTime
-          ? _value.readTime
-          : readTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      sentTime: null == sentTime
-          ? _value.sentTime
-          : sentTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      medias: null == medias
-          ? _value.medias
-          : medias // ignore: cast_nullable_to_non_nullable
-              as List<MediaModel>,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as MessageStatus,
-      replyTo: freezed == replyTo
-          ? _value.replyTo
-          : replyTo // ignore: cast_nullable_to_non_nullable
-              as ChatModel?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            chatId: null == chatId
+                ? _value.chatId
+                : chatId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            msg: null == msg
+                ? _value.msg
+                : msg // ignore: cast_nullable_to_non_nullable
+                      as String,
+            read: null == read
+                ? _value.read
+                : read // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            type: null == type
+                ? _value.type
+                : type // ignore: cast_nullable_to_non_nullable
+                      as ChatType,
+            toId: null == toId
+                ? _value.toId
+                : toId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            fromId: null == fromId
+                ? _value.fromId
+                : fromId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            readTime: freezed == readTime
+                ? _value.readTime
+                : readTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            sentTime: null == sentTime
+                ? _value.sentTime
+                : sentTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            medias: null == medias
+                ? _value.medias
+                : medias // ignore: cast_nullable_to_non_nullable
+                      as List<MediaModel>,
+            status: null == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as MessageStatus,
+            replyTo: freezed == replyTo
+                ? _value.replyTo
+                : replyTo // ignore: cast_nullable_to_non_nullable
+                      as ChatModel?,
+          )
+          as $Val,
+    );
   }
 
   /// Create a copy of ChatModel
@@ -164,23 +169,25 @@ class _$ChatModelCopyWithImpl<$Res, $Val extends ChatModel>
 abstract class _$$ChatModelImplCopyWith<$Res>
     implements $ChatModelCopyWith<$Res> {
   factory _$$ChatModelImplCopyWith(
-          _$ChatModelImpl value, $Res Function(_$ChatModelImpl) then) =
-      __$$ChatModelImplCopyWithImpl<$Res>;
+    _$ChatModelImpl value,
+    $Res Function(_$ChatModelImpl) then,
+  ) = __$$ChatModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String id,
-      String chatId,
-      String msg,
-      bool read,
-      ChatType type,
-      String toId,
-      String fromId,
-      DateTime? readTime,
-      DateTime sentTime,
-      List<MediaModel> medias,
-      MessageStatus status,
-      ChatModel? replyTo});
+  $Res call({
+    String id,
+    String chatId,
+    String msg,
+    bool read,
+    ChatType type,
+    String toId,
+    String fromId,
+    DateTime? readTime,
+    DateTime sentTime,
+    List<MediaModel> medias,
+    MessageStatus status,
+    ChatModel? replyTo,
+  });
 
   @override
   $ChatModelCopyWith<$Res>? get replyTo;
@@ -191,8 +198,9 @@ class __$$ChatModelImplCopyWithImpl<$Res>
     extends _$ChatModelCopyWithImpl<$Res, _$ChatModelImpl>
     implements _$$ChatModelImplCopyWith<$Res> {
   __$$ChatModelImplCopyWithImpl(
-      _$ChatModelImpl _value, $Res Function(_$ChatModelImpl) _then)
-      : super(_value, _then);
+    _$ChatModelImpl _value,
+    $Res Function(_$ChatModelImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ChatModel
   /// with the given fields replaced by the non-null parameter values.
@@ -212,76 +220,78 @@ class __$$ChatModelImplCopyWithImpl<$Res>
     Object? status = null,
     Object? replyTo = freezed,
   }) {
-    return _then(_$ChatModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      chatId: null == chatId
-          ? _value.chatId
-          : chatId // ignore: cast_nullable_to_non_nullable
-              as String,
-      msg: null == msg
-          ? _value.msg
-          : msg // ignore: cast_nullable_to_non_nullable
-              as String,
-      read: null == read
-          ? _value.read
-          : read // ignore: cast_nullable_to_non_nullable
-              as bool,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as ChatType,
-      toId: null == toId
-          ? _value.toId
-          : toId // ignore: cast_nullable_to_non_nullable
-              as String,
-      fromId: null == fromId
-          ? _value.fromId
-          : fromId // ignore: cast_nullable_to_non_nullable
-              as String,
-      readTime: freezed == readTime
-          ? _value.readTime
-          : readTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      sentTime: null == sentTime
-          ? _value.sentTime
-          : sentTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      medias: null == medias
-          ? _value._medias
-          : medias // ignore: cast_nullable_to_non_nullable
-              as List<MediaModel>,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as MessageStatus,
-      replyTo: freezed == replyTo
-          ? _value.replyTo
-          : replyTo // ignore: cast_nullable_to_non_nullable
-              as ChatModel?,
-    ));
+    return _then(
+      _$ChatModelImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        chatId: null == chatId
+            ? _value.chatId
+            : chatId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        msg: null == msg
+            ? _value.msg
+            : msg // ignore: cast_nullable_to_non_nullable
+                  as String,
+        read: null == read
+            ? _value.read
+            : read // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        type: null == type
+            ? _value.type
+            : type // ignore: cast_nullable_to_non_nullable
+                  as ChatType,
+        toId: null == toId
+            ? _value.toId
+            : toId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        fromId: null == fromId
+            ? _value.fromId
+            : fromId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        readTime: freezed == readTime
+            ? _value.readTime
+            : readTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        sentTime: null == sentTime
+            ? _value.sentTime
+            : sentTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        medias: null == medias
+            ? _value._medias
+            : medias // ignore: cast_nullable_to_non_nullable
+                  as List<MediaModel>,
+        status: null == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as MessageStatus,
+        replyTo: freezed == replyTo
+            ? _value.replyTo
+            : replyTo // ignore: cast_nullable_to_non_nullable
+                  as ChatModel?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$ChatModelImpl implements _ChatModel {
-  _$ChatModelImpl(
-      {required this.id,
-      required this.chatId,
-      required this.msg,
-      required this.read,
-      required this.type,
-      required this.toId,
-      required this.fromId,
-      this.readTime,
-      required this.sentTime,
-      required final List<MediaModel> medias,
-      required this.status,
-      this.replyTo})
-      : _medias = medias;
+  _$ChatModelImpl({
+    required this.id,
+    required this.chatId,
+    required this.msg,
+    required this.read,
+    required this.type,
+    required this.toId,
+    required this.fromId,
+    this.readTime,
+    required this.sentTime,
+    required final List<MediaModel> medias,
+    required this.status,
+    this.replyTo,
+  }) : _medias = medias;
 
   factory _$ChatModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatModelImplFromJson(json);
@@ -346,19 +356,20 @@ class _$ChatModelImpl implements _ChatModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      chatId,
-      msg,
-      read,
-      type,
-      toId,
-      fromId,
-      readTime,
-      sentTime,
-      const DeepCollectionEquality().hash(_medias),
-      status,
-      replyTo);
+    runtimeType,
+    id,
+    chatId,
+    msg,
+    read,
+    type,
+    toId,
+    fromId,
+    readTime,
+    sentTime,
+    const DeepCollectionEquality().hash(_medias),
+    status,
+    replyTo,
+  );
 
   /// Create a copy of ChatModel
   /// with the given fields replaced by the non-null parameter values.
@@ -370,26 +381,25 @@ class _$ChatModelImpl implements _ChatModel {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ChatModelImplToJson(
-      this,
-    );
+    return _$$ChatModelImplToJson(this);
   }
 }
 
 abstract class _ChatModel implements ChatModel {
-  factory _ChatModel(
-      {required final String id,
-      required final String chatId,
-      required final String msg,
-      required final bool read,
-      required final ChatType type,
-      required final String toId,
-      required final String fromId,
-      final DateTime? readTime,
-      required final DateTime sentTime,
-      required final List<MediaModel> medias,
-      required final MessageStatus status,
-      final ChatModel? replyTo}) = _$ChatModelImpl;
+  factory _ChatModel({
+    required final String id,
+    required final String chatId,
+    required final String msg,
+    required final bool read,
+    required final ChatType type,
+    required final String toId,
+    required final String fromId,
+    final DateTime? readTime,
+    required final DateTime sentTime,
+    required final List<MediaModel> medias,
+    required final MessageStatus status,
+    final ChatModel? replyTo,
+  }) = _$ChatModelImpl;
 
   factory _ChatModel.fromJson(Map<String, dynamic> json) =
       _$ChatModelImpl.fromJson;

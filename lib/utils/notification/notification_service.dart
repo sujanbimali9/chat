@@ -6,12 +6,9 @@ import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/core/exception/exception.dart';
 import 'package:chat/firebase_options.dart';
-import 'package:chat/src/chat/data/data_source/chat_remote_data_source.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/utils/database/local_database.dart';
 import 'package:chat/utils/helper/network_info.dart';
-import 'package:chat/utils/services/api_service.dart';
-import 'package:chat/utils/services/socket_io.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -191,9 +188,12 @@ class NotificationService {
 
       final dio = Dio(
         BaseOptions(
-          baseUrl: 'http://192.168.1.22:8000/',
+          baseUrl: const String.fromEnvironment(
+            'BASE_URL',
+            defaultValue: 'http://192.168.1.22:8000/',
+          ),
           headers: {
-            'Authorization Bearer': token,
+            'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
         ),

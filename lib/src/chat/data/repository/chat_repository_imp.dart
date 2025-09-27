@@ -201,17 +201,7 @@ class ChatRepositoryImp implements ChatRepository {
   Either<Failure, Stream<Chat>> getChatsStream(String chatId) {
     try {
       final result = _chatRemoteDataSource.getChatsStream(chatId);
-      return right(
-        result.asyncMap((chatModel) async {
-          try {
-            await _chatLocalDataSource.addChat(chatModel);
-            await _chatLocalDataSource.addLastChat(chatModel);
-          } catch (e) {
-            log('Error saving chat to local: $e');
-          }
-          return Chat.fromChatModel(chatModel);
-        }),
-      );
+      return right(result.map(Chat.fromChatModel));
     } on ServerException catch (e) {
       return left(Failure(e.message));
     } catch (e) {
@@ -321,24 +311,6 @@ class ChatRepositoryImp implements ChatRepository {
         chatModel.copyWith(status: MessageStatus.failed),
       );
       throw const ServerException('No internet connection');
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> updateReadStatus(
-    String chatId,
-    String userId,
-  ) async {
-    try {
-      final result = await _chatRemoteDataSource.updateReadStatus(
-        chatId,
-        userId,
-      );
-      return right(result);
-    } on ServerException catch (e) {
-      return left(Failure(e.message));
-    } catch (e) {
-      return left(Failure(e.toString()));
     }
   }
 }

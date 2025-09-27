@@ -12,12 +12,7 @@ class FetchMore extends ChatEvent {
 }
 
 class SendChat extends ChatEvent {
-  const SendChat(
-    this.text, {
-    required this.type,
-    this.medias,
-    this.mediaType,
-  });
+  const SendChat(this.text, {required this.type, this.medias, this.mediaType});
 
   final String text;
   final ChatType type;
@@ -28,23 +23,8 @@ class SendChat extends ChatEvent {
   List<Object> get props => [text, type, medias ?? [], mediaType ?? ''];
 }
 
-class UpdateReadStatus extends ChatEvent {
-  const UpdateReadStatus({
-    required this.chatId,
-    required this.userId,
-  });
-
-  final String chatId;
-  final String userId;
-
-  @override
-  List<Object> get props => [chatId, userId];
-}
-
 class StateEmitter extends ChatEvent {
-  const StateEmitter({
-    required this.state,
-  });
+  const StateEmitter({required this.state});
 
   final ChatState state;
 }

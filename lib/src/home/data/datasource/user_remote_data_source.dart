@@ -14,7 +14,7 @@ abstract interface class UserRemoteDataSource {
     required int offset,
   });
   Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
-  getInteractedUser({required int limit, required int offset});
+  getConversationHistory({required int limit, required int offset});
   Future<UserModel> getUserById(String id);
   Future<UserModel> getCurrentUser();
   Future<UserModel> updateUser(UserModel user);
@@ -131,7 +131,7 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
 
   @override
   Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
-  getInteractedUser({required int limit, required int offset}) {
+  getConversationHistory({required int limit, required int offset}) {
     return _handleException(() async {
       final users = await _apiService.get(
         'users/interacted',

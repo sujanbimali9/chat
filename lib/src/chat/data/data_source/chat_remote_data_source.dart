@@ -26,8 +26,6 @@ abstract interface class ChatRemoteDataSource {
     required int? lastMessagesentTime,
   });
   Future<void> removeChat(ChatModel chat);
-
-  Future<void> updateReadStatus(String chatId, String userId);
 }
 
 class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
@@ -253,15 +251,5 @@ class ChatRemoteDataSourceImp extends ChatRemoteDataSource {
       final res = await _apiService.post('chats/sendChat', data: chat.toJson());
       return ChatModel.fromJson(res);
     }, context: 'SendMessageHttp');
-  }
-
-  @override
-  Future<void> updateReadStatus(String chatId, String userId) async {
-    return await _handleException(() async {
-      await _apiService.post(
-        'chats/updateRead',
-        data: {'chatId': chatId, 'userId': userId},
-      );
-    }, context: 'UpdateReadStatus');
   }
 }

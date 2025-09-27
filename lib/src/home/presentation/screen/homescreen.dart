@@ -1,4 +1,5 @@
 import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/src/home/presentation/widgets/theme_changer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +8,7 @@ import 'package:chat/core/common/model/user.dart';
 import 'package:chat/dependency.dart';
 import 'package:chat/src/home/presentation/bloc/all_user_bloc/all_user_bloc.dart';
 import 'package:chat/src/home/presentation/bloc/current_user_bloc/current_user_bloc.dart';
-import 'package:chat/src/home/presentation/bloc/interacted_user_bloc/interacted_user_bloc_bloc.dart';
+import 'package:chat/src/home/presentation/bloc/conversation_history_bloc/conversation_history_bloc.dart';
 import 'package:chat/src/home/presentation/widgets/app_bar.dart';
 import 'package:chat/src/home/presentation/widgets/current_user_profile_image.dart';
 import 'package:chat/src/home/presentation/widgets/user_tile.dart';
@@ -52,13 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: TAppBar(
         toolbarHeight: 75.h,
         showLeading: false,
-        title: Text(
-          "Chats",
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-        actions: const [
-          CurrentUserProfileImage(),
-        ],
+        title: Text("Chats", style: Theme.of(context).textTheme.headlineLarge),
+        actions: const [ThemChanger(), CurrentUserProfileImage()],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -78,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, value, _) {
                 return [
                   _buildInteractedUsers(context),
-                  _buildAllUsers(context)
+                  _buildAllUsers(context),
                 ][value];
               },
             );
@@ -107,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildInteractedUsers(BuildContext context) {
-    return BlocBuilder<InteractedUserBloc, InteractedUserState>(
+    return BlocBuilder<ConversationHistoryBloc, ConversationHistory>(
       builder: (context, state) {
         return state.maybeMap(
           loaded: (data) => _buildChatList(usersWithChats: data.data),
@@ -119,22 +115,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAllUsers(
-    BuildContext context,
-  ) {
+  Widget _buildAllUsers(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        final users = state.mapOrNull(
-          loaded: (e) => e.users,
-          fetchingMore: (e) => e.users,
-        );
-
         return state.maybeMap(
-          searchedUser: (e) => _buildChatListWithSearch(
-            e.allUser,
-          ),
-          loaded: (_) => _buildChatListWithSearch(users!),
-          fetchingMore: (_) => _buildChatListWithSearch(users!),
+          searchedUser: (e) => _buildChatListWithSearch(e.allUser),
+          loaded: (state) => _buildChatListWithSearch(state.users),
+          fetchingMore: (state) => _buildChatListWithSearch(state.users),
           error: (_) => const Center(child: Text('Error')),
           orElse: () => const Center(child: CircularProgressIndicator()),
         );
@@ -163,10 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
         cursorHeight: 15,
         decoration: InputDecoration(
           hintText: "Search",
-          hintStyle: TextStyle(
-            fontSize: 16.sp,
-            color: Colors.grey,
-          ),
+          hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
           prefixIcon: const Icon(Icons.search),
           enabledBorder: border,
           focusedBorder: border,
