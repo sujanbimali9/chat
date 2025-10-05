@@ -18,7 +18,6 @@ import 'package:chat/utils/generator/list/extensions.dart';
 import 'package:chat/utils/generator/media/image_metadata.dart';
 import 'package:chat/utils/helper/network_info.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:chat/utils/helper/semaphore.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 
@@ -35,89 +34,49 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
 
   @override
   Future<Either<Failure, Chat>> sendChat(Chat chat) async {
+    ChatModel? chatModel;
+
     return await handleException(
       () async {
-        var chatModel = ChatModel.fromChat(chat);
-        var mediaModel = <MediaModel>[];
+        chatModel = ChatModel.fromChat(chat);
 
-        if (chat.medias.isNotEmpty) {
-          mediaModel = await _processMediaMetadataParallel(chat.medias);
+        if (chatModel!.medias.isNotEmpty) {
+          final processedMedia = await _processMediaMetadataParallel(
+            chat.medias,
+          );
+          chatModel = chatModel!.copyWith(medias: processedMedia);
         }
 
-        chatModel = ChatModel.fromChat(chat).copyWith(medias: mediaModel);
-
-        await saveToLocalOnNoConnection(chatModel);
+        await _saveToLocalOnNoConnection(chatModel!);
 
         await _chatLocalDataSource.addChat(
-          chatModel.copyWith(status: MessageStatus.sending),
+          chatModel!.copyWith(status: MessageStatus.sending),
         );
 
-        if (chat.medias.isNotEmpty) {
-          mediaModel = await _uploadFilesParallel(mediaModel, chat.chatId);
-          chatModel = chatModel.copyWith(medias: mediaModel);
+        if (chatModel!.medias.isNotEmpty) {
+          final uploadedMedia = await _uploadFilesParallel(
+            chatModel!.medias,
+            chat.chatId,
+          );
+          chatModel = chatModel!.copyWith(medias: uploadedMedia);
         }
 
-        chatModel = chatModel.copyWith(status: MessageStatus.sent);
+        chatModel = chatModel!.copyWith(status: MessageStatus.sent);
 
-        final result = await _chatRemoteDataSource.sendMessage(chatModel);
+        final result = await _chatRemoteDataSource.sendMessage(chatModel!);
 
         await _chatLocalDataSource.addChat(result);
         await _chatLocalDataSource.upsertConversation(result);
+
         return result;
       },
       context: 'ChatRepositoryImp.sendChat',
       customErrorHandler: (e) {
         log(
-          'SendMessage Error: $e, MessageType: ${ChatModel.fromChat(chat).type}',
+          'SendMessage Error: $e, MessageType: ${chatModel?.type ?? "unknown"}',
         );
-        return _handleSendChatError(ChatModel.fromChat(chat));
+        return _handleSendChatError(chatModel ?? ChatModel.fromChat(chat));
       },
-    );
-  }
-
-  Future<List<MediaModel>> _processMediaMetadataParallel(
-    List<Media> medias,
-  ) async {
-    final semaphore = Semaphore(AppConstants.maxMediaConcurrency);
-
-    final futures = medias.map((media) async {
-      await semaphore.acquire();
-      try {
-        return await _processMediaWithMetadata(media);
-      } finally {
-        semaphore.release();
-      }
-    });
-
-    return await Future.wait(futures);
-  }
-
-  Future<MediaModel> _processMediaWithMetadata(Media media) async {
-    final fileType = _fileType(media.url);
-    final title = media.url.split('/').last;
-    var metadata = media.metadata.copyWith(title: title);
-
-    try {
-      if (fileType.isImage) {
-        final aspectRatio = await getImageAspectRatio(media.url);
-        metadata = metadata.copyWith(aspectRatio: aspectRatio);
-      } else if (fileType.isVideo) {
-        final thumbnail = await getVideoThumbnail(media.url);
-        final aspectRatio = await getImageAspectRatio(thumbnail);
-        metadata = metadata.copyWith(
-          thumbnail: thumbnail,
-          aspectRatio: aspectRatio,
-        );
-      }
-    } catch (e) {
-      log(
-        'Error processing media metadata: $e',
-        name: 'ChatRepositoryImp._processMediaWithMetadata',
-      );
-    }
-
-    return MediaModel.fromMedia(
-      media.copyWith(type: fileType, metadata: metadata),
     );
   }
 
@@ -125,49 +84,55 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
     List<MediaModel> mediaModels,
     String chatId,
   ) async {
-    final imageMedias = <MediaModel>[];
-    final videoMedias = <MediaModel>[];
-    final fileMedias = <MediaModel>[];
-
-    for (final mediaModel in mediaModels) {
-      if (mediaModel.type.isImage) {
-        imageMedias.add(mediaModel);
-      } else if (mediaModel.type.isVideo) {
-        videoMedias.add(mediaModel);
-      } else {
-        fileMedias.add(mediaModel);
-      }
-    }
-
+    final groupedMedia = _groupMediaByType(mediaModels);
     final uploadTasks = <Future<List<MediaModel>>>[];
 
-    if (imageMedias.isNotEmpty) {
-      uploadTasks.add(_chatRemoteDataSource.sendImages(imageMedias, chatId));
+    if (groupedMedia['images']!.isNotEmpty) {
+      uploadTasks.add(
+        _chatRemoteDataSource.sendImages(groupedMedia['images']!, chatId),
+      );
     }
-    if (videoMedias.isNotEmpty) {
-      uploadTasks.add(_chatRemoteDataSource.sendVideos(videoMedias, chatId));
+
+    if (groupedMedia['videos']!.isNotEmpty) {
+      uploadTasks.add(
+        _chatRemoteDataSource.sendVideos(groupedMedia['videos']!, chatId),
+      );
     }
-    if (fileMedias.isNotEmpty) {
-      uploadTasks.add(_chatRemoteDataSource.sendFiles(fileMedias, chatId));
+
+    if (groupedMedia['files']!.isNotEmpty) {
+      uploadTasks.add(
+        _chatRemoteDataSource.sendFiles(groupedMedia['files']!, chatId),
+      );
     }
 
     if (uploadTasks.isEmpty) return [];
 
     final results = await Future.wait(uploadTasks);
+    return results.expand((result) => result).toList();
+  }
 
-    final allResults = <MediaModel>[];
-    for (final result in results) {
-      allResults.addAll(result);
+  Map<String, List<MediaModel>> _groupMediaByType(
+    List<MediaModel> mediaModels,
+  ) {
+    final images = <MediaModel>[];
+    final videos = <MediaModel>[];
+    final files = <MediaModel>[];
+
+    for (final media in mediaModels) {
+      if (media.type.isImage) {
+        images.add(media);
+      } else if (media.type.isVideo) {
+        videos.add(media);
+      } else {
+        files.add(media);
+      }
     }
 
-    return allResults;
+    return {'images': images, 'videos': videos, 'files': files};
   }
 
   Failure _handleSendChatError(ChatModel chatModel) {
     final failedChatModel = chatModel.copyWith(status: MessageStatus.failed);
-    if (failedChatModel.medias.isNotEmpty) {
-      return Failure('Cannot send message with media when offline');
-    }
 
     _chatLocalDataSource.addChat(failedChatModel).catchError((e) {
       log(
@@ -175,17 +140,19 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
         name: 'ChatRepositoryImp._handleSendChatError',
       );
     });
+
     _chatLocalDataSource.upsertConversation(failedChatModel).catchError((e) {
       log(
         'Error updating conversation for failed chat: $e',
         name: 'ChatRepositoryImp._handleSendChatError',
       );
     });
+
     return Failure(ErrorMessages.messageSendFailed);
   }
 
   @override
-  Future<Either<Failure, void>> removeChat(final Chat chat) async {
+  Future<Either<Failure, void>> removeChat(Chat chat) async {
     return await handleException(() async {
       final chatModel = ChatModel.fromChat(chat);
       final result = await _chatRemoteDataSource.removeChat(chatModel);
@@ -195,9 +162,9 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
   }
 
   @override
-  Either<Failure, Stream<Chat>> getChatsStream(String chatId) {
+  Either<Failure, Stream<List<Chat>>> getChatsStream(String chatId) {
     try {
-      final result = _chatRemoteDataSource.getChatsStream(chatId);
+      final result = _chatLocalDataSource.getChatsStream(chatId);
       return right(result);
     } on ServerException catch (e) {
       return left(Failure(e.message));
@@ -215,12 +182,11 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
   }) async {
     return await handleException(() async {
       if (localOnly) {
-        final result = await _chatLocalDataSource.getChats(
+        return await _chatLocalDataSource.getChats(
           chatId,
           limit: limit,
           lastMessageSentTime: lastMessageSentTime,
         );
-        return result;
       }
 
       final result = await _chatRemoteDataSource.getChats(
@@ -228,6 +194,7 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
         limit: limit,
         lastMessagesentTime: lastMessageSentTime,
       );
+
       await _chatLocalDataSource.addChatsAll(result.data);
       return result;
     }, context: 'ChatRepositoryImp.getChats');
@@ -237,11 +204,61 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
   Future<Either<Failure, List<Chat>>> getPendingChat() async {
     return await handleException(() async {
       final result = await _chatLocalDataSource.getPendingChat();
-      return result.toList();
+      return result;
     }, context: 'ChatRepositoryImp.getPendingChat');
   }
 
-  MediaType _fileType(String name) {
+  Future<void> _saveToLocalOnNoConnection(ChatModel chatModel) async {
+    if (!_networkInfo.checkConnection()) {
+      await _chatLocalDataSource.addChat(
+        chatModel.copyWith(status: MessageStatus.failed),
+      );
+      await _chatLocalDataSource.upsertConversation(
+        chatModel.copyWith(status: MessageStatus.failed),
+      );
+      throw const ServerException('No internet connection');
+    }
+  }
+
+  Future<List<MediaModel>> _processMediaMetadataParallel(
+    List<Media> medias,
+  ) async {
+    return Future.wait(medias.map(_processMediaWithMetadata));
+  }
+
+  Future<MediaModel> _processMediaWithMetadata(Media media) async {
+    final fileType = _getFileType(media.url);
+    final title = media.url.split('/').last;
+    var metadata = media.metadata.copyWith(title: title);
+
+    try {
+      if (fileType.isImage) {
+        final aspectRatio = await _getImageAspectRatio(media.url);
+        metadata = metadata.copyWith(aspectRatio: aspectRatio);
+      } else if (fileType.isVideo) {
+        log('Generating thumbnail for video: ${media.url}');
+        final thumbnail = await _getVideoThumbnail(media.url);
+        log('Generated thumbnail at: $thumbnail');
+        final aspectRatio = await _getImageAspectRatio(thumbnail);
+        log('Video aspect ratio: $aspectRatio');
+        metadata = metadata.copyWith(
+          thumbnail: thumbnail,
+          aspectRatio: aspectRatio,
+        );
+      }
+    } catch (e) {
+      log(
+        'Error processing media metadata: $e',
+        name: 'ChatRepositoryImp._processMediaWithMetadata',
+      );
+    }
+
+    return MediaModel.fromMedia(
+      media.copyWith(type: fileType, metadata: metadata),
+    );
+  }
+
+  MediaType _getFileType(String name) {
     final fileExtension = name.split('.').last;
     if (imageExtensions.contains(fileExtension)) {
       return MediaType.image;
@@ -252,29 +269,19 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
     }
   }
 
-  Future<double> getImageAspectRatio(String compressedImage) {
-    final aspectRatio = ImageMetadata.getImageAspectRatio(
-      path: compressedImage,
-      extension: compressedImage.split('.').last,
+  Future<double> _getImageAspectRatio(String imagePath) {
+    return ImageMetadata.getImageAspectRatio(
+      path: imagePath,
+      extension: imagePath.split('.').last,
     );
-    return aspectRatio;
   }
 
-  Future<String> getVideoThumbnail(String path) async {
+  Future<String> _getVideoThumbnail(String path) async {
     final thumbnail = await VideoThumbnail.thumbnailFile(
       video: path,
       imageFormat: ImageFormat.JPEG,
       quality: 100,
     );
     return thumbnail.path;
-  }
-
-  Future<void> saveToLocalOnNoConnection(ChatModel chatModel) async {
-    if (!_networkInfo.checkConnection()) {
-      await _chatLocalDataSource.addPending(
-        chatModel.copyWith(status: MessageStatus.failed),
-      );
-      throw const ServerException('No internet connection');
-    }
   }
 }

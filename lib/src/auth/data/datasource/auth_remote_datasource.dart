@@ -5,8 +5,6 @@ import 'package:chat/utils/services/api_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 @immutable
 abstract interface class AuthRemoteDataSource {
@@ -55,11 +53,7 @@ class AuthRemoteDataSourceImp
   @override
   Future<AuthResult> logout() async {
     return handleNetworkException(() async {
-      final googleSignIn = GoogleSignIn();
-      final facebookAuth = FacebookAuth.instance;
       await _firebaseAuth.signOut();
-      await googleSignIn.signOut();
-      await facebookAuth.logOut();
       await FirebaseMessaging.instance.deleteToken();
       return AuthResult.success;
     }, context: 'logout');

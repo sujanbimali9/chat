@@ -134,7 +134,7 @@ class ConversationHistoryBloc
     );
     result.fold(
       (l) {
-        log('Failed to get InteractedUsersLocal');
+        log('Failed to get InteractedUsersLocal : ${l.message}');
         emit(ConversationHistory.error(l.message));
       },
       (res) {

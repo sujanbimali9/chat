@@ -8,7 +8,7 @@ import 'package:fpdart/fpdart.dart';
 
 abstract interface class ChatRepository {
   Future<Either<Failure, Chat>> sendChat(Chat chat);
-  Either<Failure, Stream<Chat>> getChatsStream(String chatId);
+  Either<Failure, Stream<List<Chat>>> getChatsStream(String chatId);
   Future<Either<Failure, ApiResponse<Chat, ChatPagination>>> getChats(
     String chatId, {
     required int limit,

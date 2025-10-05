@@ -13,8 +13,10 @@ import 'package:chat/src/chat/domain/usecase/get_chat_stream.dart';
 import 'package:chat/src/chat/domain/usecase/send_message.dart';
 import 'package:chat/src/chat/presentation/bloc/reply_cubit/reply_cubit.dart';
 import 'package:chat/utils/generator/id_generator.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'package:uuid/uuid.dart';
 
 part 'chat_event.dart';
@@ -29,7 +31,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final String _userId;
   final String _currentUserId;
   bool allChatsLoaded = false;
-  StreamSubscription<Chat>? chatSubscription;
+  StreamSubscription<List<Chat>>? chatSubscription;
   StreamSubscription? connectivitySubscription;
 
   ChatPagination? _chatPagination;
@@ -69,7 +71,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _initListeners() {
-    // add(const ListenForNewChats());
+    add(const ListenForNewChats());
     add(const FetchMore());
   }
 
@@ -156,7 +158,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     }
 
-    final chat = Chat(
+    Chat chat = Chat(
       id: const Uuid().v4(),
       msg: msg,
       toId: _userId,
@@ -181,7 +183,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
 
     _replyCubit.cancelReply();
-    emit(ChatLoaded(mergeChatList(state.chats, [chat])));
 
     final res = await _sendChatUseCase(chat);
 
@@ -211,9 +212,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
   }
 
-  void _handleNewChats(Chat chat) {
+  void _handleNewChats(List<Chat> chats) {
     if (isClosed) return;
-    add(StateEmitter(state: ChatLoaded(mergeChatList(state.chats, [chat]))));
+    add(StateEmitter(state: ChatLoaded(mergeChatList(state.chats, chats))));
   }
 
   void _scheduleRetry(ChatEvent event) {

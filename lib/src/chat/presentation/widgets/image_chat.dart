@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/core/common/model/media.dart';
@@ -71,57 +70,31 @@ class ChatImageBuilder extends StatefulWidget {
 }
 
 class _ChatImageBuilderState extends State<ChatImageBuilder> {
-  Uint8List? _localImageByte;
+  Image? image;
 
   @override
   void initState() {
-    if (widget.status.isSending) _loadLocalImage();
     super.initState();
-  }
-
-  @override
-  didChangeDependencies() {
-    if (widget.status.isSending) _loadLocalImage();
-    super.didChangeDependencies();
-  }
-
-  Future<void> _loadLocalImage() async {
-    final byteData = await File(widget.image).readAsBytes();
-    if (mounted) {
-      setState(() {
-        _localImageByte = byteData;
-      });
+    if (!widget.status.isSent) {
+      image = Image.file(File(widget.image), fit: BoxFit.cover);
     }
-  }
-
-  @override
-  dispose() {
-    _localImageByte = null;
-    super.dispose();
-  }
-
-  Widget _buildImage() {
-    if (_localImageByte == null && widget.status.isSending) {
-      return Container(color: Colors.grey);
-    } else if (widget.status.isFailed) {
-      return Image.file(File(widget.image), fit: BoxFit.cover);
-    } else if (_localImageByte != null && widget.status.isSent) {
-      return FadeInImage(
-        placeholder: MemoryImage(_localImageByte!),
-        image: CachedNetworkImageProvider(widget.image),
-        fit: BoxFit.cover,
-      );
-    }
-    return CachedNetworkImage(
-      imageUrl: widget.image,
-      fit: BoxFit.cover,
-      placeholder: (context, url) => Container(color: Colors.grey),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: widget.onPressed, child: _buildImage());
+    return GestureDetector(
+      onTap: widget.onPressed,
+      child: widget.status.isSent
+          ? CachedNetworkImage(
+              imageUrl: widget.image,
+              fit: BoxFit.cover,
+              fadeInDuration: Duration.zero,
+              fadeOutDuration: Duration.zero,
+              placeholder: (context, url) =>
+                  image ?? Container(color: Colors.grey),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            )
+          : image ?? Container(color: Colors.grey),
+    );
   }
 }

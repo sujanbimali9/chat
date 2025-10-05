@@ -19,41 +19,52 @@ mixin ExceptionHandlerMixin {
     try {
       final result = await operation();
       return right(result);
-    } on ServerException catch (e) {
-      log('Server Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(_mapServerException(e));
-    } on CacheException catch (e) {
-      log('Cache Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(CacheFailure(e.message));
-    } on BadRequestException catch (e) {
-      log('Bad Request Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(BadRequestFailure(e.message));
-    } on UnauthorizedException catch (e) {
-      log(
-        'Unauthorized Exception: ${e.message}',
-        name: '$runtimeType.$context',
-      );
-      return left(UnauthorizedFailure(e.message));
-    } on ForbiddenException catch (e) {
-      log('Forbidden Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(ForbiddenFailure(e.message));
-    } on NotFoundException catch (e) {
-      log('Not Found Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(NotFoundFailure(e.message));
-    } on TimeoutException catch (e) {
-      log('Timeout Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(TimeoutFailure(e.message));
-    } on NoInternetException catch (e) {
-      log('No Internet Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(NoInternetFailure(e.message));
-    } on AuthException catch (e) {
-      log('Auth Exception: ${e.message}', name: '$runtimeType.$context');
-      return left(AuthFailure(e.message));
     } on Exception catch (e) {
+      // 🔹 Custom error handler has highest priority
       if (customErrorHandler != null) {
-        log('Custom Exception: $e', name: '$runtimeType.$context');
-        return left(customErrorHandler(e));
+        final customFailure = customErrorHandler(e);
+        log('Custom Exception handled: $e', name: '$runtimeType.$context');
+        return left(customFailure);
       }
+
+      if (e is ServerException) {
+        log('Server Exception: ${e.message}', name: '$runtimeType.$context');
+        return left(_mapServerException(e));
+      } else if (e is CacheException) {
+        log('Cache Exception: ${e.message}', name: '$runtimeType.$context');
+        return left(CacheFailure(e.message));
+      } else if (e is BadRequestException) {
+        log(
+          'Bad Request Exception: ${e.message}',
+          name: '$runtimeType.$context',
+        );
+        return left(BadRequestFailure(e.message));
+      } else if (e is UnauthorizedException) {
+        log(
+          'Unauthorized Exception: ${e.message}',
+          name: '$runtimeType.$context',
+        );
+        return left(UnauthorizedFailure(e.message));
+      } else if (e is ForbiddenException) {
+        log('Forbidden Exception: ${e.message}', name: '$runtimeType.$context');
+        return left(ForbiddenFailure(e.message));
+      } else if (e is NotFoundException) {
+        log('Not Found Exception: ${e.message}', name: '$runtimeType.$context');
+        return left(NotFoundFailure(e.message));
+      } else if (e is TimeoutException) {
+        log('Timeout Exception: ${e.message}', name: '$runtimeType.$context');
+        return left(TimeoutFailure(e.message));
+      } else if (e is NoInternetException) {
+        log(
+          'No Internet Exception: ${e.message}',
+          name: '$runtimeType.$context',
+        );
+        return left(NoInternetFailure(e.message));
+      } else if (e is AuthException) {
+        log('Auth Exception: ${e.message}', name: '$runtimeType.$context');
+        return left(AuthFailure(e.message));
+      }
+
       log('Unexpected Exception: $e', name: '$runtimeType.$context');
       return left(Failure(e.toString()));
     } catch (e) {

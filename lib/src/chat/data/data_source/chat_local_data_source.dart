@@ -1,5 +1,4 @@
 import 'package:chat/core/common/model/api_response.dart';
-import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/mixins/exception_handler_mixin.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
@@ -13,11 +12,11 @@ abstract interface class ChatLocalDataSource {
     required int limit,
     required int? lastMessageSentTime,
   });
+  Stream<List<ChatModel>> getChatsStream(String chatId);
   Future<void> removeChat(ChatModel chat);
   Future<void> updateRead(String chatId);
   Future<void> addChat(ChatModel chat);
   Future<void> addChatsAll(List<ChatModel> chats);
-  Future<void> addPending(ChatModel chat);
   Future<List<ChatModel>> getPendingChat();
   Future<void> upsertConversation(ChatModel chat);
 }
@@ -61,13 +60,6 @@ class ChatLocalDataSourceImp
   }
 
   @override
-  Future<void> addPending(ChatModel chat) async {
-    return await handleLocalException(() async {
-      await _chatQuery.insertChat(chat.copyWith(status: MessageStatus.sending));
-    }, context: 'addPending');
-  }
-
-  @override
   Future<void> addChatsAll(List<ChatModel> chats) async {
     return await handleLocalException(() async {
       await _chatQuery.insertChats(chats);
@@ -93,5 +85,14 @@ class ChatLocalDataSourceImp
     return handleLocalException(() async {
       await _userQuery.upsertConversation(chat);
     }, context: 'addLastChat');
+  }
+
+  @override
+  Stream<List<ChatModel>> getChatsStream(String chatId) {
+    try {
+      return _chatQuery.getChatsStream(chatId);
+    } catch (e) {
+      throw Exception('Failed to get chat stream: $e');
+    }
   }
 }

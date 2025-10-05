@@ -190,4 +190,37 @@ class ChatTableQuery extends DatabaseAccessor<LocalDatabase>
       await delete(chatTable).go();
     });
   }
+
+  Stream<List<ChatModel>> getChatsStream(String chatId) {
+    final cTable = alias(chatTable, 'chat');
+    final rTable = alias(chatTable, 'reply');
+
+    final query =
+        (select(cTable)
+              ..where((tbl) => tbl.chatId.equals(chatId))
+              ..orderBy([
+                (tbl) => OrderingTerm(
+                  expression: tbl.sentTime,
+                  mode: OrderingMode.desc,
+                ),
+              ])
+              ..limit(10))
+            .join([
+              leftOuterJoin(rTable, cTable.replyToId.equalsExp(rTable.id)),
+            ])
+            .watch()
+            .map((rows) {
+              return rows.map((row) {
+                final mainChat = row.readTable(cTable);
+                final replyChat = row.readTableOrNull(rTable);
+                return ChatModel.fromChatEntity(mainChat).copyWith(
+                  replyTo: replyChat != null
+                      ? ChatModel.fromChatEntity(replyChat)
+                      : null,
+                );
+              }).toList();
+            });
+
+    return query;
+  }
 }

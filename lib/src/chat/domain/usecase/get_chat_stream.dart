@@ -4,14 +4,14 @@ import 'package:chat/core/usecase/usecase_stream.dart';
 import 'package:chat/src/chat/domain/repository/chat_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
-class GetChatStreamUseCase implements UseCaseStream<Chat, String> {
+class GetChatStreamUseCase implements UseCaseStream<List<Chat>, String> {
   final ChatRepository _chatRepository;
 
   GetChatStreamUseCase(ChatRepository chatRepository)
-      : _chatRepository = chatRepository;
+    : _chatRepository = chatRepository;
 
   @override
-  Either<Failure, Stream<Chat>> call(String parms) {
+  Either<Failure, Stream<List<Chat>>> call(String parms) {
     return _chatRepository.getChatsStream(parms);
   }
 }

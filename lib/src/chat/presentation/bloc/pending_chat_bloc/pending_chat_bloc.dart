@@ -28,6 +28,7 @@ class PendingChatBloc extends Bloc<PendingChatEvent, PendingChatState> {
   ) : super(PendingChatInitial()) {
     on<RetryPendingChats>(_retryPendingChats);
     listenToConnectivity();
+    add(const RetryPendingChats());
   }
 
   FutureOr<void> _retryPendingChats(
