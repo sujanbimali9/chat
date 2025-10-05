@@ -11,12 +11,11 @@ abstract interface class AuthRepository {
     required String phoneNumber,
   });
   Future<Either<Failure, AuthResponse>> logout();
-  Future<Either<Failure, AuthResponse>> forgotPassword(String email);
   Future<Either<Failure, AuthResponse>> resetPassword(String email);
-  Future<Either<Failure, User>> loginWithGmail();
-  Future<Either<Failure, User>> loginWithFacebook();
   Future<Either<Failure, User>> loginWithEmailAndPassword(
-      String email, String password);
+    String email,
+    String password,
+  );
   bool emailVerified();
   Future<Either<Failure, User?>> userLoggedIn();
 }

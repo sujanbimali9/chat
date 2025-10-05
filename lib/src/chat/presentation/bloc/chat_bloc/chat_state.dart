@@ -2,9 +2,7 @@ part of 'chat_bloc.dart';
 
 @immutable
 sealed class ChatState extends Equatable {
-  const ChatState(
-    this.chats,
-  );
+  const ChatState(this.chats);
   final List<Chat> chats;
 
   @override
@@ -26,10 +24,7 @@ class ChatLoaded extends ChatState {
 class ChatError extends ChatState {
   final String message;
 
-  const ChatError(
-    super.chats, {
-    required this.message,
-  });
+  const ChatError(super.chats, {required this.message});
 
   @override
   List<Object> get props => [...super.props, message];

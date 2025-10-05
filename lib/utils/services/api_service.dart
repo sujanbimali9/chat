@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:typed_data';
+import 'package:chat/core/event/global_event_bus.dart';
 import 'package:chat/core/exception/exception.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,7 @@ class ApiService {
       ..connectTimeout = const Duration(seconds: 30)
       ..receiveTimeout = const Duration(seconds: 30)
       ..headers = {'Content-Type': 'application/json'};
+
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -26,6 +28,12 @@ class ApiService {
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);
+        },
+        onError: (error, handler) {
+          if (error.response?.statusCode == 401) {
+            GlobalEventBus.emit(TokenExpiredEvent());
+          }
+          return handler.next(error);
         },
       ),
     );
@@ -64,6 +72,7 @@ class ApiService {
     try {
       return await request();
     } on DioException catch (e) {
+      log('Dio Exception: ${e.message}', name: 'ApiService');
       _handleException(e);
       rethrow;
     }
@@ -109,6 +118,7 @@ class ApiService {
     required String storagePath,
     String? url,
     Map<String, dynamic>? data,
+    void Function(int sent, int total)? progress,
   }) async {
     return _handleError(() async {
       final formData = FormData.fromMap({
@@ -116,7 +126,15 @@ class ApiService {
         'storagePath': storagePath,
         ...?data,
       });
-      final response = await _dio.post(url ?? 'upload', data: formData);
+      final response = await _dio.post(
+        url ?? 'upload',
+        data: formData,
+        onSendProgress: (sent, total) {
+          if (progress != null) {
+            progress(sent, total);
+          }
+        },
+      );
       return response.data;
     });
   }
@@ -126,6 +144,7 @@ class ApiService {
     required String storagePath,
     String? url,
     Map<String, dynamic>? data,
+    void Function(int sent, int total)? progress,
   }) async {
     return _handleError(() async {
       final formData = FormData.fromMap({
@@ -133,7 +152,15 @@ class ApiService {
         'storagePath': storagePath,
         ...?data,
       });
-      final response = await _dio.post(url ?? 'upload', data: formData);
+      final response = await _dio.post(
+        url ?? 'upload',
+        data: formData,
+        onSendProgress: (sent, total) {
+          if (progress != null) {
+            progress(sent, total);
+          }
+        },
+      );
       return response.data;
     });
   }
@@ -143,6 +170,7 @@ class ApiService {
     required String storagePath,
     String? url,
     List<Map<String, dynamic>>? data,
+    void Function(int sent, int total)? progress,
   }) async {
     return _handleError(() async {
       final multipart = filesPath.map((path) async {
@@ -154,7 +182,15 @@ class ApiService {
         'data': data,
       });
 
-      final response = await _dio.post(url ?? 'uploads', data: formData);
+      final response = await _dio.post(
+        url ?? 'uploads',
+        data: formData,
+        onSendProgress: (sent, total) {
+          if (progress != null) {
+            progress(sent, total);
+          }
+        },
+      );
       return response.data;
     });
   }
@@ -164,6 +200,7 @@ class ApiService {
     required String storagePath,
     String? url,
     List<Map<String, dynamic>>? data,
+    void Function(int sent, int total)? progress,
   }) async {
     return _handleError(() async {
       final formData = FormData.fromMap({
@@ -173,15 +210,33 @@ class ApiService {
         'storagePath': storagePath,
         'data': data,
       });
-      log('formData: ${formData.fields}');
-      final response = await _dio.post(url ?? 'uploads', data: formData);
+      final response = await _dio.post(
+        url ?? 'uploads',
+        data: formData,
+        onSendProgress: (sent, total) {
+          if (progress != null) {
+            progress(sent, total);
+          }
+        },
+      );
       return response.data;
     });
   }
 
-  Future<T> download<T>(String path) async {
+  Future<T> download<T>(
+    String path, {
+    void Function(int sent, int total)? progress,
+  }) async {
     return _handleError(() async {
-      final response = await _dio.download(path, 'download');
+      final response = await _dio.download(
+        path,
+        'download',
+        onReceiveProgress: (received, total) {
+          if (progress != null) {
+            progress(received, total);
+          }
+        },
+      );
       return response.data;
     });
   }

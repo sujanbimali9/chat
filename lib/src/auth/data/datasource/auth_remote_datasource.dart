@@ -1,6 +1,4 @@
-import 'dart:developer';
-
-import 'package:chat/core/exception/exception.dart';
+import 'package:chat/core/mixins/exception_handler_mixin.dart';
 import 'package:chat/src/auth/data/model/auth_result.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
 import 'package:chat/utils/services/api_service.dart';
@@ -19,61 +17,28 @@ abstract interface class AuthRemoteDataSource {
     required String phoneNumber,
   });
   Future<AuthResult> logout();
-  Future<AuthResult> forgotPassword(String email);
   Future<AuthResult> resetPassword(String email);
-  Future<UserModel> loginWithGmail();
-  Future<UserModel> loginWithFacebook();
   Future<UserModel> loginWithEmailAndPassword(String email, String password);
   String? get isUserLoggedIn;
   bool get emailVerified;
   User? get currentUser;
 }
 
-class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImp
+    with NetworkExceptionHandlerMixin
+    implements AuthRemoteDataSource {
   final FirebaseAuth _firebaseAuth;
 
   final ApiService _apiService;
 
   AuthRemoteDataSourceImp(this._firebaseAuth, this._apiService);
 
-  Future<T> _handleException<T>(
-    Future<T> Function() operation, {
-    String context = '',
-  }) async {
-    try {
-      return await operation();
-    } on FirebaseAuthException catch (e) {
-      log(
-        'Firebase Auth Exception: ${e.message}',
-        name: 'AuthRemoteDataSource.$context',
-      );
-      throw ServerException(e.message ?? 'error');
-    } on ServerException catch (e) {
-      log(
-        'Server Exception: ${e.message}',
-        name: 'AuthRemoteDataSource.$context',
-      );
-      rethrow;
-    } catch (e) {
-      log('Unexpected Exception: $e', name: 'AuthRemoteDataSource.$context');
-      throw ServerException(e.toString());
-    }
-  }
-
-  @override
-  Future<AuthResult> forgotPassword(String email) async {
-    return _handleException(() async {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
-      return AuthResult.success;
-    }, context: 'AuthRemoteDataSourceImp.forgotPassword');
-  }
-
   @override
   Future<UserModel> loginWithEmailAndPassword(
     String email,
     String password,
   ) async {
-    return _handleException(() async {
+    return handleNetworkException(() async {
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -88,78 +53,8 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> loginWithFacebook() async {
-    return _handleException(() async {
-      final facebookAuth = FacebookAuth.instance;
-      final loginResult = await facebookAuth.login();
-      if (loginResult.status != LoginStatus.success) {
-        throw const AuthException('login failed try again later');
-      }
-      final accessToken = loginResult.accessToken;
-      if (accessToken == null) {
-        throw const AuthException('login failed try again later');
-      }
-      final credential = FacebookAuthProvider.credential(
-        accessToken.tokenString,
-      );
-      final res = await _firebaseAuth.signInWithCredential(credential);
-      if (res.user == null) {
-        throw const ServerException('login failed try again later');
-      }
-      final firebaseUser = res.user!;
-
-      final user = await _apiService.post<Map<String, dynamic>>(
-        'auth/social',
-        data: {
-          'id': firebaseUser.uid,
-          'email': firebaseUser.email,
-          'name': firebaseUser.displayName,
-          'avatar_url': firebaseUser.photoURL,
-          'phone': firebaseUser.phoneNumber,
-        },
-      );
-      return UserModel.fromJson(user);
-    }, context: 'loginWithFacebook');
-  }
-
-  @override
-  Future<UserModel> loginWithGmail() async {
-    return _handleException(() async {
-      final googleSignIn = GoogleSignIn();
-      final signinAccount = await googleSignIn.signIn();
-      if (signinAccount == null) {
-        throw const AuthException('login failed try again later');
-      }
-      final googleAuth = await signinAccount.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final res = await _firebaseAuth.signInWithCredential(credential);
-
-      if (res.user == null) {
-        throw const ServerException('login failed try again later');
-      }
-
-      final firebaseUser = res.user!;
-
-      final user = await _apiService.post<Map<String, dynamic>>(
-        'auth/social',
-        data: {
-          'id': firebaseUser.uid,
-          'email': firebaseUser.email,
-          'name': firebaseUser.displayName,
-          'profileImage': firebaseUser.photoURL,
-          'phone': firebaseUser.phoneNumber,
-        },
-      );
-      return UserModel.fromJson(user);
-    }, context: 'loginWithGmail');
-  }
-
-  @override
   Future<AuthResult> logout() async {
-    return _handleException(() async {
+    return handleNetworkException(() async {
       final googleSignIn = GoogleSignIn();
       final facebookAuth = FacebookAuth.instance;
       await _firebaseAuth.signOut();
@@ -177,7 +72,7 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
     required String name,
     required String phoneNumber,
   }) async {
-    return _handleException(() async {
+    return handleNetworkException(() async {
       final res = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -198,7 +93,7 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
 
   @override
   Future<AuthResult> resetPassword(String email) async {
-    return _handleException(() async {
+    return handleNetworkException(() async {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
       return AuthResult.success;
     }, context: 'resetPassword');

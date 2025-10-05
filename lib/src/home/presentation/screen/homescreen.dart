@@ -1,4 +1,4 @@
-import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/core/common/model/conversation.dart';
 import 'package:chat/src/home/presentation/widgets/theme_changer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildChatList({
     List<User>? users,
-    List<({User user, Chat chat})>? usersWithChats,
+    List<Conversation>? usersWithChats,
   }) {
     final isInteractedList = usersWithChats != null;
     return RefreshIndicator(

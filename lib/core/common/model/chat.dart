@@ -1,11 +1,9 @@
 import 'package:chat/core/common/model/media.dart';
-import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/utils/generator/id_generator.dart';
-import 'package:equatable/equatable.dart';
 
 import 'package:chat/core/enum/chat_type.dart';
 
-class Chat extends Equatable {
+class Chat {
   final String id;
   final String chatId;
   final String msg;
@@ -32,21 +30,9 @@ class Chat extends Equatable {
     required this.status,
     this.replyTo,
   }) : chatId = IdGenerator.getConversionId(fromId, toId);
-  @override
-  get props => [
-        msg,
-        toId,
-        read,
-        type,
-        fromId,
-        readTime,
-        sentTime,
-        medias,
-        status,
-        chatId,
-        replyTo,
-      ];
+}
 
+extension ChatExtension on Chat {
   Chat copyWith({
     String? id,
     String? msg,
@@ -72,23 +58,6 @@ class Chat extends Equatable {
       medias: medias ?? this.medias,
       status: status ?? this.status,
       replyTo: replyTo ?? this.replyTo,
-    );
-  }
-
-  factory Chat.fromChatModel(ChatModel result) {
-    return Chat(
-      id: result.id,
-      msg: result.msg,
-      toId: result.toId,
-      read: result.read,
-      type: result.type,
-      fromId: result.fromId,
-      readTime: result.readTime,
-      sentTime: result.sentTime,
-      medias: result.medias.map((e) => Media.fromMediaModel(e)).toList(),
-      status: result.status,
-      replyTo:
-          result.replyTo != null ? Chat.fromChatModel(result.replyTo!) : null,
     );
   }
 }

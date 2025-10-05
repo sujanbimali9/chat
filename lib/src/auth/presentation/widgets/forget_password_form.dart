@@ -1,16 +1,19 @@
 import 'package:chat/src/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:chat/src/auth/presentation/widgets/auth_button.dart';
+import 'package:chat/src/auth/presentation/widgets/auth_input_field.dart';
+import 'package:chat/utils/theme/theme.dart';
 import 'package:chat/utils/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ForgetPasswordForm extends StatefulWidget {
-  const ForgetPasswordForm({super.key});
+class ResetPasswordForm extends StatefulWidget {
+  const ResetPasswordForm({super.key});
 
   @override
-  State<ForgetPasswordForm> createState() => _ForgetPasswordFormState();
+  State<ResetPasswordForm> createState() => _ResetPasswordFormState();
 }
 
-class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
+class _ResetPasswordFormState extends State<ResetPasswordForm> {
   late final TextEditingController emailController;
   final formKey = GlobalKey<FormState>();
 
@@ -32,34 +35,43 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
     return Form(
       key: formKey,
       child: DefaultTextStyle(
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(fontSize: 16, color: Colors.white),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge!.copyWith(fontSize: 16, color: Colors.white),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Reset Password',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
             const SizedBox(height: 10),
-            const Text('Email'),
-            const SizedBox(height: 8),
-            TextFormField(validator: TValidator.email),
-            const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 206, 204, 204),
-                  foregroundColor: Colors.black,
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                  if (!formKey.currentState!.validate()) return;
-                  context
-                      .read<AuthBloc>()
-                      .add(ResetPassword(emailController.text.trim()));
-                },
-                child: const Text('SendResetLink'),
+            Text(
+              'Enter your email associated with your account and we will send you a email with instruction to reset your password.',
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: TTheme.isDarkMode ? Colors.white54 : Colors.black54,
               ),
+            ),
+            const SizedBox(height: 20),
+
+            AuthInputField(
+              controller: emailController,
+              filled: true,
+              label: 'Email',
+              hintText: 'you@example.com',
+              keyboardType: TextInputType.emailAddress,
+              validator: TValidator.email,
+            ),
+
+            const Spacer(),
+            AuthButton(
+              text: 'Send Reset Link',
+              onPressed: () {
+                if (!formKey.currentState!.validate()) return;
+                context.read<AuthBloc>().add(
+                  ResetPassword(emailController.text.trim()),
+                );
+              },
             ),
           ],
         ),

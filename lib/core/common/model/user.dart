@@ -1,7 +1,4 @@
-import 'package:chat/src/home/data/model/user_model.dart';
-import 'package:equatable/equatable.dart';
-
-class User extends Equatable {
+class User {
   final String id;
   final String name;
   final String? email;
@@ -23,20 +20,9 @@ class User extends Equatable {
     required this.id,
     required this.email,
   });
+}
 
-  @override
-  List<Object?> get props => [
-        profileImage,
-        showOnlineStatus,
-        name,
-        phone,
-        createdAt,
-        lastActive,
-        isOnline,
-        id,
-        email,
-      ];
-
+extension UserX on User {
   User copyWith({
     String? profileImage,
     bool? showOnlineStatus,
@@ -58,20 +44,6 @@ class User extends Equatable {
       isOnline: isOnline ?? this.isOnline,
       id: id ?? this.id,
       email: email ?? this.email,
-    );
-  }
-
-  factory User.fromUserModel(UserModel res) {
-    return User(
-      profileImage: res.profileImage,
-      showOnlineStatus: true,
-      name: res.name,
-      phone: res.phone,
-      createdAt: res.createdAt,
-      lastActive: res.lastActive,
-      isOnline: true,
-      id: res.id,
-      email: res.email,
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:chat/core/common/loading/loading_screen.dart';
+import 'package:chat/core/routes/app_routes.dart';
 import 'package:chat/src/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:chat/src/auth/presentation/widgets/login_form.dart';
 import 'package:chat/utils/color/color.dart';
-import 'package:chat/utils/constant/routes.dart';
 import 'package:chat/utils/icons/assetsicons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,50 +22,51 @@ class LoginScreen extends StatelessWidget {
           LoadingScreen.instance.hide();
         }
         if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
 
         if (state is AuthLoggedIn) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              Routes.home, (route) => false,
-              arguments: state.user);
+          context.goToHome(state.user);
         } else if (state is AuthLoggedOut) {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.login, (route) => false);
+          context.goToLogin();
         } else if (state is AuthResetEmailSent) {
           final email = state.email;
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Mail sent to $email'),
-              ),
-            );
+            ..showSnackBar(SnackBar(content: Text('Mail sent to $email')));
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      height: screenSize.width * 0.3,
-                      child: Image.asset(
-                        TIcons.chat,
-                        color: TColors.primary,
-                      ),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(
+                overscroll: false,
+                physics: const ClampingScrollPhysics(),
+              ),
+              child: CustomScrollView(
+                slivers: [
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 5,
+                      children: [
+                        SizedBox(
+                          height: screenSize.width * 0.3,
+                          child: Image.asset(
+                            TIcons.chat,
+                            color: TColors.primary,
+                          ),
+                        ),
+                        const LoginForm(),
+                      ],
                     ),
                   ),
-                  const LoginForm(),
                 ],
               ),
             ),

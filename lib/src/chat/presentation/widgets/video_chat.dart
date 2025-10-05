@@ -27,8 +27,11 @@ class VideoChat extends StatelessWidget {
       onTap: () {
         if (status.isSending || status.isFailed) return;
 
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => VideoFullScreen(video: video)));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VideoFullScreen(video: video),
+          ),
+        );
       },
       child: Stack(
         alignment: Alignment.center,
@@ -36,14 +39,10 @@ class VideoChat extends StatelessWidget {
         children: [
           ChatImageBuilder(
             borderRadius: borderRadius,
-            image: video.metaData.thumbnail!,
+            image: video.metadata.thumbnail!,
             status: status,
           ),
-          const Icon(
-            Icons.play_arrow_rounded,
-            size: 50,
-            color: Colors.white,
-          )
+          const Icon(Icons.play_arrow_rounded, size: 50, color: Colors.white),
         ],
       ),
     );

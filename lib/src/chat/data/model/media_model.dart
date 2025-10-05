@@ -5,20 +5,22 @@ part 'media_model.g.dart';
 part 'media_model.freezed.dart';
 
 @freezed
-class MediaModel with _$MediaModel {
+class MediaModel extends Media with _$MediaModel {
   factory MediaModel({
     required final String url,
+    required final MediaMetaDataModel metadata,
     required final MediaType type,
-    required MediaMetaDataModel metadata,
   }) = _MediaModel;
   factory MediaModel.fromJson(Map<String, dynamic> json) =>
       _$MediaModelFromJson(json);
 
-  factory MediaModel.fromMedia(Media media) => MediaModel(
-        url: media.url,
-        type: media.type,
-        metadata: MediaMetaDataModel.fromMediaMetaData(media.metaData),
-      );
+  factory MediaModel.fromMedia(Media e) {
+    return MediaModel(
+      url: e.url,
+      type: e.type,
+      metadata: MediaMetaDataModel.fromMediaMetaData(e.metadata),
+    );
+  }
 }
 
 enum MediaType {

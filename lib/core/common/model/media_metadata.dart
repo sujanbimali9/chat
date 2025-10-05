@@ -1,7 +1,4 @@
-import 'package:chat/src/chat/data/model/chat_metadata_model.dart';
-import 'package:equatable/equatable.dart';
-
-class MediaMetaData extends Equatable {
+class MediaMetaData {
   final double? aspectRatio;
   final String? thumbnail;
   final double? height;
@@ -9,17 +6,17 @@ class MediaMetaData extends Equatable {
   final int? duration;
   final String? title;
 
-  const MediaMetaData(
-      {this.aspectRatio,
-      this.thumbnail,
-      this.height,
-      this.width,
-      this.duration,
-      this.title});
+  const MediaMetaData({
+    this.aspectRatio,
+    this.thumbnail,
+    this.height,
+    this.width,
+    this.duration,
+    this.title,
+  });
+}
 
-  @override
-  get props => [aspectRatio, thumbnail, height, width, duration, title];
-
+extension MediaMetaDataX on MediaMetaData {
   MediaMetaData copyWith({
     double? aspectRatio,
     String? thumbnail,
@@ -37,15 +34,4 @@ class MediaMetaData extends Equatable {
       title: title ?? this.title,
     );
   }
-
-  factory MediaMetaData.fromMediaMetaDataModel(
-          MediaMetaDataModel chatMetaData) =>
-      MediaMetaData(
-        aspectRatio: chatMetaData.aspectRatio,
-        duration: chatMetaData.duration,
-        height: chatMetaData.height,
-        thumbnail: chatMetaData.thumbnail,
-        title: chatMetaData.title,
-        width: chatMetaData.width,
-      );
 }

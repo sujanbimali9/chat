@@ -5,7 +5,7 @@ part 'chat_metadata_model.freezed.dart';
 part 'chat_metadata_model.g.dart';
 
 @freezed
-class MediaMetaDataModel with _$MediaMetaDataModel {
+class MediaMetaDataModel extends MediaMetaData with _$MediaMetaDataModel {
   factory MediaMetaDataModel({
     final double? aspectRatio,
     final String? thumbnail,

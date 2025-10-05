@@ -1,10 +1,10 @@
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:chat/core/common/model/conversation.dart';
+import 'package:chat/core/mixins/exception_handler_mixin.dart';
 import 'package:fpdart/fpdart.dart';
 
 import 'package:chat/core/common/model/api_response.dart';
-import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/core/exception/exception.dart';
@@ -15,7 +15,7 @@ import 'package:chat/src/home/data/model/user_model.dart';
 import 'package:chat/src/home/domain/repository/user_repository.dart';
 import 'package:chat/utils/helper/network_info.dart';
 
-class UserRepositoryImp implements UserRepository {
+class UserRepositoryImp with ExceptionHandlerMixin implements UserRepository {
   final UserRemoteDataSource _userRemoteDataSource;
   final UserLocalDataSource _userLocalDataSource;
   final NetworkInfo _networkInfo;
@@ -26,83 +26,45 @@ class UserRepositoryImp implements UserRepository {
     this._networkInfo,
   );
 
-  Future<Either<Failure, T>> _handleException<T>(
-    Future<T> Function() fn, {
-    String context = '',
-  }) async {
-    try {
-      final result = await fn();
-      return right(result);
-    } on ServerException catch (e) {
-      log('Server Exception: ${e.message}', name: 'UserRepository.$context');
-      return left(Failure(e.message));
-    } on CacheException catch (e) {
-      log('Cache Exception: ${e.message}', name: 'UserRepository.$context');
-      return left(Failure(e.message));
-    } catch (e) {
-      log('Unexpected Exception: $e', name: 'UserRepository.$context');
-      return left(Failure(e.toString()));
-    }
-  }
-
   @override
   Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUsers({
     required int limit,
     required int offset,
   }) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       final users = await _userRemoteDataSource.getAllUsers(
         limit: limit,
         offset: offset,
       );
 
       await _userLocalDataSource.saveUsers(users.data);
-      return users.map(User.fromUserModel);
+      return users;
     }, context: 'getAllUsers');
   }
 
   @override
-  Future<Either<Failure, ApiResponse<({User user, Chat chat}), UserPagination>>>
+  Future<Either<Failure, ApiResponse<Conversation, UserPagination>>>
   getConversationHistory({required int limit, required int offset}) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       final users = await _userRemoteDataSource.getConversationHistory(
         limit: limit,
         offset: offset,
       );
       await _userLocalDataSource.saveConversationsHistory(users.data);
-      return users.map(
-        (e) => (
-          user: User.fromUserModel(e.user),
-          chat: Chat.fromChatModel(e.chat),
-        ),
-      );
-    });
+      return users;
+    }, context: 'getConversationHistory');
   }
 
   @override
-  Either<Failure, Stream<List<({Chat chat, User user})>>>
-  getConversationHistoryStream() {
-    try {
-      final stream = _userLocalDataSource.getConversationHistoryStream();
-      return right(
-        stream.map((data) {
-          return data
-              .map(
-                (e) => (
-                  chat: Chat.fromChatModel(e.chat),
-                  user: User.fromUserModel(e.user),
-                ),
-              )
-              .toList();
-        }),
-      );
-    } on ServerException catch (e) {
-      log('GetInteractedUserStream error: $e');
-      return left(Failure(e.message));
-    } catch (e) {
-      log('GetInteractedUserStream error: $e');
-      return left(Failure(e.toString()));
-    }
+  Either<Failure, Stream<List<Conversation>>> getConversationHistoryStream() {
+    return handleSyncException(
+      () {
+        final stream = _userLocalDataSource.getConversationHistoryStream();
+        return right(stream);
+      },
+      context: 'getConversationHistoryStream',
+      defaultValue: left(Failure('Failed to get conversation history stream')),
+    );
   }
 
   @override
@@ -111,7 +73,7 @@ class UserRepositoryImp implements UserRepository {
     required int limit,
     required int offset,
   }) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       if (!_networkInfo.checkConnection()) {
         final res = await _userLocalDataSource.searchUser(
           query,
@@ -121,32 +83,32 @@ class UserRepositoryImp implements UserRepository {
         if (res.data.isEmpty) {
           throw const ServerException('No internet connection');
         }
-        return res.map((e) => User.fromUserModel(e));
+        return res;
       }
       final res = await _userRemoteDataSource.searchUser(
         query,
         limit: limit,
         offset: offset,
       );
-      return res.map(User.fromUserModel);
+      return res;
     }, context: 'searchUser');
   }
 
   @override
   Future<Either<Failure, User>> updateProfileImage(File file) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       if (!_networkInfo.checkConnection()) {
         throw const ServerException('No internet connection');
       }
       final res = await _userRemoteDataSource.updateProfileImage(file);
       await _userLocalDataSource.saveUser(res);
-      return User.fromUserModel(res);
+      return res;
     }, context: 'updateProfileImage');
   }
 
   @override
   Future<Either<Failure, User>> updateUser(User user) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       if (!_networkInfo.checkConnection()) {
         throw const ServerException('No internet connection');
       }
@@ -154,20 +116,20 @@ class UserRepositoryImp implements UserRepository {
         UserModel.fromUser(user),
       );
       await _userLocalDataSource.updateUser(res);
-      return User.fromUserModel(res);
+      return res;
     }, context: 'updateUser');
   }
 
   @override
   Future<Either<Failure, User>> getCurretUser({required bool local}) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       if (local) {
         final res = await _userLocalDataSource.getCurrentUser();
-        return User.fromUserModel(res);
+        return res;
       }
       final res = await _userRemoteDataSource.getCurrentUser();
       await _userLocalDataSource.saveUser(res);
-      return User.fromUserModel(res);
+      return res;
     }, context: 'getCurretUser');
   }
 
@@ -176,12 +138,12 @@ class UserRepositoryImp implements UserRepository {
     required int limit,
     required int offset,
   }) async {
-    return await _handleException(() async {
+    return await handleException(() async {
       final res = await _userLocalDataSource.getAllUser(
         limit: limit,
         offset: offset,
       );
-      return res.map(User.fromUserModel);
+      return res;
     }, context: 'getAllUserLocal');
   }
 }

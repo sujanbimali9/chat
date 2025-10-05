@@ -128,7 +128,7 @@ class _MessageFieldState extends State<MessageField> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: SizedBox(
-                      height: 40,
+                      height: 50,
                       child: TextField(
                         controller: controller,
                         focusNode: focusNode,
@@ -141,7 +141,7 @@ class _MessageFieldState extends State<MessageField> {
                         cursorHeight: 20,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
-                            vertical: 4,
+                            vertical: 5,
                             horizontal: 20,
                           ),
                           filled: true,

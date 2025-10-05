@@ -43,8 +43,11 @@ class _ChatBodyState extends State<ChatBody> {
     super.dispose();
   }
 
-  bool _shouldShowDateSeparator(Chat? previousMessage, Chat message,
-      {SeparatorFrequency separatorFrequency = SeparatorFrequency.days}) {
+  bool _shouldShowDateSeparator(
+    Chat? previousMessage,
+    Chat message, {
+    SeparatorFrequency separatorFrequency = SeparatorFrequency.days,
+  }) {
     if (previousMessage == null) {
       return true;
     }
@@ -69,9 +72,7 @@ class _ChatBodyState extends State<ChatBody> {
       child: BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatError) {
-            return Center(
-              child: Text(state.message),
-            );
+            return Center(child: Text(state.message));
           } else if (state is ChatLoaded || state is ChatFetchingMore) {
             final chats = state.chats;
             return _buildChats(
@@ -86,31 +87,40 @@ class _ChatBodyState extends State<ChatBody> {
     );
   }
 
-  ListView _buildChats(List<Chat> chats, ChatState state,
-      {bool fetchingMore = false}) {
+  ListView _buildChats(
+    List<Chat> chats,
+    ChatState state, {
+    bool fetchingMore = false,
+  }) {
     return ListView.builder(
       controller: scrollController,
       reverse: true,
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: chats.length,
       itemBuilder: (context, index) {
-        final Chat? previousMessage =
-            index < chats.length - 1 ? chats[index + 1] : null;
+        final Chat? previousMessage = index < chats.length - 1
+            ? chats[index + 1]
+            : null;
         final Chat? nextMessage = index > 0 ? chats[index - 1] : null;
         final Chat message = chats[index];
         final bool isAfterDateSeparator = _shouldShowDateSeparator(
-            previousMessage, message,
-            separatorFrequency:
-                DateTime.now().difference(message.sentTime).inHours >= 24
-                    ? SeparatorFrequency.days
-                    : SeparatorFrequency.hours);
+          previousMessage,
+          message,
+          separatorFrequency:
+              DateTime.now().difference(message.sentTime).inHours >= 24
+              ? SeparatorFrequency.days
+              : SeparatorFrequency.hours,
+        );
         bool isBeforeDateSeparator = false;
         if (nextMessage != null) {
-          isBeforeDateSeparator = _shouldShowDateSeparator(message, nextMessage,
-              separatorFrequency:
-                  DateTime.now().difference(message.sentTime).inHours >= 24
-                      ? SeparatorFrequency.days
-                      : SeparatorFrequency.hours);
+          isBeforeDateSeparator = _shouldShowDateSeparator(
+            message,
+            nextMessage,
+            separatorFrequency:
+                DateTime.now().difference(message.sentTime).inHours >= 24
+                ? SeparatorFrequency.days
+                : SeparatorFrequency.hours,
+          );
         }
 
         return Column(
@@ -119,8 +129,10 @@ class _ChatBodyState extends State<ChatBody> {
               const Center(child: CircularProgressIndicator()),
             if (isAfterDateSeparator)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
                 child: Text(
                   DateFormatter.formatDateSeparator(message.sentTime),
                   style: Theme.of(context).textTheme.bodySmall,

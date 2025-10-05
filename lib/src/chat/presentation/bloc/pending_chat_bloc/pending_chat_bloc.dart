@@ -65,7 +65,7 @@ class PendingChatBloc extends Bloc<PendingChatEvent, PendingChatState> {
     ) {
       if (!event.contains(ConnectivityResult.none)) {
         log('Retry pending chats');
-        add(RetryPendingChats());
+        add(const RetryPendingChats());
       }
     });
   }

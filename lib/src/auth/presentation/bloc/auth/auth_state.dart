@@ -1,15 +1,5 @@
 part of 'auth_bloc.dart';
 
-enum LoginMode {
-  google,
-  email,
-  facebook;
-
-  bool get isGoogle => this == LoginMode.google;
-  bool get isEmail => this == LoginMode.email;
-  bool get isFacebook => this == LoginMode.facebook;
-}
-
 @immutable
 sealed class AuthState {
   const AuthState();

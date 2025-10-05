@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:chat/core/common/model/api_response.dart';
-import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/core/common/model/conversation.dart';
 import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/core/failure/failure.dart';
@@ -12,7 +12,7 @@ abstract interface class UserRepository {
     required int limit,
     required int offset,
   });
-  Future<Either<Failure, ApiResponse<({User user, Chat chat}), UserPagination>>>
+  Future<Either<Failure, ApiResponse<Conversation, UserPagination>>>
   getConversationHistory({required int limit, required int offset});
   Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUserLocal({
     required int limit,
@@ -27,6 +27,5 @@ abstract interface class UserRepository {
   });
   Future<Either<Failure, User>> updateProfileImage(File file);
 
-  Either<Failure, Stream<List<({Chat chat, User user})>>>
-  getConversationHistoryStream();
+  Either<Failure, Stream<List<Conversation>>> getConversationHistoryStream();
 }

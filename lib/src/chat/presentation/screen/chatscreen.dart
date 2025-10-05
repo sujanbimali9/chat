@@ -7,8 +7,8 @@ import 'package:chat/src/chat/presentation/widgets/message_field.dart';
 import 'package:chat/src/chat/presentation/widgets/profile_image.dart';
 import 'package:chat/utils/dateformat/date_formatter.dart';
 
-class Chatscreen extends StatelessWidget {
-  const Chatscreen({super.key, required this.user, required this.currentUser});
+class ChatScreen extends StatelessWidget {
+  const ChatScreen({super.key, required this.user, required this.currentUser});
   final User user;
   final User currentUser;
 

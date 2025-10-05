@@ -24,8 +24,8 @@ class ConversationHistoryTable extends Table {
   TextColumn get userId => text().references(UserTable, #id)();
   DateTimeColumn get lastInteractedAt => dateTime()();
   TextColumn get chatId => text()();
-  TextColumn get lastMessage => text().references(ChatTable, #id).nullable()();
-
+  TextColumn get lastMessageId => text().references(ChatTable, #id)();
+  IntColumn get unreadCount => integer().withDefault(const Constant(0))();
   @override
   Set<Column> get primaryKey => {userId};
 }

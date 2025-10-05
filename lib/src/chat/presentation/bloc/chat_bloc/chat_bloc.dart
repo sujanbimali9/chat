@@ -69,13 +69,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _initListeners() {
-    add(const ListenForNewChats());
+    // add(const ListenForNewChats());
     add(const FetchMore());
   }
 
   @override
-  Future<void> close() {
-    connectivitySubscription?.cancel();
+  Future<void> close() async {
+    await chatSubscription?.cancel();
+    await connectivitySubscription?.cancel();
     return super.close();
   }
 
@@ -172,7 +173,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                 (e) => Media(
                   url: e,
                   type: mediaType!,
-                  metaData: const MediaMetaData(),
+                  metadata: const MediaMetaData(),
                 ),
               )
               .toList() ??
@@ -225,6 +226,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     int i = 0;
     int j = 0;
     List<Chat> mergedList = [];
+
     while (i < oldChats.length && j < newChats.length) {
       final sentTime1 = oldChats[i].sentTime.millisecondsSinceEpoch;
       final sentTime2 = newChats[j].sentTime.millisecondsSinceEpoch;

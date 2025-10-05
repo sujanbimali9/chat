@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:chat/core/common/model/api_response.dart';
 import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
+import 'package:chat/src/home/data/model/conversation_model.dart';
 import 'package:chat/src/home/data/model/user_model.dart';
 import 'package:chat/utils/database/local_database.dart';
 import 'package:chat/utils/database/table/user_table.dart';
@@ -44,22 +46,40 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     );
   }
 
-  Future<ApiResponse<({UserModel user, ChatModel chat}), UserPagination>>
+  Future<ApiResponse<ConversationModel, UserPagination>>
   getConversationHistory({required int limit, required int offset}) async {
     final result =
-        await (select(
-          conversationHistoryTable,
-        )..limit(limit, offset: offset)).join([
-          innerJoin(
-            userTable,
-            userTable.id.equalsExp(conversationHistoryTable.userId),
-          ),
-        ]).get();
+        await (select(conversationHistoryTable)
+              ..orderBy([
+                (tbl) => OrderingTerm(
+                  expression: tbl.lastInteractedAt,
+                  mode: OrderingMode.desc,
+                ),
+              ])
+              ..limit(limit, offset: offset))
+            .join([
+              innerJoin(
+                userTable,
+                userTable.id.equalsExp(conversationHistoryTable.userId),
+              ),
+              innerJoin(
+                chatTable,
+                chatTable.id.equalsExp(conversationHistoryTable.lastMessageId),
+              ),
+            ])
+            .get();
 
     final data = result.map((row) {
       final user = UserModel.fromUserEntity(row.readTable(userTable));
       final chat = ChatModel.fromJson(row.readTable(chatTable).toJson());
-      return (user: user, chat: chat);
+      return ConversationModel(
+        user: user,
+        chat: chat,
+        lastInteractionAt: row
+            .readTable(conversationHistoryTable)
+            .lastInteractedAt,
+        unreadCount: row.readTable(conversationHistoryTable).unreadCount,
+      );
     }).toList();
     final total = await getTotalConversationHistoryCount();
     return ApiResponse(
@@ -82,10 +102,13 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
   }
 
   Future<int> getTotalConversationHistoryCount() async {
+    log('Getting total conversation history count');
     final result = await customSelect(
       'SELECT COUNT(*) as count FROM conversation_history_table',
       readsFrom: {conversationHistoryTable},
     ).getSingle();
+
+    log(result.data.toString());
 
     return result.data['count'] as int;
   }
@@ -149,26 +172,27 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     await delete(userTable).go();
   }
 
-  Future<void> insertConversationHistory(UserModel user, ChatModel chat) async {
+  Future<void> insertConversationHistory(ConversationModel conversation) async {
     transaction(() async {
       await into(conversationHistoryTable).insert(
         ConversationHistoryEntity(
-          userId: user.id,
-          lastInteractedAt: chat.sentTime,
-          chatId: chat.chatId,
-          lastMessage: chat.id,
+          userId: conversation.user.id,
+          lastInteractedAt: conversation.chat.sentTime,
+          chatId: conversation.chat.chatId,
+          lastMessageId: conversation.chat.id,
+          unreadCount: conversation.unreadCount,
         ),
         mode: InsertMode.insertOrReplace,
       );
       await into(userTable).insert(
-        UserEntity.fromJson(user.toJson()),
+        UserEntity.fromJson(conversation.user.toJson()),
         mode: InsertMode.insertOrReplace,
       );
       await into(chatTable).insert(
         ChatEntity.fromJson({
-          ...chat.toJson(),
-          'medias': jsonEncode(chat.medias),
-          'replyToId': chat.replyTo?.id,
+          ...conversation.chat.toJson(),
+          'medias': jsonEncode(conversation.chat.medias),
+          'replyToId': conversation.chat.replyTo?.id,
         }),
         mode: InsertMode.insert,
         onConflict: DoNothing(),
@@ -176,9 +200,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     });
   }
 
-  Future<void> insertConversationsHistory(
-    List<({UserModel user, ChatModel chat})> data,
-  ) async {
+  Future<void> insertConversationsHistory(List<ConversationModel> data) async {
     transaction(() async {
       await batch((batch) {
         batch.insertAll(
@@ -210,7 +232,8 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
                   userId: e.user.id,
                   lastInteractedAt: e.chat.sentTime,
                   chatId: e.chat.chatId,
-                  lastMessage: e.chat.id,
+                  lastMessageId: e.chat.id,
+                  unreadCount: e.unreadCount,
                 ),
               )
               .toList(),
@@ -220,7 +243,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     });
   }
 
-  Future<void> insertLastChat(ChatModel chat) async {
+  Future<void> upsertConversation(ChatModel chat) async {
     final data = await (select(
       conversationHistoryTable,
     )..where((e) => e.chatId.equals(chat.chatId))).getSingleOrNull();
@@ -232,31 +255,16 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
           userId: data.userId,
           lastInteractedAt: chat.sentTime,
           chatId: chat.chatId,
-          lastMessage: chat.id,
+          lastMessageId: chat.id,
+          unreadCount: chat.fromId == data.userId
+              ? data.unreadCount + 1
+              : data.unreadCount,
         ),
       );
     }
-    // else {
-    //   final user = await customSelect(
-    //     'SELECT id FROM user_table WHERE id = ?',
-    //     variables: [Variable.withString(chat.fromId)],
-    //   ).getSingleOrNull();
-
-    //   if (user == null) return;
-
-    //   await into(conversationHistoryTable).insert(
-    //     ConversationHistoryEntity(
-    //       userId: chat.fromId,
-    //       lastInteractedAt: chat.sentTime,
-    //       chatId: chat.chatId,
-    //       lastMessage: chat.id,
-    //     ),
-    //     mode: InsertMode.insertOrReplace,
-    //   );
-    // }
   }
 
-  Stream<List<({UserModel user, ChatModel chat})>> getInteractedUserStream() {
+  Stream<List<ConversationModel>> getConversationHistoryStream() {
     return (select(conversationHistoryTable)
           ..orderBy([
             (tbl) => OrderingTerm(
@@ -264,7 +272,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
               mode: OrderingMode.desc,
             ),
           ])
-          ..limit(30))
+          ..limit(8))
         .join([
           innerJoin(
             userTable,
@@ -272,7 +280,7 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
           ),
           innerJoin(
             chatTable,
-            chatTable.id.equalsExp(conversationHistoryTable.lastMessage),
+            chatTable.id.equalsExp(conversationHistoryTable.lastMessageId),
           ),
         ])
         .watch()
@@ -281,9 +289,18 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
               .map((row) {
                 final chat = ChatModel.fromChatEntity(row.readTable(chatTable));
                 final user = UserModel.fromUserEntity(row.readTable(userTable));
-                return (user: user, chat: chat);
+                return ConversationModel(
+                  user: user,
+                  chat: chat,
+                  lastInteractionAt: row
+                      .readTable(conversationHistoryTable)
+                      .lastInteractedAt,
+                  unreadCount: row
+                      .readTable(conversationHistoryTable)
+                      .unreadCount,
+                );
               })
-              .whereType<({UserModel user, ChatModel chat})>()
+              .whereType<ConversationModel>()
               .toList();
         });
   }

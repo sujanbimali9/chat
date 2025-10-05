@@ -3,18 +3,12 @@ part of 'auth_bloc.dart';
 @immutable
 sealed class AuthEvent {}
 
-final class CheckAuthStatus extends AuthEvent {}
-
 final class EmailLogin extends AuthEvent {
   final String email;
   final String password;
 
   EmailLogin(this.email, this.password);
 }
-
-final class GoogleLogin extends AuthEvent {}
-
-final class FacebookLogin extends AuthEvent {}
 
 final class EmailSignUp extends AuthEvent {
   final String email;

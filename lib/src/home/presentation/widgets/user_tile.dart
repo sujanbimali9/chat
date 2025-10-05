@@ -1,8 +1,8 @@
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/user.dart';
+import 'package:chat/core/routes/app_routes.dart';
 import 'package:chat/src/home/presentation/bloc/current_user_bloc/current_user_bloc.dart';
 import 'package:chat/src/home/presentation/widgets/profile_image.dart';
-import 'package:chat/utils/constant/routes.dart';
 import 'package:chat/utils/dateformat/date_formatter.dart';
 import 'package:chat/utils/icons/assetsicons.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +36,7 @@ class UserTile extends StatelessWidget {
         if (currentUser == null) {
           return;
         }
-        Navigator.of(context).pushNamed(
-          Routes.chat,
-          arguments: {'user': user, 'currentUser': currentUser},
-        );
+        context.pushChat(user: user, currentUser: currentUser);
       },
       trailing: user.isOnline
           ? null

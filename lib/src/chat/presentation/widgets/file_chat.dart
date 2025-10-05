@@ -40,7 +40,7 @@ class FileChat extends StatelessWidget {
             const SizedBox(width: 5),
             Flexible(
               child: Text(
-                file.metaData.title ?? file.url,
+                file.metadata.title ?? file.url,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall,
@@ -69,7 +69,7 @@ class FileChat extends StatelessWidget {
           const SizedBox(width: 5),
           Flexible(
             child: Text(
-              file.metaData.title ?? file.url,
+              file.metadata.title ?? file.url,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodySmall,

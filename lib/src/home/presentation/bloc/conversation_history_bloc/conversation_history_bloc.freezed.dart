@@ -1082,24 +1082,24 @@ mixin _$ConversationHistory {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<({Chat chat, User user})> data) loaded,
-    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
+    required TResult Function(List<Conversation> data) loaded,
+    required TResult Function(List<Conversation> data) fetchingMore,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<({Chat chat, User user})> data)? loaded,
-    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult? Function(List<Conversation> data)? loaded,
+    TResult? Function(List<Conversation> data)? fetchingMore,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<({Chat chat, User user})> data)? loaded,
-    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult Function(List<Conversation> data)? loaded,
+    TResult Function(List<Conversation> data)? fetchingMore,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1197,8 +1197,8 @@ class _$InitialImpl implements _Initial {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<({Chat chat, User user})> data) loaded,
-    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
+    required TResult Function(List<Conversation> data) loaded,
+    required TResult Function(List<Conversation> data) fetchingMore,
   }) {
     return initial();
   }
@@ -1209,8 +1209,8 @@ class _$InitialImpl implements _Initial {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<({Chat chat, User user})> data)? loaded,
-    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult? Function(List<Conversation> data)? loaded,
+    TResult? Function(List<Conversation> data)? fetchingMore,
   }) {
     return initial?.call();
   }
@@ -1221,8 +1221,8 @@ class _$InitialImpl implements _Initial {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<({Chat chat, User user})> data)? loaded,
-    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult Function(List<Conversation> data)? loaded,
+    TResult Function(List<Conversation> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -1322,8 +1322,8 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<({Chat chat, User user})> data) loaded,
-    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
+    required TResult Function(List<Conversation> data) loaded,
+    required TResult Function(List<Conversation> data) fetchingMore,
   }) {
     return loading();
   }
@@ -1334,8 +1334,8 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<({Chat chat, User user})> data)? loaded,
-    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult? Function(List<Conversation> data)? loaded,
+    TResult? Function(List<Conversation> data)? fetchingMore,
   }) {
     return loading?.call();
   }
@@ -1346,8 +1346,8 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<({Chat chat, User user})> data)? loaded,
-    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult Function(List<Conversation> data)? loaded,
+    TResult Function(List<Conversation> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -1474,8 +1474,8 @@ class _$ErrorImpl implements _Error {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<({Chat chat, User user})> data) loaded,
-    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
+    required TResult Function(List<Conversation> data) loaded,
+    required TResult Function(List<Conversation> data) fetchingMore,
   }) {
     return error(message);
   }
@@ -1486,8 +1486,8 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<({Chat chat, User user})> data)? loaded,
-    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult? Function(List<Conversation> data)? loaded,
+    TResult? Function(List<Conversation> data)? fetchingMore,
   }) {
     return error?.call(message);
   }
@@ -1498,8 +1498,8 @@ class _$ErrorImpl implements _Error {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<({Chat chat, User user})> data)? loaded,
-    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult Function(List<Conversation> data)? loaded,
+    TResult Function(List<Conversation> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -1568,7 +1568,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
     $Res Function(_$LoadedImpl) then,
   ) = __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<({Chat chat, User user})> data});
+  $Res call({List<Conversation> data});
 }
 
 /// @nodoc
@@ -1590,7 +1590,7 @@ class __$$LoadedImplCopyWithImpl<$Res>
         null == data
             ? _value._data
             : data // ignore: cast_nullable_to_non_nullable
-                  as List<({Chat chat, User user})>,
+                  as List<Conversation>,
       ),
     );
   }
@@ -1599,11 +1599,11 @@ class __$$LoadedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoadedImpl implements _Loaded {
-  const _$LoadedImpl(final List<({Chat chat, User user})> data) : _data = data;
+  const _$LoadedImpl(final List<Conversation> data) : _data = data;
 
-  final List<({Chat chat, User user})> _data;
+  final List<Conversation> _data;
   @override
-  List<({Chat chat, User user})> get data {
+  List<Conversation> get data {
     if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_data);
@@ -1640,8 +1640,8 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<({Chat chat, User user})> data) loaded,
-    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
+    required TResult Function(List<Conversation> data) loaded,
+    required TResult Function(List<Conversation> data) fetchingMore,
   }) {
     return loaded(data);
   }
@@ -1652,8 +1652,8 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<({Chat chat, User user})> data)? loaded,
-    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult? Function(List<Conversation> data)? loaded,
+    TResult? Function(List<Conversation> data)? fetchingMore,
   }) {
     return loaded?.call(data);
   }
@@ -1664,8 +1664,8 @@ class _$LoadedImpl implements _Loaded {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<({Chat chat, User user})> data)? loaded,
-    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult Function(List<Conversation> data)? loaded,
+    TResult Function(List<Conversation> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -1716,10 +1716,9 @@ class _$LoadedImpl implements _Loaded {
 }
 
 abstract class _Loaded implements ConversationHistory {
-  const factory _Loaded(final List<({Chat chat, User user})> data) =
-      _$LoadedImpl;
+  const factory _Loaded(final List<Conversation> data) = _$LoadedImpl;
 
-  List<({Chat chat, User user})> get data;
+  List<Conversation> get data;
 
   /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.
@@ -1735,7 +1734,7 @@ abstract class _$$FetchingMoreImplCopyWith<$Res> {
     $Res Function(_$FetchingMoreImpl) then,
   ) = __$$FetchingMoreImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<({Chat chat, User user})> data});
+  $Res call({List<Conversation> data});
 }
 
 /// @nodoc
@@ -1757,7 +1756,7 @@ class __$$FetchingMoreImplCopyWithImpl<$Res>
         null == data
             ? _value._data
             : data // ignore: cast_nullable_to_non_nullable
-                  as List<({Chat chat, User user})>,
+                  as List<Conversation>,
       ),
     );
   }
@@ -1766,12 +1765,11 @@ class __$$FetchingMoreImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$FetchingMoreImpl implements _FetchingMore {
-  const _$FetchingMoreImpl(final List<({Chat chat, User user})> data)
-    : _data = data;
+  const _$FetchingMoreImpl(final List<Conversation> data) : _data = data;
 
-  final List<({Chat chat, User user})> _data;
+  final List<Conversation> _data;
   @override
-  List<({Chat chat, User user})> get data {
+  List<Conversation> get data {
     if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_data);
@@ -1808,8 +1806,8 @@ class _$FetchingMoreImpl implements _FetchingMore {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(String message) error,
-    required TResult Function(List<({Chat chat, User user})> data) loaded,
-    required TResult Function(List<({Chat chat, User user})> data) fetchingMore,
+    required TResult Function(List<Conversation> data) loaded,
+    required TResult Function(List<Conversation> data) fetchingMore,
   }) {
     return fetchingMore(data);
   }
@@ -1820,8 +1818,8 @@ class _$FetchingMoreImpl implements _FetchingMore {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
-    TResult? Function(List<({Chat chat, User user})> data)? loaded,
-    TResult? Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult? Function(List<Conversation> data)? loaded,
+    TResult? Function(List<Conversation> data)? fetchingMore,
   }) {
     return fetchingMore?.call(data);
   }
@@ -1832,8 +1830,8 @@ class _$FetchingMoreImpl implements _FetchingMore {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(String message)? error,
-    TResult Function(List<({Chat chat, User user})> data)? loaded,
-    TResult Function(List<({Chat chat, User user})> data)? fetchingMore,
+    TResult Function(List<Conversation> data)? loaded,
+    TResult Function(List<Conversation> data)? fetchingMore,
     required TResult orElse(),
   }) {
     if (fetchingMore != null) {
@@ -1884,10 +1882,10 @@ class _$FetchingMoreImpl implements _FetchingMore {
 }
 
 abstract class _FetchingMore implements ConversationHistory {
-  const factory _FetchingMore(final List<({Chat chat, User user})> data) =
+  const factory _FetchingMore(final List<Conversation> data) =
       _$FetchingMoreImpl;
 
-  List<({Chat chat, User user})> get data;
+  List<Conversation> get data;
 
   /// Create a copy of ConversationHistory
   /// with the given fields replaced by the non-null parameter values.

@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/enum/chat_type.dart';
 import 'package:chat/core/exception/exception.dart';
+import 'package:chat/core/routes/app_routes.dart';
 import 'package:chat/firebase_options.dart';
 import 'package:chat/src/chat/data/model/chat_model.dart';
 import 'package:chat/utils/database/local_database.dart';
@@ -83,6 +84,7 @@ class NotificationService {
 
     await _notificationPlugin.initialize(
       initializationSettings,
+      onDidReceiveNotificationResponse: _handleNotificationTap,
       onDidReceiveBackgroundNotificationResponse: _handleNotificationAction,
     );
   }
@@ -143,6 +145,44 @@ class NotificationService {
     } else {
       queue.clear();
       queue.addLast(message);
+    }
+  }
+
+  /// Handle notification tap when app is in foreground or background
+  @pragma('vm:entry-point')
+  static Future<void> _handleNotificationTap(
+    NotificationResponse response,
+  ) async {
+    try {
+      log('Local notification tapped: ${response.payload}');
+
+      if (response.payload == null) return;
+
+      // Parse the chat data from the payload
+      final chat = NotiChat.fromJson(response.payload!);
+
+      // Navigate to chat using the router
+      final router = AppRouter.router;
+
+      // Navigate to chat from notification with proper data
+      router.go(
+        '/chat/${chat.senderId}',
+        extra: {
+          'chatId': chat.chatId,
+          'senderId': chat.senderId,
+          'senderName': chat.senderName,
+          'receiverId': chat.receiverId,
+          'receiverName': chat.receiverName,
+          'message': chat.message,
+          'notificationType': 'local',
+        },
+      );
+
+      log('Navigated to chat with user: ${chat.senderId}');
+    } catch (e) {
+      log('Error handling notification tap: $e');
+      // Fallback to home screen
+      AppRouter.router.go(RoutePaths.home);
     }
   }
 

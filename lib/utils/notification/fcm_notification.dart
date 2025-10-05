@@ -13,6 +13,8 @@ class FcmNotification {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
         log('Got a message whilst in the foreground!');
         log('Message data: ${message.data}');
+
+        await NotificationService.showNotification(message);
       });
       FirebaseMessaging.onBackgroundMessage(_fcmBackgroundHandler);
     } catch (e) {

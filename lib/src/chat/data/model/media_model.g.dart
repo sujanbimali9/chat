@@ -9,17 +9,17 @@ part of 'media_model.dart';
 _$MediaModelImpl _$$MediaModelImplFromJson(Map<String, dynamic> json) =>
     _$MediaModelImpl(
       url: json['url'] as String,
-      type: $enumDecode(_$MediaTypeEnumMap, json['type']),
       metadata: MediaMetaDataModel.fromJson(
         json['metadata'] as Map<String, dynamic>,
       ),
+      type: $enumDecode(_$MediaTypeEnumMap, json['type']),
     );
 
 Map<String, dynamic> _$$MediaModelImplToJson(_$MediaModelImpl instance) =>
     <String, dynamic>{
       'url': instance.url,
-      'type': _$MediaTypeEnumMap[instance.type]!,
       'metadata': instance.metadata,
+      'type': _$MediaTypeEnumMap[instance.type]!,
     };
 
 const _$MediaTypeEnumMap = {

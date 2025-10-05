@@ -329,6 +329,13 @@ class UserEntity extends DataClass implements Insertable<UserEntity> {
       phone: serializer.fromJson<String?>(json['phone']),
     );
   }
+  factory UserEntity.fromJsonString(
+    String encodedJson, {
+    ValueSerializer? serializer,
+  }) => UserEntity.fromJson(
+    DataClass.parseJson(encodedJson) as Map<String, dynamic>,
+    serializer: serializer,
+  );
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -980,6 +987,13 @@ class ChatEntity extends DataClass implements Insertable<ChatEntity> {
       replyToId: serializer.fromJson<String?>(json['replyToId']),
     );
   }
+  factory ChatEntity.fromJsonString(
+    String encodedJson, {
+    ValueSerializer? serializer,
+  }) => ChatEntity.fromJson(
+    DataClass.parseJson(encodedJson) as Map<String, dynamic>,
+    serializer: serializer,
+  );
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -1329,26 +1343,39 @@ class $ConversationHistoryTableTable extends ConversationHistoryTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _lastMessageMeta = const VerificationMeta(
-    'lastMessage',
+  static const VerificationMeta _lastMessageIdMeta = const VerificationMeta(
+    'lastMessageId',
   );
   @override
-  late final GeneratedColumn<String> lastMessage = GeneratedColumn<String>(
-    'last_message',
+  late final GeneratedColumn<String> lastMessageId = GeneratedColumn<String>(
+    'last_message_id',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES chat_table (id)',
     ),
+  );
+  static const VerificationMeta _unreadCountMeta = const VerificationMeta(
+    'unreadCount',
+  );
+  @override
+  late final GeneratedColumn<int> unreadCount = GeneratedColumn<int>(
+    'unread_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
   );
   @override
   List<GeneratedColumn> get $columns => [
     userId,
     lastInteractedAt,
     chatId,
-    lastMessage,
+    lastMessageId,
+    unreadCount,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1389,12 +1416,23 @@ class $ConversationHistoryTableTable extends ConversationHistoryTable
     } else if (isInserting) {
       context.missing(_chatIdMeta);
     }
-    if (data.containsKey('last_message')) {
+    if (data.containsKey('last_message_id')) {
       context.handle(
-        _lastMessageMeta,
-        lastMessage.isAcceptableOrUnknown(
-          data['last_message']!,
-          _lastMessageMeta,
+        _lastMessageIdMeta,
+        lastMessageId.isAcceptableOrUnknown(
+          data['last_message_id']!,
+          _lastMessageIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastMessageIdMeta);
+    }
+    if (data.containsKey('unread_count')) {
+      context.handle(
+        _unreadCountMeta,
+        unreadCount.isAcceptableOrUnknown(
+          data['unread_count']!,
+          _unreadCountMeta,
         ),
       );
     }
@@ -1422,10 +1460,14 @@ class $ConversationHistoryTableTable extends ConversationHistoryTable
         DriftSqlType.string,
         data['${effectivePrefix}chat_id'],
       )!,
-      lastMessage: attachedDatabase.typeMapping.read(
+      lastMessageId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}last_message'],
-      ),
+        data['${effectivePrefix}last_message_id'],
+      )!,
+      unreadCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}unread_count'],
+      )!,
     );
   }
 
@@ -1440,12 +1482,14 @@ class ConversationHistoryEntity extends DataClass
   final String userId;
   final DateTime lastInteractedAt;
   final String chatId;
-  final String? lastMessage;
+  final String lastMessageId;
+  final int unreadCount;
   const ConversationHistoryEntity({
     required this.userId,
     required this.lastInteractedAt,
     required this.chatId,
-    this.lastMessage,
+    required this.lastMessageId,
+    required this.unreadCount,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1453,9 +1497,8 @@ class ConversationHistoryEntity extends DataClass
     map['user_id'] = Variable<String>(userId);
     map['last_interacted_at'] = Variable<DateTime>(lastInteractedAt);
     map['chat_id'] = Variable<String>(chatId);
-    if (!nullToAbsent || lastMessage != null) {
-      map['last_message'] = Variable<String>(lastMessage);
-    }
+    map['last_message_id'] = Variable<String>(lastMessageId);
+    map['unread_count'] = Variable<int>(unreadCount);
     return map;
   }
 
@@ -1464,9 +1507,8 @@ class ConversationHistoryEntity extends DataClass
       userId: Value(userId),
       lastInteractedAt: Value(lastInteractedAt),
       chatId: Value(chatId),
-      lastMessage: lastMessage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastMessage),
+      lastMessageId: Value(lastMessageId),
+      unreadCount: Value(unreadCount),
     );
   }
 
@@ -1479,9 +1521,17 @@ class ConversationHistoryEntity extends DataClass
       userId: serializer.fromJson<String>(json['userId']),
       lastInteractedAt: serializer.fromJson<DateTime>(json['lastInteractedAt']),
       chatId: serializer.fromJson<String>(json['chatId']),
-      lastMessage: serializer.fromJson<String?>(json['lastMessage']),
+      lastMessageId: serializer.fromJson<String>(json['lastMessageId']),
+      unreadCount: serializer.fromJson<int>(json['unreadCount']),
     );
   }
+  factory ConversationHistoryEntity.fromJsonString(
+    String encodedJson, {
+    ValueSerializer? serializer,
+  }) => ConversationHistoryEntity.fromJson(
+    DataClass.parseJson(encodedJson) as Map<String, dynamic>,
+    serializer: serializer,
+  );
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -1489,7 +1539,8 @@ class ConversationHistoryEntity extends DataClass
       'userId': serializer.toJson<String>(userId),
       'lastInteractedAt': serializer.toJson<DateTime>(lastInteractedAt),
       'chatId': serializer.toJson<String>(chatId),
-      'lastMessage': serializer.toJson<String?>(lastMessage),
+      'lastMessageId': serializer.toJson<String>(lastMessageId),
+      'unreadCount': serializer.toJson<int>(unreadCount),
     };
   }
 
@@ -1497,12 +1548,14 @@ class ConversationHistoryEntity extends DataClass
     String? userId,
     DateTime? lastInteractedAt,
     String? chatId,
-    Value<String?> lastMessage = const Value.absent(),
+    String? lastMessageId,
+    int? unreadCount,
   }) => ConversationHistoryEntity(
     userId: userId ?? this.userId,
     lastInteractedAt: lastInteractedAt ?? this.lastInteractedAt,
     chatId: chatId ?? this.chatId,
-    lastMessage: lastMessage.present ? lastMessage.value : this.lastMessage,
+    lastMessageId: lastMessageId ?? this.lastMessageId,
+    unreadCount: unreadCount ?? this.unreadCount,
   );
   ConversationHistoryEntity copyWithCompanion(
     ConversationHistoryTableCompanion data,
@@ -1513,9 +1566,12 @@ class ConversationHistoryEntity extends DataClass
           ? data.lastInteractedAt.value
           : this.lastInteractedAt,
       chatId: data.chatId.present ? data.chatId.value : this.chatId,
-      lastMessage: data.lastMessage.present
-          ? data.lastMessage.value
-          : this.lastMessage,
+      lastMessageId: data.lastMessageId.present
+          ? data.lastMessageId.value
+          : this.lastMessageId,
+      unreadCount: data.unreadCount.present
+          ? data.unreadCount.value
+          : this.unreadCount,
     );
   }
 
@@ -1525,14 +1581,15 @@ class ConversationHistoryEntity extends DataClass
           ..write('userId: $userId, ')
           ..write('lastInteractedAt: $lastInteractedAt, ')
           ..write('chatId: $chatId, ')
-          ..write('lastMessage: $lastMessage')
+          ..write('lastMessageId: $lastMessageId, ')
+          ..write('unreadCount: $unreadCount')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(userId, lastInteractedAt, chatId, lastMessage);
+      Object.hash(userId, lastInteractedAt, chatId, lastMessageId, unreadCount);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1540,7 +1597,8 @@ class ConversationHistoryEntity extends DataClass
           other.userId == this.userId &&
           other.lastInteractedAt == this.lastInteractedAt &&
           other.chatId == this.chatId &&
-          other.lastMessage == this.lastMessage);
+          other.lastMessageId == this.lastMessageId &&
+          other.unreadCount == this.unreadCount);
 }
 
 class ConversationHistoryTableCompanion
@@ -1548,36 +1606,42 @@ class ConversationHistoryTableCompanion
   final Value<String> userId;
   final Value<DateTime> lastInteractedAt;
   final Value<String> chatId;
-  final Value<String?> lastMessage;
+  final Value<String> lastMessageId;
+  final Value<int> unreadCount;
   final Value<int> rowid;
   const ConversationHistoryTableCompanion({
     this.userId = const Value.absent(),
     this.lastInteractedAt = const Value.absent(),
     this.chatId = const Value.absent(),
-    this.lastMessage = const Value.absent(),
+    this.lastMessageId = const Value.absent(),
+    this.unreadCount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ConversationHistoryTableCompanion.insert({
     required String userId,
     required DateTime lastInteractedAt,
     required String chatId,
-    this.lastMessage = const Value.absent(),
+    required String lastMessageId,
+    this.unreadCount = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : userId = Value(userId),
        lastInteractedAt = Value(lastInteractedAt),
-       chatId = Value(chatId);
+       chatId = Value(chatId),
+       lastMessageId = Value(lastMessageId);
   static Insertable<ConversationHistoryEntity> custom({
     Expression<String>? userId,
     Expression<DateTime>? lastInteractedAt,
     Expression<String>? chatId,
-    Expression<String>? lastMessage,
+    Expression<String>? lastMessageId,
+    Expression<int>? unreadCount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (userId != null) 'user_id': userId,
       if (lastInteractedAt != null) 'last_interacted_at': lastInteractedAt,
       if (chatId != null) 'chat_id': chatId,
-      if (lastMessage != null) 'last_message': lastMessage,
+      if (lastMessageId != null) 'last_message_id': lastMessageId,
+      if (unreadCount != null) 'unread_count': unreadCount,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1586,14 +1650,16 @@ class ConversationHistoryTableCompanion
     Value<String>? userId,
     Value<DateTime>? lastInteractedAt,
     Value<String>? chatId,
-    Value<String?>? lastMessage,
+    Value<String>? lastMessageId,
+    Value<int>? unreadCount,
     Value<int>? rowid,
   }) {
     return ConversationHistoryTableCompanion(
       userId: userId ?? this.userId,
       lastInteractedAt: lastInteractedAt ?? this.lastInteractedAt,
       chatId: chatId ?? this.chatId,
-      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageId: lastMessageId ?? this.lastMessageId,
+      unreadCount: unreadCount ?? this.unreadCount,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1610,8 +1676,11 @@ class ConversationHistoryTableCompanion
     if (chatId.present) {
       map['chat_id'] = Variable<String>(chatId.value);
     }
-    if (lastMessage.present) {
-      map['last_message'] = Variable<String>(lastMessage.value);
+    if (lastMessageId.present) {
+      map['last_message_id'] = Variable<String>(lastMessageId.value);
+    }
+    if (unreadCount.present) {
+      map['unread_count'] = Variable<int>(unreadCount.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1625,7 +1694,8 @@ class ConversationHistoryTableCompanion
           ..write('userId: $userId, ')
           ..write('lastInteractedAt: $lastInteractedAt, ')
           ..write('chatId: $chatId, ')
-          ..write('lastMessage: $lastMessage, ')
+          ..write('lastMessageId: $lastMessageId, ')
+          ..write('unreadCount: $unreadCount, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1694,6 +1764,9 @@ abstract class _$LocalDatabase extends GeneratedDatabase {
     userIdIndex,
     chatIdIndex,
   ];
+  @override
+  DriftDatabaseOptions get options =>
+      const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
 typedef $$UserTableTableCreateCompanionBuilder =
@@ -2160,7 +2233,7 @@ final class $$ChatTableTableReferences
         db.conversationHistoryTable,
         aliasName: $_aliasNameGenerator(
           db.chatTable.id,
-          db.conversationHistoryTable.lastMessage,
+          db.conversationHistoryTable.lastMessageId,
         ),
       );
 
@@ -2169,7 +2242,7 @@ final class $$ChatTableTableReferences
     final manager = $$ConversationHistoryTableTableTableManager(
       $_db,
       $_db.conversationHistoryTable,
-    ).filter((f) => f.lastMessage.id.sqlEquals($_itemColumn<String>('id')!));
+    ).filter((f) => f.lastMessageId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(
       _conversationHistoryTableRefsTable($_db),
@@ -2279,7 +2352,7 @@ class $$ChatTableTableFilterComposer
           composer: this,
           getCurrentColumn: (t) => t.id,
           referencedTable: $db.conversationHistoryTable,
-          getReferencedColumn: (t) => t.lastMessage,
+          getReferencedColumn: (t) => t.lastMessageId,
           builder:
               (
                 joinBuilder, {
@@ -2460,7 +2533,7 @@ class $$ChatTableTableAnnotationComposer
           composer: this,
           getCurrentColumn: (t) => t.id,
           referencedTable: $db.conversationHistoryTable,
-          getReferencedColumn: (t) => t.lastMessage,
+          getReferencedColumn: (t) => t.lastMessageId,
           builder:
               (
                 joinBuilder, {
@@ -2635,7 +2708,7 @@ class $$ChatTableTableTableManager
                               ).conversationHistoryTableRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
-                                (e) => e.lastMessage == item.id,
+                                (e) => e.lastMessageId == item.id,
                               ),
                           typedResults: items,
                         ),
@@ -2669,7 +2742,8 @@ typedef $$ConversationHistoryTableTableCreateCompanionBuilder =
       required String userId,
       required DateTime lastInteractedAt,
       required String chatId,
-      Value<String?> lastMessage,
+      required String lastMessageId,
+      Value<int> unreadCount,
       Value<int> rowid,
     });
 typedef $$ConversationHistoryTableTableUpdateCompanionBuilder =
@@ -2677,7 +2751,8 @@ typedef $$ConversationHistoryTableTableUpdateCompanionBuilder =
       Value<String> userId,
       Value<DateTime> lastInteractedAt,
       Value<String> chatId,
-      Value<String?> lastMessage,
+      Value<String> lastMessageId,
+      Value<int> unreadCount,
       Value<int> rowid,
     });
 
@@ -2716,22 +2791,22 @@ final class $$ConversationHistoryTableTableReferences
     );
   }
 
-  static $ChatTableTable _lastMessageTable(_$LocalDatabase db) =>
+  static $ChatTableTable _lastMessageIdTable(_$LocalDatabase db) =>
       db.chatTable.createAlias(
         $_aliasNameGenerator(
-          db.conversationHistoryTable.lastMessage,
+          db.conversationHistoryTable.lastMessageId,
           db.chatTable.id,
         ),
       );
 
-  $$ChatTableTableProcessedTableManager? get lastMessage {
-    final $_column = $_itemColumn<String>('last_message');
-    if ($_column == null) return null;
+  $$ChatTableTableProcessedTableManager get lastMessageId {
+    final $_column = $_itemColumn<String>('last_message_id')!;
+
     final manager = $$ChatTableTableTableManager(
       $_db,
       $_db.chatTable,
     ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_lastMessageTable($_db));
+    final item = $_typedResult.readTableOrNull(_lastMessageIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -2758,6 +2833,11 @@ class $$ConversationHistoryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get unreadCount => $composableBuilder(
+    column: $table.unreadCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$UserTableTableFilterComposer get userId {
     final $$UserTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -2781,10 +2861,10 @@ class $$ConversationHistoryTableTableFilterComposer
     return composer;
   }
 
-  $$ChatTableTableFilterComposer get lastMessage {
+  $$ChatTableTableFilterComposer get lastMessageId {
     final $$ChatTableTableFilterComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.lastMessage,
+      getCurrentColumn: (t) => t.lastMessageId,
       referencedTable: $db.chatTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2824,6 +2904,11 @@ class $$ConversationHistoryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get unreadCount => $composableBuilder(
+    column: $table.unreadCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$UserTableTableOrderingComposer get userId {
     final $$UserTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -2847,10 +2932,10 @@ class $$ConversationHistoryTableTableOrderingComposer
     return composer;
   }
 
-  $$ChatTableTableOrderingComposer get lastMessage {
+  $$ChatTableTableOrderingComposer get lastMessageId {
     final $$ChatTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.lastMessage,
+      getCurrentColumn: (t) => t.lastMessageId,
       referencedTable: $db.chatTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2888,6 +2973,11 @@ class $$ConversationHistoryTableTableAnnotationComposer
   GeneratedColumn<String> get chatId =>
       $composableBuilder(column: $table.chatId, builder: (column) => column);
 
+  GeneratedColumn<int> get unreadCount => $composableBuilder(
+    column: $table.unreadCount,
+    builder: (column) => column,
+  );
+
   $$UserTableTableAnnotationComposer get userId {
     final $$UserTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -2911,10 +3001,10 @@ class $$ConversationHistoryTableTableAnnotationComposer
     return composer;
   }
 
-  $$ChatTableTableAnnotationComposer get lastMessage {
+  $$ChatTableTableAnnotationComposer get lastMessageId {
     final $$ChatTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.lastMessage,
+      getCurrentColumn: (t) => t.lastMessageId,
       referencedTable: $db.chatTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2951,7 +3041,7 @@ class $$ConversationHistoryTableTableTableManager
             $$ConversationHistoryTableTableReferences,
           ),
           ConversationHistoryEntity,
-          PrefetchHooks Function({bool userId, bool lastMessage})
+          PrefetchHooks Function({bool userId, bool lastMessageId})
         > {
   $$ConversationHistoryTableTableTableManager(
     _$LocalDatabase db,
@@ -2980,13 +3070,15 @@ class $$ConversationHistoryTableTableTableManager
                 Value<String> userId = const Value.absent(),
                 Value<DateTime> lastInteractedAt = const Value.absent(),
                 Value<String> chatId = const Value.absent(),
-                Value<String?> lastMessage = const Value.absent(),
+                Value<String> lastMessageId = const Value.absent(),
+                Value<int> unreadCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ConversationHistoryTableCompanion(
                 userId: userId,
                 lastInteractedAt: lastInteractedAt,
                 chatId: chatId,
-                lastMessage: lastMessage,
+                lastMessageId: lastMessageId,
+                unreadCount: unreadCount,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2994,13 +3086,15 @@ class $$ConversationHistoryTableTableTableManager
                 required String userId,
                 required DateTime lastInteractedAt,
                 required String chatId,
-                Value<String?> lastMessage = const Value.absent(),
+                required String lastMessageId,
+                Value<int> unreadCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ConversationHistoryTableCompanion.insert(
                 userId: userId,
                 lastInteractedAt: lastInteractedAt,
                 chatId: chatId,
-                lastMessage: lastMessage,
+                lastMessageId: lastMessageId,
+                unreadCount: unreadCount,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -3011,7 +3105,7 @@ class $$ConversationHistoryTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({userId = false, lastMessage = false}) {
+          prefetchHooksCallback: ({userId = false, lastMessageId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -3046,17 +3140,17 @@ class $$ConversationHistoryTableTableTableManager
                               )
                               as T;
                     }
-                    if (lastMessage) {
+                    if (lastMessageId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.lastMessage,
+                                currentColumn: table.lastMessageId,
                                 referencedTable:
                                     $$ConversationHistoryTableTableReferences
-                                        ._lastMessageTable(db),
+                                        ._lastMessageIdTable(db),
                                 referencedColumn:
                                     $$ConversationHistoryTableTableReferences
-                                        ._lastMessageTable(db)
+                                        ._lastMessageIdTable(db)
                                         .id,
                               )
                               as T;
@@ -3085,7 +3179,7 @@ typedef $$ConversationHistoryTableTableProcessedTableManager =
       $$ConversationHistoryTableTableUpdateCompanionBuilder,
       (ConversationHistoryEntity, $$ConversationHistoryTableTableReferences),
       ConversationHistoryEntity,
-      PrefetchHooks Function({bool userId, bool lastMessage})
+      PrefetchHooks Function({bool userId, bool lastMessageId})
     >;
 
 class $LocalDatabaseManager {

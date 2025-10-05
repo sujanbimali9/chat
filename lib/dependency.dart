@@ -3,10 +3,8 @@ import 'package:chat/src/auth/data/datasource/auth_remote_datasource.dart';
 import 'package:chat/src/auth/data/repository/auth_repository_imp.dart';
 import 'package:chat/src/auth/domain/repository/auth_repository.dart';
 import 'package:chat/src/auth/domain/usecases/email_and_password_login.dart';
-import 'package:chat/src/auth/domain/usecases/facebook_login.dart';
-import 'package:chat/src/auth/domain/usecases/forget_password.dart';
-import 'package:chat/src/auth/domain/usecases/gmail_login.dart';
 import 'package:chat/src/auth/domain/usecases/logout.dart';
+import 'package:chat/src/auth/domain/usecases/reset_password.dart';
 import 'package:chat/src/auth/domain/usecases/signup.dart';
 import 'package:chat/src/auth/domain/usecases/user_logged_in.dart';
 import 'package:chat/src/auth/domain/usecases/verify_email.dart';
@@ -27,7 +25,7 @@ import 'package:chat/src/home/data/repository/sync_chat_repository.dart';
 import 'package:chat/src/home/data/repository/user_repository_imp.dart';
 import 'package:chat/src/home/domain/repository/sync_chat_repository.dart';
 import 'package:chat/src/home/domain/repository/user_repository.dart';
-import 'package:chat/src/home/domain/usecases/get_interacted_user.dart';
+import 'package:chat/src/home/domain/usecases/get_conversation_history_user.dart';
 import 'package:chat/src/home/domain/usecases/get_interactive_user_stream.dart';
 import 'package:chat/src/home/domain/usecases/get_user.dart';
 import 'package:chat/src/home/domain/usecases/get_user_local.dart';
@@ -76,18 +74,13 @@ void _initAuth() {
       () => AuthRepositoryImp(serviceLocater(), serviceLocater()),
     )
     ..registerFactory(() => EmailAndPasswordLoginUseCase(serviceLocater()))
-    ..registerFactory(() => LoginWithFacebookUseCase(serviceLocater()))
-    ..registerFactory(() => ForgetPasswordUseCase(serviceLocater()))
-    ..registerFactory(() => LoginWithGmailUseCase(serviceLocater()))
+    ..registerFactory(() => ResetPasswordUseCase(serviceLocater()))
     ..registerFactory(() => LogOutUseCase(serviceLocater()))
     ..registerFactory(() => SignUpUseCase(serviceLocater()))
     ..registerFactory(() => UserLoggedInUseCase(serviceLocater()))
     ..registerFactory(() => EmailVerifiedUseCase(serviceLocater()))
     ..registerLazySingleton(
       () => AuthBloc(
-        serviceLocater(),
-        serviceLocater(),
-        serviceLocater(),
         serviceLocater(),
         serviceLocater(),
         serviceLocater(),

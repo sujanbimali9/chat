@@ -7,7 +7,7 @@ part 'chat_model.g.dart';
 part 'chat_model.freezed.dart';
 
 @freezed
-class ChatModel with _$ChatModel {
+class ChatModel extends Chat with _$ChatModel {
   factory ChatModel({
     required final String id,
     required final String chatId,
@@ -25,22 +25,6 @@ class ChatModel with _$ChatModel {
 
   factory ChatModel.fromJson(json) => _$ChatModelFromJson(json);
 
-  factory ChatModel.fromChat(Chat chat) => ChatModel(
-        id: chat.id,
-        chatId: chat.chatId,
-        msg: chat.msg,
-        toId: chat.toId,
-        read: chat.read,
-        type: chat.type,
-        fromId: chat.fromId,
-        readTime: chat.readTime,
-        sentTime: chat.sentTime,
-        status: chat.status,
-        replyTo:
-            chat.replyTo != null ? ChatModel.fromChat(chat.replyTo!) : null,
-        medias: chat.medias.map((e) => MediaModel.fromMedia(e)).toList(),
-      );
-
   factory ChatModel.fromChatEntity(ChatEntity e) {
     return ChatModel(
       id: e.id,
@@ -54,6 +38,22 @@ class ChatModel with _$ChatModel {
       sentTime: e.sentTime,
       medias: e.medias,
       status: e.status,
+    );
+  }
+
+  factory ChatModel.fromChat(Chat chat) {
+    return ChatModel(
+      id: chat.id,
+      chatId: chat.chatId,
+      msg: chat.msg,
+      toId: chat.toId,
+      read: chat.read,
+      type: chat.type,
+      fromId: chat.fromId,
+      readTime: chat.readTime,
+      sentTime: chat.sentTime,
+      medias: chat.medias.map((e) => MediaModel.fromMedia(e)).toList(),
+      status: chat.status,
     );
   }
 }

@@ -3,10 +3,10 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat/core/common/model/chat.dart';
+import 'package:chat/core/common/model/conversation.dart';
 import 'package:chat/core/common/model/pagination.dart';
-import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/auth/domain/usecases/logout.dart';
-import 'package:chat/src/home/domain/usecases/get_interacted_user.dart';
+import 'package:chat/src/home/domain/usecases/get_conversation_history_user.dart';
 import 'package:chat/src/home/domain/usecases/get_interactive_user_stream.dart';
 import 'package:chat/src/home/domain/usecases/get_user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,7 +21,7 @@ class ConversationHistoryBloc
   final GetConversationHistoryUseCaseStream
   _getConversationHistoryUseCaseStream;
 
-  StreamSubscription<List<({User user, Chat chat})>>? _userStreamController;
+  StreamSubscription<List<Conversation>>? _userStreamController;
 
   UserPagination _userPagination = const UserPagination(
     offset: 0,
@@ -29,7 +29,7 @@ class ConversationHistoryBloc
     total: 0,
   );
 
-  final interactedUsers = <String, ({User user, Chat chat})>{};
+  final interactedUsers = <String, Conversation>{};
 
   ConversationHistoryBloc(
     this._getConversationHistoryUseCase,
@@ -37,8 +37,8 @@ class ConversationHistoryBloc
   ) : super(const _Initial()) {
     on<ConversationHistoryEvent>((event, emit) async {
       await event.map<FutureOr<void>>(
-        getConversationHistory: (e) => _getInteractedUser(emit),
-        getConversationHistoryLocal: (e) => _getInteractedUserLocal(emit),
+        getConversationHistory: (e) => _getConversationHistory(emit),
+        getConversationHistoryLocal: (e) => _getConversationHistoryLocal(emit),
         sortUsers: (e) => (),
         refreshConversationHistory: (e) => _refreshUser(emit),
         fetchMoreConversationHistory: (e) => _fetchMoreUser(emit),
@@ -46,7 +46,7 @@ class ConversationHistoryBloc
       );
     });
     add(const ConversationHistoryEvent.getConversationHistoryLocal());
-    add(const ConversationHistoryEvent.getConversationHistory());
+    // add(const ConversationHistoryEvent.getConversationHistory());
 
     listenForNewChats();
   }
@@ -68,7 +68,9 @@ class ConversationHistoryBloc
     });
   }
 
-  FutureOr<void> _getInteractedUser(Emitter<ConversationHistory> emit) async {
+  FutureOr<void> _getConversationHistory(
+    Emitter<ConversationHistory> emit,
+  ) async {
     emit(const ConversationHistory.loading());
     final result = await _getConversationHistoryUseCase(
       GetUserParms(
@@ -79,7 +81,7 @@ class ConversationHistoryBloc
 
     result.fold(
       (l) {
-        log('GetInteractedUser error: ${l.message}');
+        log('GetConversationHistory error: ${l.message}');
       },
       (res) {
         final data = res.data;
@@ -120,7 +122,7 @@ class ConversationHistoryBloc
     });
   }
 
-  FutureOr<void> _getInteractedUserLocal(
+  FutureOr<void> _getConversationHistoryLocal(
     Emitter<ConversationHistory> emit,
   ) async {
     emit(const ConversationHistory.loading());

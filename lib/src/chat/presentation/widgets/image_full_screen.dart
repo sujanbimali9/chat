@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/core/common/model/media.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ImageFullScreen extends StatelessWidget {
   final Media image;
@@ -9,31 +10,27 @@ class ImageFullScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Center(
-            child: Hero(
-              tag: image.url,
-              child: AspectRatio(
-                aspectRatio: image.metaData.aspectRatio!,
-                child: SizedBox(
-                  height: double.infinity,
-                  width: double.infinity,
-                  child: InteractiveViewer(
-                    child: CachedNetworkImage(imageUrl: image.url),
-                  ),
-                ),
-              ),
+          Hero(
+            tag: image.url,
+            child: PhotoView(
+              minScale: PhotoViewComputedScale.contained,
+
+              imageProvider: CachedNetworkImageProvider(image.url),
             ),
           ),
+
           Positioned(
-              top: 30,
-              left: 10,
-              child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.close))),
+            top: 30,
+            left: 10,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
         ],
       ),
     );

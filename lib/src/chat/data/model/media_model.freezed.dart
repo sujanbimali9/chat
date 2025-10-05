@@ -22,8 +22,8 @@ MediaModel _$MediaModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$MediaModel {
   String get url => throw _privateConstructorUsedError;
-  MediaType get type => throw _privateConstructorUsedError;
   MediaMetaDataModel get metadata => throw _privateConstructorUsedError;
+  MediaType get type => throw _privateConstructorUsedError;
 
   /// Serializes this MediaModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,7 +42,7 @@ abstract class $MediaModelCopyWith<$Res> {
     $Res Function(MediaModel) then,
   ) = _$MediaModelCopyWithImpl<$Res, MediaModel>;
   @useResult
-  $Res call({String url, MediaType type, MediaMetaDataModel metadata});
+  $Res call({String url, MediaMetaDataModel metadata, MediaType type});
 
   $MediaMetaDataModelCopyWith<$Res> get metadata;
 }
@@ -63,8 +63,8 @@ class _$MediaModelCopyWithImpl<$Res, $Val extends MediaModel>
   @override
   $Res call({
     Object? url = null,
-    Object? type = null,
     Object? metadata = null,
+    Object? type = null,
   }) {
     return _then(
       _value.copyWith(
@@ -72,14 +72,14 @@ class _$MediaModelCopyWithImpl<$Res, $Val extends MediaModel>
                 ? _value.url
                 : url // ignore: cast_nullable_to_non_nullable
                       as String,
-            type: null == type
-                ? _value.type
-                : type // ignore: cast_nullable_to_non_nullable
-                      as MediaType,
             metadata: null == metadata
                 ? _value.metadata
                 : metadata // ignore: cast_nullable_to_non_nullable
                       as MediaMetaDataModel,
+            type: null == type
+                ? _value.type
+                : type // ignore: cast_nullable_to_non_nullable
+                      as MediaType,
           )
           as $Val,
     );
@@ -105,7 +105,7 @@ abstract class _$$MediaModelImplCopyWith<$Res>
   ) = __$$MediaModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String url, MediaType type, MediaMetaDataModel metadata});
+  $Res call({String url, MediaMetaDataModel metadata, MediaType type});
 
   @override
   $MediaMetaDataModelCopyWith<$Res> get metadata;
@@ -126,8 +126,8 @@ class __$$MediaModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? url = null,
-    Object? type = null,
     Object? metadata = null,
+    Object? type = null,
   }) {
     return _then(
       _$MediaModelImpl(
@@ -135,14 +135,14 @@ class __$$MediaModelImplCopyWithImpl<$Res>
             ? _value.url
             : url // ignore: cast_nullable_to_non_nullable
                   as String,
-        type: null == type
-            ? _value.type
-            : type // ignore: cast_nullable_to_non_nullable
-                  as MediaType,
         metadata: null == metadata
             ? _value.metadata
             : metadata // ignore: cast_nullable_to_non_nullable
                   as MediaMetaDataModel,
+        type: null == type
+            ? _value.type
+            : type // ignore: cast_nullable_to_non_nullable
+                  as MediaType,
       ),
     );
   }
@@ -153,8 +153,8 @@ class __$$MediaModelImplCopyWithImpl<$Res>
 class _$MediaModelImpl implements _MediaModel {
   _$MediaModelImpl({
     required this.url,
-    required this.type,
     required this.metadata,
+    required this.type,
   });
 
   factory _$MediaModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -163,13 +163,13 @@ class _$MediaModelImpl implements _MediaModel {
   @override
   final String url;
   @override
-  final MediaType type;
-  @override
   final MediaMetaDataModel metadata;
+  @override
+  final MediaType type;
 
   @override
   String toString() {
-    return 'MediaModel(url: $url, type: $type, metadata: $metadata)';
+    return 'MediaModel(url: $url, metadata: $metadata, type: $type)';
   }
 
   @override
@@ -178,14 +178,14 @@ class _$MediaModelImpl implements _MediaModel {
         (other.runtimeType == runtimeType &&
             other is _$MediaModelImpl &&
             (identical(other.url, url) || other.url == url) &&
-            (identical(other.type, type) || other.type == type) &&
             (identical(other.metadata, metadata) ||
-                other.metadata == metadata));
+                other.metadata == metadata) &&
+            (identical(other.type, type) || other.type == type));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, url, type, metadata);
+  int get hashCode => Object.hash(runtimeType, url, metadata, type);
 
   /// Create a copy of MediaModel
   /// with the given fields replaced by the non-null parameter values.
@@ -204,8 +204,8 @@ class _$MediaModelImpl implements _MediaModel {
 abstract class _MediaModel implements MediaModel {
   factory _MediaModel({
     required final String url,
-    required final MediaType type,
     required final MediaMetaDataModel metadata,
+    required final MediaType type,
   }) = _$MediaModelImpl;
 
   factory _MediaModel.fromJson(Map<String, dynamic> json) =
@@ -214,9 +214,9 @@ abstract class _MediaModel implements MediaModel {
   @override
   String get url;
   @override
-  MediaType get type;
-  @override
   MediaMetaDataModel get metadata;
+  @override
+  MediaType get type;
 
   /// Create a copy of MediaModel
   /// with the given fields replaced by the non-null parameter values.
