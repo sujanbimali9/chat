@@ -23,7 +23,7 @@ class ChatModel extends Chat with _$ChatModel {
     final ChatModel? replyTo,
   }) = _ChatModel;
 
-  factory ChatModel.fromJson(json) => _$ChatModelFromJson(json);
+  factory ChatModel.fromJson(dynamic json) => _$ChatModelFromJson(json);
 
   factory ChatModel.fromChatEntity(ChatEntity e) {
     return ChatModel(

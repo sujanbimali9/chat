@@ -12,8 +12,8 @@ abstract interface class UserRemoteDataSource {
     required int limit,
     required int offset,
   });
-  Future<ApiResponse<ConversationModel, UserPagination>>
-  getConversationHistory({required int limit, required int offset});
+  Future<ApiResponse<ConversationModel, ConversationPagination>>
+  getConversationHistory({required int limit, required int? lastInteractedAt});
   Future<UserModel> getCurrentUser();
   Future<UserModel> updateUser(UserModel user);
   Future<ApiResponse<UserModel, UserPagination>> searchUser(
@@ -98,18 +98,18 @@ class UserRemoteDataSourceImp
   }
 
   @override
-  Future<ApiResponse<ConversationModel, UserPagination>>
-  getConversationHistory({required int limit, required int offset}) {
+  Future<ApiResponse<ConversationModel, ConversationPagination>>
+  getConversationHistory({required int limit, required int? lastInteractedAt}) {
     return handleNetworkException(() async {
       final res = await _apiService.get(
         'conversations',
-        query: {'limit': limit, 'offset': offset},
+        query: {'limit': limit, 'lastInteractedAt': lastInteractedAt},
       );
 
       return ApiResponse.fromJson(
         res,
         ConversationModel.fromJson,
-        UserPagination.fromJson,
+        ConversationPagination.fromJson,
         dataSource: ApiDataSource.remote,
       );
     }, context: 'getConversationHistory');

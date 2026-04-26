@@ -175,6 +175,7 @@ class _ChatContainerState extends State<ChatContainer> {
 
   Widget _buildReplyMedia(Chat chat) {
     final size = MediaQuery.of(context).size;
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width * 0.3),
       child: ClipRRect(

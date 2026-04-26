@@ -65,10 +65,23 @@ mixin ExceptionHandlerMixin {
         return left(AuthFailure(e.message));
       }
 
-      log('Unexpected Exception: $e', name: '$runtimeType.$context');
+      log(
+        'Unexpected Exception: ${e.runtimeType} - $e',
+        name: '$runtimeType.$context',
+      );
       return left(Failure(e.toString()));
     } catch (e) {
-      log('Unknown Error: $e', name: '$runtimeType.$context');
+      if (e is StateError) {
+        log(
+          'State Error: ${e.message} - ${e.stackTrace?.toString()}',
+          name: '$runtimeType.$context',
+        );
+        return left(Failure(e.toString()));
+      }
+      log(
+        'Unknown Error: ${e.runtimeType} - $e',
+        name: '$runtimeType.$context',
+      );
       return left(Failure(ErrorMessages.unknownError));
     }
   }

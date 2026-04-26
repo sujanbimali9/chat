@@ -13,21 +13,64 @@ class UserPagination extends Equatable {
   @override
   List<Object?> get props => [offset, limit, total];
 
-  UserPagination copyWith({int? offet, int? limit, int? total}) {
+  UserPagination copyWith({int? lastInteractedAt, int? limit, int? total}) {
     return UserPagination(
-      offset: offet ?? offset,
+      offset: lastInteractedAt ?? this.offset,
       limit: limit ?? this.limit,
       total: total ?? this.total,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'offet': offset, 'limit': limit, 'total': total};
+    return {'lastInteractedAt': offset, 'limit': limit, 'total': total};
   }
 
   factory UserPagination.fromJson(Map<String, dynamic> map) {
     return UserPagination(
-      offset: map['offset'],
+      offset: map['lastInteractedAt'],
+      limit: map['limit'],
+      total: map['total'],
+    );
+  }
+}
+
+class ConversationPagination extends Equatable {
+  final int? lastInteractedAt;
+  final int limit;
+  final int total;
+
+  const ConversationPagination({
+    required this.lastInteractedAt,
+    required this.limit,
+    required this.total,
+  });
+
+  @override
+  List<Object?> get props => [lastInteractedAt, limit, total];
+
+  ConversationPagination copyWith({
+    int? lastInteractedAt,
+    int? limit,
+    int? total,
+  }) {
+    return ConversationPagination(
+      lastInteractedAt: lastInteractedAt ?? this.lastInteractedAt,
+      limit: limit ?? this.limit,
+      total: total ?? this.total,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'lastMessageTime': lastInteractedAt,
+      'limit': limit,
+      'total': total,
+    };
+  }
+
+  factory ConversationPagination.fromJson(Map<String, dynamic> map) {
+    return ConversationPagination(
+      lastInteractedAt: map['lastMessageTime'],
       limit: map['limit'],
       total: map['total'],
     );

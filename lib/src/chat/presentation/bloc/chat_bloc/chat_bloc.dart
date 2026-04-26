@@ -27,9 +27,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final SendChatUseCase _sendChatUseCase;
   final GetChatUseCase _getChatsUseCase;
   final ReplyCubit _replyCubit;
-  final String _chatId;
-  final String _userId;
-  final String _currentUserId;
+  String? _activeChatId;
+  String? _userId;
+  String? _currentUserId;
   bool allChatsLoaded = false;
   StreamSubscription<List<Chat>>? chatSubscription;
   StreamSubscription? connectivitySubscription;
@@ -40,33 +40,35 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     this._getChatStreamUseCase,
     this._sendChatUseCase,
     this._getChatsUseCase, {
-    required String userId,
-    required String currentUserId,
     required ReplyCubit replyCubit,
   }) : _replyCubit = replyCubit,
-       _currentUserId = currentUserId,
-       _userId = userId,
-       _chatId = IdGenerator.getConversionId(userId, currentUserId),
        super(const ChatInitial([])) {
-    on<FetchMore>((event, emit) async {
-      await _fetchMore(emit);
-    });
-    on<SendChat>((event, emit) async {
-      await _sendChat(
-        event.text,
-        event.type,
-        event.medias,
-        event.mediaType,
-        emit,
-      );
-    });
+    on<FetchMore>(_fetchMore);
+    on<SendChat>(_sendChat);
     on<ListenForNewChats>((event, emit) {
       _listenForNewChats();
     });
     on<StateEmitter>((event, emit) {
       emit(event.state);
     });
+    on<SwitchChat>(_switchChat);
+  }
 
+  void _switchChat(SwitchChat event, Emitter<ChatState> emit) {
+    final chatId = IdGenerator.getConversionId(
+      event.userId,
+      event.currentUserId,
+    );
+    if (_activeChatId == chatId) {
+      return;
+    }
+    _activeChatId = chatId;
+    _userId = event.userId;
+    _currentUserId = event.currentUserId;
+    _chatPagination = null;
+    allChatsLoaded = false;
+    chatSubscription?.cancel();
+    emit(const ChatInitial([]));
     _initListeners();
   }
 
@@ -82,13 +84,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     return super.close();
   }
 
-  FutureOr<void> _fetchMore(Emitter<ChatState> emit) async {
-    if (allChatsLoaded) return;
+  FutureOr<void> _fetchMore(FetchMore event, Emitter<ChatState> emit) async {
+    if (allChatsLoaded || _activeChatId == null) return;
+    ChatPagination? _localPagination;
     emit(ChatFetchingMore(state.chats));
 
     final localRes = await _getChatsUseCase(
       GetChatParms(
-        chatId: _chatId,
+        chatId: _activeChatId!,
         limit: 20,
         lastChatSentTime: _chatPagination?.lastMessageSentTime,
         localOnly: true,
@@ -96,13 +99,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
     localRes.fold((l) => log('Error fetching chats: ${l.message}'), (res) {
       final chats = res.data;
+      _localPagination = res.pagination;
+
       emit(ChatLoaded(mergeChatList(state.chats, chats)));
     });
 
     final remoteRes = await _getChatsUseCase(
       GetChatParms(
-        chatId: _chatId,
-        limit: 20,
+        chatId: _activeChatId!,
+        limit: 10,
         lastChatSentTime: _chatPagination?.lastMessageSentTime,
         localOnly: false,
       ),
@@ -110,9 +115,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     remoteRes.fold(
       (l) {
         log('Error fetching remote chats: ${l.message}');
-        localRes.fold((l) {}, (res) {
-          _chatPagination = res.pagination;
-        });
+        _chatPagination = _localPagination;
       },
       (res) {
         final chats = res.data;
@@ -122,20 +125,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           allChatsLoaded = true;
           return;
         }
-
         emit(ChatLoaded(mergeChatList(state.chats, chats)));
       },
     );
   }
 
-  FutureOr<void> _sendChat(
-    String msg,
-    ChatType type,
-    List<String>? medias,
-    MediaType? mediaType,
-    Emitter<ChatState> emit,
-  ) async {
-    if (msg.trim().isEmpty && (medias?.isEmpty ?? true)) return;
+  FutureOr<void> _sendChat(SendChat event, Emitter<ChatState> emit) async {
+    if (_activeChatId == null || _userId == null) return;
+
+    if (event.text.trim().isEmpty && (event.medias?.isEmpty ?? true)) return;
     final replyTo = _replyCubit.state is Replying
         ? (_replyCubit.state as Replying).chat
         : null;
@@ -160,21 +158,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     Chat chat = Chat(
       id: const Uuid().v4(),
-      msg: msg,
-      toId: _userId,
+      msg: event.text.trim(),
+      toId: _userId!,
       read: false,
-      type: type,
-      fromId: _currentUserId,
+      type: event.type,
+      fromId: _currentUserId!,
       readTime: null,
       sentTime: DateTime.now(),
       status: MessageStatus.sending,
       replyTo: replyToChat,
       medias:
-          medias
+          event.medias
               ?.map(
                 (e) => Media(
                   url: e,
-                  type: mediaType!,
+                  type: event.mediaType!,
                   metadata: const MediaMetaData(),
                 ),
               )
@@ -188,12 +186,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     res.fold(
       (failure) => log('Error sending chats: ${failure.message}'),
-      (message) => emit(ChatLoaded(mergeChatList(state.chats, [message]))),
+      (message) => log('Chat sent: ${message.id}'),
     );
   }
 
   void _listenForNewChats() {
-    final res = _getChatStreamUseCase(_chatId);
+    if (_activeChatId == null) return;
+    chatSubscription?.cancel();
+    final res = _getChatStreamUseCase(_activeChatId!);
     res.fold(
       (failure) {
         log('Error in chat stream: ${failure.message}');
@@ -227,30 +227,47 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     int i = 0;
     int j = 0;
     List<Chat> mergedList = [];
+    // Set<String> addedChatIds = {};
 
     while (i < oldChats.length && j < newChats.length) {
       final sentTime1 = oldChats[i].sentTime.millisecondsSinceEpoch;
       final sentTime2 = newChats[j].sentTime.millisecondsSinceEpoch;
       if (sentTime1 > sentTime2) {
+        // if (!addedChatIds.contains(oldChats[i].id)) {
         mergedList.add(oldChats[i]);
+        // addedChatIds.add(oldChats[i].id);
+        // }
         i++;
       } else if (sentTime1 < sentTime2) {
+        // if (!addedChatIds.contains(newChats[j].id)) {
         mergedList.add(newChats[j]);
+        // addedChatIds.add(newChats[j].id);
+        // }
         j++;
       } else {
+        // if (!addedChatIds.contains(newChats[j].id)) {
         mergedList.add(newChats[j]);
+        // addedChatIds.add(newChats[j].id);
+        // }
         j++;
         i++;
       }
     }
     while (i < oldChats.length) {
+      // if (!addedChatIds.contains(oldChats[i].id)) {
       mergedList.add(oldChats[i]);
+      // addedChatIds.add(oldChats[i].id);
+      // }
       i++;
     }
     while (j < newChats.length) {
+      // if (!addedChatIds.contains(newChats[j].id)) {
       mergedList.add(newChats[j]);
+      // addedChatIds.add(newChats[j].id);
+      // }
       j++;
     }
+
     return mergedList;
   }
 }

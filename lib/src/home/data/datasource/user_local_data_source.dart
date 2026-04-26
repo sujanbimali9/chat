@@ -13,8 +13,8 @@ abstract interface class UserLocalDataSource {
     required int limit,
     required int offset,
   });
-  Future<ApiResponse<ConversationModel, UserPagination>>
-  getConversationHistory({required int limit, required int offset});
+  Future<ApiResponse<ConversationModel, ConversationPagination>>
+  getConversationHistory({required int limit, int? lastInteractedAt});
 
   Future<UserModel> updateUser(UserModel user);
   Future<ApiResponse<UserModel, UserPagination>> searchUser(
@@ -111,12 +111,12 @@ class UserLocalDataSourceImp
   }
 
   @override
-  Future<ApiResponse<ConversationModel, UserPagination>>
-  getConversationHistory({required int limit, required int offset}) async {
+  Future<ApiResponse<ConversationModel, ConversationPagination>>
+  getConversationHistory({required int limit, int? lastInteractedAt}) async {
     return await handleLocalException(() async {
       final users = await _userQuery.getConversationHistory(
         limit: limit,
-        offset: offset,
+        lastInteractedAt: lastInteractedAt,
       );
       return users;
     }, context: 'getConversationHistory');

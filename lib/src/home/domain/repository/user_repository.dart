@@ -11,12 +11,13 @@ abstract interface class UserRepository {
   Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUsers({
     required int limit,
     required int offset,
+    bool local = false,
   });
-  Future<Either<Failure, ApiResponse<Conversation, UserPagination>>>
-  getConversationHistory({required int limit, required int offset});
-  Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUserLocal({
+  Future<Either<Failure, ApiResponse<Conversation, ConversationPagination>>>
+  getConversationHistory({
     required int limit,
-    required int offset,
+    required int? lastInteractedAt,
+    bool local = false,
   });
   Future<Either<Failure, User>> getCurretUser({required bool local});
   Future<Either<Failure, User>> updateUser(User user);

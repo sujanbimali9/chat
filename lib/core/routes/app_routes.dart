@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:go_provider/go_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:chat/core/common/model/user.dart';
@@ -70,38 +71,43 @@ class AppRouter {
           builder: (context, state) => const ResetPasswordScreen(),
         ),
 
-        GoRoute(
+        GoProviderRoute(
           path: RoutePaths.home,
           name: RouteNames.home,
+          providers: [
+            BlocProvider(
+              create: (context) => serviceLocater<CurrentUserBloc>(),
+            ),
+            BlocProvider(create: (context) => serviceLocater<UserBloc>()),
+            BlocProvider(
+              create: (context) =>
+                  ConversationHistoryBloc(serviceLocater(), serviceLocater()),
+            ),
+            BlocProvider(
+              create: (context) => serviceLocater<PendingChatBloc>(),
+              lazy: false,
+            ),
+            BlocProvider(
+              create: (context) => SyncChatBloc(serviceLocater()),
+              lazy: false,
+            ),
+            BlocProvider(create: (context) => ReplyCubit()),
+            BlocProvider(
+              create: (context) => ChatBloc(
+                replyCubit: context.read<ReplyCubit>(),
+                serviceLocater(),
+                serviceLocater(),
+                serviceLocater(),
+              ),
+            ),
+          ],
           builder: (context, state) {
             final user = state.extra as User?;
             if (user == null) {
               return const LoginScreen();
             }
 
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => serviceLocater<CurrentUserBloc>(),
-                ),
-                BlocProvider(create: (context) => serviceLocater<UserBloc>()),
-                BlocProvider(
-                  create: (context) => ConversationHistoryBloc(
-                    serviceLocater(),
-                    serviceLocater(),
-                  ),
-                ),
-                BlocProvider(
-                  create: (context) => serviceLocater<PendingChatBloc>(),
-                  lazy: false,
-                ),
-                BlocProvider(
-                  create: (context) => SyncChatBloc(serviceLocater()),
-                  lazy: false,
-                ),
-              ],
-              child: HomeScreen(user: user),
-            );
+            return HomeScreen(user: user);
           },
           routes: [
             GoRoute(
@@ -112,23 +118,11 @@ class AppRouter {
 
                 final user = params['user'] as User;
                 final currentUser = params['currentUser'] as User;
-
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider(create: (context) => ReplyCubit()),
-                    BlocProvider(
-                      create: (context) => ChatBloc(
-                        replyCubit: context.read<ReplyCubit>(),
-                        userId: user.id,
-                        currentUserId: currentUser.id,
-                        serviceLocater(),
-                        serviceLocater(),
-                        serviceLocater(),
-                      ),
-                    ),
-                  ],
-                  child: ChatScreen(user: user, currentUser: currentUser),
+                context.read<ReplyCubit>().cancelReply();
+                context.read<ChatBloc>().add(
+                  SwitchChat(user.id, currentUser.id),
                 );
+                return ChatScreen(user: user, currentUser: currentUser);
               },
             ),
           ],

@@ -19,6 +19,7 @@ class GetAllUsersUseCase
     return await _userRepository.getAllUsers(
       limit: parm.limit,
       offset: parm.offset,
+      local: parm.local,
     );
   }
 }
@@ -26,6 +27,7 @@ class GetAllUsersUseCase
 class GetUserParms {
   final int limit;
   final int offset;
+  final bool local;
 
-  GetUserParms({required this.limit, required this.offset});
+  GetUserParms({required this.limit, required this.offset, this.local = false});
 }

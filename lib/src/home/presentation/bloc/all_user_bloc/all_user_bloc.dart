@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/core/common/model/user.dart';
 import 'package:chat/src/home/domain/usecases/get_user.dart';
-import 'package:chat/src/home/domain/usecases/get_user_local.dart';
 import 'package:chat/src/home/domain/usecases/search_user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -14,7 +13,6 @@ part 'all_user_bloc.freezed.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetAllUsersUseCase _getAllUserUseCase;
   final SearchUserUseCase _searchUserUseCase;
-  final GetAllUserLocalUseCase _getAllUserLocalUseCase;
   UserPagination _userPagination = const UserPagination(
     offset: 0,
     limit: 20,
@@ -26,11 +24,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     total: 0,
   );
   final allUsers = <String, User>{};
-  UserBloc(
-    this._getAllUserUseCase,
-    this._searchUserUseCase,
-    this._getAllUserLocalUseCase,
-  ) : super(const _Initial()) {
+  UserBloc(this._getAllUserUseCase, this._searchUserUseCase)
+    : super(const _Initial()) {
     on<UserEvent>((event, emit) async {
       await event.map<FutureOr<void>>(
         getAllUser: (e) => _getAllUser(emit),
@@ -87,8 +82,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   FutureOr<void> _getUsersLocal(Emitter<UserState> emit) async {
-    final result = await _getAllUserLocalUseCase(
-      GetUserParms(limit: 30, offset: 0),
+    final result = await _getAllUserUseCase(
+      GetUserParms(limit: 30, offset: 0, local: true),
     );
     result.fold(
       (l) {

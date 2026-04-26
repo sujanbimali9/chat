@@ -2,13 +2,11 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:chat/core/common/model/chat.dart';
 import 'package:chat/core/common/model/conversation.dart';
 import 'package:chat/core/common/model/pagination.dart';
 import 'package:chat/src/auth/domain/usecases/logout.dart';
 import 'package:chat/src/home/domain/usecases/get_conversation_history_user.dart';
 import 'package:chat/src/home/domain/usecases/get_interactive_user_stream.dart';
-import 'package:chat/src/home/domain/usecases/get_user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'conversation_history_event.dart';
@@ -21,136 +19,219 @@ class ConversationHistoryBloc
   final GetConversationHistoryUseCaseStream
   _getConversationHistoryUseCaseStream;
 
-  StreamSubscription<List<Conversation>>? _userStreamController;
+  StreamSubscription<List<Conversation>>? _conversationStreamSubscription;
 
-  UserPagination _userPagination = const UserPagination(
-    offset: 0,
+  ConversationPagination _pagination = const ConversationPagination(
+    lastInteractedAt: null,
     limit: 20,
     total: 0,
   );
 
-  final interactedUsers = <String, Conversation>{};
+  final Map<String, Conversation> _conversationsMap = {};
+  bool _isFetchingMore = false;
 
   ConversationHistoryBloc(
     this._getConversationHistoryUseCase,
     this._getConversationHistoryUseCaseStream,
   ) : super(const _Initial()) {
-    on<ConversationHistoryEvent>((event, emit) async {
-      await event.map<FutureOr<void>>(
-        getConversationHistory: (e) => _getConversationHistory(emit),
-        getConversationHistoryLocal: (e) => _getConversationHistoryLocal(emit),
-        sortUsers: (e) => (),
-        refreshConversationHistory: (e) => _refreshUser(emit),
-        fetchMoreConversationHistory: (e) => _fetchMoreUser(emit),
-        stateEmitter: (e) => emit(e.state),
-      );
-    });
-    add(const ConversationHistoryEvent.getConversationHistoryLocal());
-    // add(const ConversationHistoryEvent.getConversationHistory());
+    on<ConversationHistoryEvent>(_onEvent);
 
-    listenForNewChats();
+    add(const ConversationHistoryEvent.getConversationHistory());
+
+    _subscribeToConversationStream();
   }
 
-  void listenForNewChats() {
-    final res = _getConversationHistoryUseCaseStream(NoParams());
-
-    res.fold((failure) {}, (stream) {
-      _userStreamController = stream.listen((data) {
-        for (final record in data) {
-          interactedUsers[record.user.id] = record;
-        }
-        add(
-          ConversationHistoryEvent.stateEmitter(
-            ConversationHistory.loaded(interactedUsers.values.toList()),
-          ),
-        );
-      });
-    });
+  Future<void> _onEvent(
+    ConversationHistoryEvent event,
+    Emitter<ConversationHistory> emit,
+  ) async {
+    await event.map<FutureOr<void>>(
+      getConversationHistory: (_) => _getConversationHistory(emit),
+      refreshConversationHistory: (_) => _refreshConversationHistory(emit),
+      fetchMoreConversationHistory: (_) => _fetchMoreConversations(emit),
+      updateFromStream: (e) => _updateFromStream(emit, e.conversations),
+    );
   }
 
-  FutureOr<void> _getConversationHistory(
+  void _subscribeToConversationStream() {
+    final result = _getConversationHistoryUseCaseStream(NoParams());
+
+    result.fold(
+      (failure) => log('Stream subscription failed: ${failure.message}'),
+      (stream) {
+        _conversationStreamSubscription = stream.listen((conversations) {
+          add(ConversationHistoryEvent.updateFromStream(conversations));
+        }, onError: (error) => log('Stream error: $error'));
+      },
+    );
+  }
+
+  Future<void> _getConversationHistory(
     Emitter<ConversationHistory> emit,
   ) async {
     emit(const ConversationHistory.loading());
-    final result = await _getConversationHistoryUseCase(
-      GetUserParms(
-        limit: _userPagination.limit,
-        offset: _userPagination.offset,
+
+    final localResult = await _getConversationHistoryUseCase(
+      GetConversationParams(
+        limit: _pagination.limit,
+        lastInteractedAt: null,
+        local: true,
       ),
     );
 
-    result.fold(
-      (l) {
-        log('GetConversationHistory error: ${l.message}');
+    localResult.fold(
+      (failure) => log('Local fetch error: ${failure.message}'),
+      (response) {
+        _updateConversationsMap(response.data);
+        _pagination = response.pagination;
+        emit(ConversationHistory.loaded(_getSortedConversations()));
       },
-      (res) {
-        final data = res.data;
-        _userPagination = res.pagination;
-        for (final record in data) {
-          interactedUsers[record.user.id] = record;
+    );
+
+    final remoteResult = await _getConversationHistoryUseCase(
+      GetConversationParams(
+        limit: _pagination.limit,
+        lastInteractedAt: null,
+        local: false,
+      ),
+    );
+
+    remoteResult.fold(
+      (failure) {
+        log('Remote fetch error: ${failure.message}');
+        if (_conversationsMap.isNotEmpty) {
+          emit(ConversationHistory.loaded(_getSortedConversations()));
+        } else {
+          emit(ConversationHistory.error(failure.message));
         }
-        emit(ConversationHistory.loaded(interactedUsers.values.toList()));
+      },
+      (response) {
+        _updateConversationsMap(response.data);
+        _pagination = response.pagination;
+        emit(ConversationHistory.loaded(_getSortedConversations()));
       },
     );
   }
 
-  FutureOr<void> _refreshUser(Emitter<ConversationHistory> emit) {
-    _userPagination = const UserPagination(offset: 0, limit: 20, total: 0);
-    add(const ConversationHistoryEvent.getConversationHistory());
+  Future<void> _refreshConversationHistory(
+    Emitter<ConversationHistory> emit,
+  ) async {
+    _conversationsMap.clear();
+    _pagination = const ConversationPagination(
+      lastInteractedAt: null,
+      limit: 20,
+      total: 0,
+    );
+
+    await _getConversationHistory(emit);
   }
 
-  FutureOr<void> _fetchMoreUser(Emitter<ConversationHistory> emit) async {
-    if (_userPagination.total < interactedUsers.length ||
-        _userPagination.total == _userPagination.offset) {
+  Future<void> _fetchMoreConversations(
+    Emitter<ConversationHistory> emit,
+  ) async {
+    if (_isFetchingMore) return;
+
+    if (!_hasMoreData()) {
+      log('No more conversations to fetch');
       return;
     }
 
-    final result = await _getConversationHistoryUseCase(
-      GetUserParms(
-        limit: _userPagination.limit,
-        offset: interactedUsers.length,
-      ),
-    );
+    _isFetchingMore = true;
+    emit(ConversationHistory.fetchingMore(_getSortedConversations()));
 
-    result.fold((l) {}, (res) {
-      final data = res.data;
-      _userPagination = res.pagination;
-      for (final record in data) {
-        interactedUsers[record.user.id] = record;
-      }
-      emit(ConversationHistory.loaded(interactedUsers.values.toList()));
-    });
+    try {
+      final localResult = await _getConversationHistoryUseCase(
+        GetConversationParams(
+          limit: _pagination.limit,
+          lastInteractedAt: _pagination.lastInteractedAt,
+          local: true,
+        ),
+      );
+      ConversationPagination? localPagination;
+
+      localResult.fold(
+        (failure) => log('Local fetch error: ${failure.message}'),
+        (response) {
+          _updateConversationsMap(response.data);
+          localPagination = response.pagination;
+          emit(ConversationHistory.loaded(_getSortedConversations()));
+        },
+      );
+
+      final remoteResult = await _getConversationHistoryUseCase(
+        GetConversationParams(
+          limit: _pagination.limit,
+          lastInteractedAt: _pagination.lastInteractedAt,
+          local: false,
+        ),
+      );
+
+      remoteResult.fold(
+        (failure) {
+          if (localPagination != null) {
+            _pagination = localPagination!;
+          }
+          log('Remote fetch error: ${failure.message}');
+        },
+        (response) {
+          _updateConversationsMap(response.data);
+          _pagination = response.pagination;
+          emit(ConversationHistory.loaded(_getSortedConversations()));
+        },
+      );
+    } finally {
+      _isFetchingMore = false;
+    }
   }
 
-  FutureOr<void> _getConversationHistoryLocal(
+  Future<void> _updateFromStream(
     Emitter<ConversationHistory> emit,
+    List<Conversation> conversations,
   ) async {
-    emit(const ConversationHistory.loading());
-    final result = await _getConversationHistoryUseCase(
-      GetUserParms(
-        limit: _userPagination.limit,
-        offset: _userPagination.offset,
-      ),
+    _updateConversationsMap(conversations);
+
+    if (state is _Loaded || state is _FetchingMore) {
+      emit(ConversationHistory.loaded(_getSortedConversations()));
+    }
+  }
+
+  void _updateConversationsMap(List<Conversation> conversations) {
+    for (final conversation in conversations) {
+      final existingConversation = _conversationsMap[conversation.user.id];
+
+      if (existingConversation == null ||
+          conversation.lastInteractionAt.isAfter(
+            existingConversation.lastInteractionAt,
+          )) {
+        _conversationsMap[conversation.user.id] = conversation;
+      }
+    }
+  }
+
+  List<Conversation> _getSortedConversations() {
+    final conversations = _conversationsMap.values.toList();
+    conversations.sort(
+      (a, b) => b.lastInteractionAt.compareTo(a.lastInteractionAt),
     );
-    result.fold(
-      (l) {
-        log('Failed to get InteractedUsersLocal : ${l.message}');
-        emit(ConversationHistory.error(l.message));
-      },
-      (res) {
-        final data = res.data;
-        _userPagination = res.pagination;
-        for (final record in data) {
-          interactedUsers[record.user.id] = record;
-        }
-        emit(ConversationHistory.loaded(interactedUsers.values.toList()));
-      },
-    );
+    return conversations;
+  }
+
+  bool _hasMoreData() {
+    if (_pagination.lastInteractedAt == null && _conversationsMap.isNotEmpty) {
+      return false;
+    }
+
+    if (_pagination.total > 0 &&
+        _conversationsMap.length >= _pagination.total) {
+      return false;
+    }
+
+    return true;
   }
 
   @override
   Future<void> close() {
-    _userStreamController?.cancel();
+    _conversationStreamSubscription?.cancel();
     return super.close();
   }
 }

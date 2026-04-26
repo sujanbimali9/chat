@@ -18,7 +18,7 @@ class UserModel extends User with _$UserModel {
     final String? phone,
   }) = _UserModel;
 
-  factory UserModel.fromJson(json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(dynamic json) => _$UserModelFromJson(json);
 
   factory UserModel.fromUserEntity(UserEntity user) {
     return UserModel(

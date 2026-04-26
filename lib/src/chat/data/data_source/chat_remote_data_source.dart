@@ -13,6 +13,7 @@ import 'package:chat/utils/generator/media/image_metadata.dart';
 import 'package:chat/utils/services/api_service.dart';
 import 'package:chat/utils/services/socket_io.dart';
 import 'package:flutter/services.dart';
+import 'package:v_video_compressor/v_video_compressor.dart';
 
 abstract interface class ChatRemoteDataSource {
   Future<ChatModel> sendMessage(ChatModel chat);
@@ -155,6 +156,11 @@ class ChatRemoteDataSourceImp
     String chatId, {
     ProgressCallback? progress,
   }) async {
+    assert(media.isNotEmpty, 'Media list cannot be empty');
+    assert(
+      media.every((e) => e.metadata.thumbnail != null),
+      'Thumbnail is required for video upload',
+    );
     return await handleNetworkException(() async {
       int videoSent = 0;
       int videoTotal = 1;
@@ -169,8 +175,28 @@ class ChatRemoteDataSourceImp
         }
       }
 
+      final stopwatch = Stopwatch()..start();
+      final compressedVideos = await media.map((value) async {
+        return await VVideoCompressor().compressVideo(
+          value.url,
+          VVideoCompressionConfig.medium(),
+        );
+      }).wait;
+
+      stopwatch.stop();
+      log('Video compression took: ${stopwatch.elapsedMilliseconds} ms');
+      if (compressedVideos.isEmpty) {
+        log('Video compression failed: No videos returned');
+        throw Exception('Video compression failed');
+      }
+      log(
+        'Video compressed and size decreased from ${compressedVideos.firstOrNull?.originalSizeFormatted} to ${compressedVideos.firstOrNull?.compressedSizeFormatted}',
+      );
       final videoUrl = _uploadFiles(
-        media.map((e) => e.url).toList(),
+        compressedVideos
+            .whereType<VVideoCompressionResult>()
+            .map((e) => e.compressedFilePath)
+            .toList(),
         '$chatId/video/',
         progress: (sent, total) {
           videoSent = sent;
@@ -178,6 +204,7 @@ class ChatRemoteDataSourceImp
           updateProgress();
         },
       );
+
       final thumbnailUrl = _uploadFiles(
         media.map((e) => e.metadata.thumbnail!).toList(),
         '$chatId/video/thumbnail/',

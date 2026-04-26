@@ -134,6 +134,10 @@ class ApiService {
             progress(sent, total);
           }
         },
+        options: Options(
+          receiveTimeout: const Duration(minutes: 5),
+          sendTimeout: const Duration(minutes: 5),
+        ),
       );
       return response.data;
     });
@@ -160,6 +164,10 @@ class ApiService {
             progress(sent, total);
           }
         },
+        options: Options(
+          receiveTimeout: const Duration(minutes: 5),
+          sendTimeout: const Duration(minutes: 5),
+        ),
       );
       return response.data;
     });
@@ -190,6 +198,10 @@ class ApiService {
             progress(sent, total);
           }
         },
+        options: Options(
+          receiveTimeout: const Duration(minutes: 5),
+          sendTimeout: const Duration(minutes: 5),
+        ),
       );
       return response.data;
     });
@@ -218,6 +230,10 @@ class ApiService {
             progress(sent, total);
           }
         },
+        options: Options(
+          receiveTimeout: const Duration(minutes: 5),
+          sendTimeout: const Duration(minutes: 5),
+        ),
       );
       return response.data;
     });

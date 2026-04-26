@@ -46,17 +46,24 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
     );
   }
 
-  Future<ApiResponse<ConversationModel, UserPagination>>
-  getConversationHistory({required int limit, required int offset}) async {
+  Future<ApiResponse<ConversationModel, ConversationPagination>>
+  getConversationHistory({required int limit, int? lastInteractedAt}) async {
     final result =
         await (select(conversationHistoryTable)
+              ..where((tbl) {
+                return tbl.lastInteractedAt.isSmallerThanValue(
+                  lastInteractedAt != null
+                      ? DateTime.fromMillisecondsSinceEpoch(lastInteractedAt)
+                      : DateTime.now(),
+                );
+              })
               ..orderBy([
                 (tbl) => OrderingTerm(
                   expression: tbl.lastInteractedAt,
                   mode: OrderingMode.desc,
                 ),
               ])
-              ..limit(limit, offset: offset))
+              ..limit(limit))
             .join([
               innerJoin(
                 userTable,
@@ -82,11 +89,13 @@ class UserTableQuery extends DatabaseAccessor<LocalDatabase>
       );
     }).toList();
     final total = await getTotalConversationHistoryCount();
+
     return ApiResponse(
       data: data,
       dataSource: ApiDataSource.local,
-      pagination: UserPagination(
-        offset: offset + result.length,
+      pagination: ConversationPagination(
+        lastInteractedAt:
+            data.lastOrNull?.lastInteractionAt.millisecondsSinceEpoch,
         limit: limit,
         total: total,
       ),

@@ -18,8 +18,7 @@ import 'package:chat/utils/generator/list/extensions.dart';
 import 'package:chat/utils/generator/media/image_metadata.dart';
 import 'package:chat/utils/helper/network_info.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:get_thumbnail_video/index.dart';
-import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:v_video_compressor/v_video_compressor.dart';
 
 class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
   final ChatRemoteDataSource _chatRemoteDataSource;
@@ -70,7 +69,7 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
 
         return result;
       },
-      context: 'ChatRepositoryImp.sendChat',
+      context: 'sendChat',
       customErrorHandler: (e) {
         log(
           'SendMessage Error: $e, MessageType: ${chatModel?.type ?? "unknown"}',
@@ -277,11 +276,13 @@ class ChatRepositoryImp with ExceptionHandlerMixin implements ChatRepository {
   }
 
   Future<String> _getVideoThumbnail(String path) async {
-    final thumbnail = await VideoThumbnail.thumbnailFile(
-      video: path,
-      imageFormat: ImageFormat.JPEG,
-      quality: 100,
+    final thumbnail = await VVideoCompressor().getVideoThumbnail(
+      path,
+      VVideoThumbnailConfig.defaults(format: VThumbnailFormat.jpeg),
     );
-    return thumbnail.path;
+    if (thumbnail == null) {
+      throw Exception('Failed to generate video thumbnail');
+    }
+    return thumbnail.thumbnailPath;
   }
 }

@@ -9,6 +9,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:chat/src/chat/presentation/widgets/message_field_icon.dart';
@@ -229,7 +230,7 @@ class _MessageFieldState extends State<MessageField> {
         case FileType.any:
           return handlePermission(Permission.manageExternalStorage);
         default:
-          return handlePermission(Permission.manageExternalStorage);
+          return handlePermission(Permission.storage);
       }
     }
     return handlePermission(Permission.storage);
@@ -238,25 +239,34 @@ class _MessageFieldState extends State<MessageField> {
   Future<List<String>?> pickFile(FileType type) async {
     final bool permission = await checkPermission(type);
     if (!permission) return null;
+    List<String>? files;
     try {
-      final picker = FilePicker.platform;
-      FilePickerResult? result = switch (type) {
-        FileType.image => await picker.pickFiles(
-          type: FileType.image,
-          allowMultiple: true,
-        ),
-        FileType.video => await picker.pickFiles(
-          type: FileType.video,
-          allowMultiple: true,
-        ),
-        _ => await picker.pickFiles(allowMultiple: true),
-      };
-      if (result != null) {
-        return result.paths.where((element) => element != null).toList().cast();
+      switch (type) {
+        case FileType.image:
+          files = await ImagePicker().pickMultiImage().then((value) {
+            return value.map((e) => e.path).toList();
+          });
+          break;
+        case FileType.video:
+          files = await ImagePicker().pickMultiVideo().then(
+            (value) => value.map((e) => e.path).toList(),
+          );
+          break;
+
+        default:
+          files = await FilePicker.platform
+              .pickFiles(type: FileType.any, allowMultiple: true)
+              .then(
+                (value) => value?.files
+                    .map((e) => e.path)
+                    .whereType<String>()
+                    .toList(),
+              );
+          break;
       }
+      return files;
     } catch (e) {
       return null;
     }
-    return null;
   }
 }

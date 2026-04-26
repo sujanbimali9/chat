@@ -32,3 +32,13 @@ class StateEmitter extends ChatEvent {
 class ListenForNewChats extends ChatEvent {
   const ListenForNewChats();
 }
+
+class SwitchChat extends ChatEvent {
+  const SwitchChat(this.userId, this.currentUserId);
+
+  final String userId;
+  final String currentUserId;
+
+  @override
+  List<Object> get props => [userId, currentUserId];
+}

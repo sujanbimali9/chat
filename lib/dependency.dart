@@ -28,7 +28,6 @@ import 'package:chat/src/home/domain/repository/user_repository.dart';
 import 'package:chat/src/home/domain/usecases/get_conversation_history_user.dart';
 import 'package:chat/src/home/domain/usecases/get_interactive_user_stream.dart';
 import 'package:chat/src/home/domain/usecases/get_user.dart';
-import 'package:chat/src/home/domain/usecases/get_user_local.dart';
 import 'package:chat/src/home/domain/usecases/get_current_user.dart';
 import 'package:chat/src/home/domain/usecases/search_user.dart';
 import 'package:chat/src/home/domain/usecases/sync_chat.dart';
@@ -117,14 +116,11 @@ void _initUser() {
     ..registerFactory(() => SearchUserUseCase(serviceLocater()))
     ..registerFactory(() => UpdateProfileImageUseCase(serviceLocater()))
     ..registerFactory(() => UpdateUserUseCase(serviceLocater()))
-    ..registerFactory(() => GetAllUserLocalUseCase(serviceLocater()))
     ..registerFactory(
       () =>
           CurrentUserBloc(serviceLocater(), serviceLocater(), serviceLocater()),
     )
-    ..registerFactory(
-      () => UserBloc(serviceLocater(), serviceLocater(), serviceLocater()),
-    );
+    ..registerFactory(() => UserBloc(serviceLocater(), serviceLocater()));
 }
 
 void _initSync() {

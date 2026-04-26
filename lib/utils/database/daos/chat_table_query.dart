@@ -61,7 +61,7 @@ class ChatTableQuery extends DatabaseAccessor<LocalDatabase>
     final total = await countTotalChats(chatId);
 
     return ApiResponse(
-      data: chats,
+      data: chats..sort((a, b) => b.sentTime.compareTo(a.sentTime)),
       message: 'Success',
       pagination: ChatPagination(
         limit: limit,
@@ -86,7 +86,14 @@ class ChatTableQuery extends DatabaseAccessor<LocalDatabase>
 
     final chats =
         await (select(cTable)
-              ..where((tbl) => tbl.status.equals(MessageStatus.failed.name))
+              ..where(
+                (tbl) =>
+                    tbl.status.equals(MessageStatus.failed.name) |
+                    (tbl.status.equals(MessageStatus.sending.name) &
+                        tbl.sentTime.isSmallerThanValue(
+                          DateTime.now().subtract(const Duration(minutes: 1)),
+                        )),
+              )
               ..orderBy([
                 (tbl) => OrderingTerm(
                   expression: tbl.sentTime,

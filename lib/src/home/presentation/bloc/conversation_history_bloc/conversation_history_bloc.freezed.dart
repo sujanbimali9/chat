@@ -20,67 +20,53 @@ mixin _$ConversationHistoryEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshConversationHistory,
     required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
+    required TResult Function(List<Conversation> conversations)
+    updateFromStream,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshConversationHistory,
     TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
+    TResult? Function(List<Conversation> conversations)? updateFromStream,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshConversationHistory,
     TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
+    TResult Function(List<Conversation> conversations)? updateFromStream,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetConversationHistory value)
     getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshConversationHistory value)
     refreshConversationHistory,
     required TResult Function(_FetchMoreConversationHistory value)
     fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
+    required TResult Function(_StateEmitter value) updateFromStream,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult? Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
+    TResult? Function(_StateEmitter value)? updateFromStream,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
+    TResult Function(_StateEmitter value)? updateFromStream,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -159,11 +145,10 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshConversationHistory,
     required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
+    required TResult Function(List<Conversation> conversations)
+    updateFromStream,
   }) {
     return getConversationHistory();
   }
@@ -172,11 +157,9 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshConversationHistory,
     TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
+    TResult? Function(List<Conversation> conversations)? updateFromStream,
   }) {
     return getConversationHistory?.call();
   }
@@ -185,11 +168,9 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshConversationHistory,
     TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
+    TResult Function(List<Conversation> conversations)? updateFromStream,
     required TResult orElse(),
   }) {
     if (getConversationHistory != null) {
@@ -203,14 +184,11 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
   TResult map<TResult extends Object?>({
     required TResult Function(_GetConversationHistory value)
     getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshConversationHistory value)
     refreshConversationHistory,
     required TResult Function(_FetchMoreConversationHistory value)
     fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
+    required TResult Function(_StateEmitter value) updateFromStream,
   }) {
     return getConversationHistory(this);
   }
@@ -219,14 +197,11 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult? Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
+    TResult? Function(_StateEmitter value)? updateFromStream,
   }) {
     return getConversationHistory?.call(this);
   }
@@ -235,14 +210,11 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
+    TResult Function(_StateEmitter value)? updateFromStream,
     required TResult orElse(),
   }) {
     if (getConversationHistory != null) {
@@ -254,340 +226,6 @@ class _$GetConversationHistoryImpl implements _GetConversationHistory {
 
 abstract class _GetConversationHistory implements ConversationHistoryEvent {
   const factory _GetConversationHistory() = _$GetConversationHistoryImpl;
-}
-
-/// @nodoc
-abstract class _$$GetConversationHistoryLocalImplCopyWith<$Res> {
-  factory _$$GetConversationHistoryLocalImplCopyWith(
-    _$GetConversationHistoryLocalImpl value,
-    $Res Function(_$GetConversationHistoryLocalImpl) then,
-  ) = __$$GetConversationHistoryLocalImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$GetConversationHistoryLocalImplCopyWithImpl<$Res>
-    extends
-        _$ConversationHistoryEventCopyWithImpl<
-          $Res,
-          _$GetConversationHistoryLocalImpl
-        >
-    implements _$$GetConversationHistoryLocalImplCopyWith<$Res> {
-  __$$GetConversationHistoryLocalImplCopyWithImpl(
-    _$GetConversationHistoryLocalImpl _value,
-    $Res Function(_$GetConversationHistoryLocalImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of ConversationHistoryEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$GetConversationHistoryLocalImpl
-    implements _GetConversationHistoryLocal {
-  const _$GetConversationHistoryLocalImpl();
-
-  @override
-  String toString() {
-    return 'ConversationHistoryEvent.getConversationHistoryLocal()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$GetConversationHistoryLocalImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshConversationHistory,
-    required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
-  }) {
-    return getConversationHistoryLocal();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshConversationHistory,
-    TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
-  }) {
-    return getConversationHistoryLocal?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshConversationHistory,
-    TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
-    required TResult orElse(),
-  }) {
-    if (getConversationHistoryLocal != null) {
-      return getConversationHistoryLocal();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_GetConversationHistory value)
-    getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshConversationHistory value)
-    refreshConversationHistory,
-    required TResult Function(_FetchMoreConversationHistory value)
-    fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
-  }) {
-    return getConversationHistoryLocal(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshConversationHistory value)?
-    refreshConversationHistory,
-    TResult? Function(_FetchMoreConversationHistory value)?
-    fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
-  }) {
-    return getConversationHistoryLocal?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshConversationHistory value)?
-    refreshConversationHistory,
-    TResult Function(_FetchMoreConversationHistory value)?
-    fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
-    required TResult orElse(),
-  }) {
-    if (getConversationHistoryLocal != null) {
-      return getConversationHistoryLocal(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _GetConversationHistoryLocal
-    implements ConversationHistoryEvent {
-  const factory _GetConversationHistoryLocal() =
-      _$GetConversationHistoryLocalImpl;
-}
-
-/// @nodoc
-abstract class _$$SortUsersImplCopyWith<$Res> {
-  factory _$$SortUsersImplCopyWith(
-    _$SortUsersImpl value,
-    $Res Function(_$SortUsersImpl) then,
-  ) = __$$SortUsersImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({List<Chat> listChats});
-}
-
-/// @nodoc
-class __$$SortUsersImplCopyWithImpl<$Res>
-    extends _$ConversationHistoryEventCopyWithImpl<$Res, _$SortUsersImpl>
-    implements _$$SortUsersImplCopyWith<$Res> {
-  __$$SortUsersImplCopyWithImpl(
-    _$SortUsersImpl _value,
-    $Res Function(_$SortUsersImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of ConversationHistoryEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? listChats = null}) {
-    return _then(
-      _$SortUsersImpl(
-        null == listChats
-            ? _value._listChats
-            : listChats // ignore: cast_nullable_to_non_nullable
-                  as List<Chat>,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$SortUsersImpl implements _SortUsers {
-  const _$SortUsersImpl(final List<Chat> listChats) : _listChats = listChats;
-
-  final List<Chat> _listChats;
-  @override
-  List<Chat> get listChats {
-    if (_listChats is EqualUnmodifiableListView) return _listChats;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listChats);
-  }
-
-  @override
-  String toString() {
-    return 'ConversationHistoryEvent.sortUsers(listChats: $listChats)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SortUsersImpl &&
-            const DeepCollectionEquality().equals(
-              other._listChats,
-              _listChats,
-            ));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_listChats));
-
-  /// Create a copy of ConversationHistoryEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SortUsersImplCopyWith<_$SortUsersImpl> get copyWith =>
-      __$$SortUsersImplCopyWithImpl<_$SortUsersImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
-    required TResult Function() refreshConversationHistory,
-    required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
-  }) {
-    return sortUsers(listChats);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
-    TResult? Function()? refreshConversationHistory,
-    TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
-  }) {
-    return sortUsers?.call(listChats);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
-    TResult Function()? refreshConversationHistory,
-    TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
-    required TResult orElse(),
-  }) {
-    if (sortUsers != null) {
-      return sortUsers(listChats);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_GetConversationHistory value)
-    getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
-    required TResult Function(_RefreshConversationHistory value)
-    refreshConversationHistory,
-    required TResult Function(_FetchMoreConversationHistory value)
-    fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
-  }) {
-    return sortUsers(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
-    TResult? Function(_RefreshConversationHistory value)?
-    refreshConversationHistory,
-    TResult? Function(_FetchMoreConversationHistory value)?
-    fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
-  }) {
-    return sortUsers?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
-    TResult Function(_RefreshConversationHistory value)?
-    refreshConversationHistory,
-    TResult Function(_FetchMoreConversationHistory value)?
-    fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
-    required TResult orElse(),
-  }) {
-    if (sortUsers != null) {
-      return sortUsers(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _SortUsers implements ConversationHistoryEvent {
-  const factory _SortUsers(final List<Chat> listChats) = _$SortUsersImpl;
-
-  List<Chat> get listChats;
-
-  /// Create a copy of ConversationHistoryEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SortUsersImplCopyWith<_$SortUsersImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -639,11 +277,10 @@ class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshConversationHistory,
     required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
+    required TResult Function(List<Conversation> conversations)
+    updateFromStream,
   }) {
     return refreshConversationHistory();
   }
@@ -652,11 +289,9 @@ class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshConversationHistory,
     TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
+    TResult? Function(List<Conversation> conversations)? updateFromStream,
   }) {
     return refreshConversationHistory?.call();
   }
@@ -665,11 +300,9 @@ class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshConversationHistory,
     TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
+    TResult Function(List<Conversation> conversations)? updateFromStream,
     required TResult orElse(),
   }) {
     if (refreshConversationHistory != null) {
@@ -683,14 +316,11 @@ class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
   TResult map<TResult extends Object?>({
     required TResult Function(_GetConversationHistory value)
     getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshConversationHistory value)
     refreshConversationHistory,
     required TResult Function(_FetchMoreConversationHistory value)
     fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
+    required TResult Function(_StateEmitter value) updateFromStream,
   }) {
     return refreshConversationHistory(this);
   }
@@ -699,14 +329,11 @@ class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult? Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
+    TResult? Function(_StateEmitter value)? updateFromStream,
   }) {
     return refreshConversationHistory?.call(this);
   }
@@ -715,14 +342,11 @@ class _$RefreshConversationHistoryImpl implements _RefreshConversationHistory {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
+    TResult Function(_StateEmitter value)? updateFromStream,
     required TResult orElse(),
   }) {
     if (refreshConversationHistory != null) {
@@ -787,11 +411,10 @@ class _$FetchMoreConversationHistoryImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshConversationHistory,
     required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
+    required TResult Function(List<Conversation> conversations)
+    updateFromStream,
   }) {
     return fetchMoreConversationHistory();
   }
@@ -800,11 +423,9 @@ class _$FetchMoreConversationHistoryImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshConversationHistory,
     TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
+    TResult? Function(List<Conversation> conversations)? updateFromStream,
   }) {
     return fetchMoreConversationHistory?.call();
   }
@@ -813,11 +434,9 @@ class _$FetchMoreConversationHistoryImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshConversationHistory,
     TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
+    TResult Function(List<Conversation> conversations)? updateFromStream,
     required TResult orElse(),
   }) {
     if (fetchMoreConversationHistory != null) {
@@ -831,14 +450,11 @@ class _$FetchMoreConversationHistoryImpl
   TResult map<TResult extends Object?>({
     required TResult Function(_GetConversationHistory value)
     getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshConversationHistory value)
     refreshConversationHistory,
     required TResult Function(_FetchMoreConversationHistory value)
     fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
+    required TResult Function(_StateEmitter value) updateFromStream,
   }) {
     return fetchMoreConversationHistory(this);
   }
@@ -847,14 +463,11 @@ class _$FetchMoreConversationHistoryImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult? Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
+    TResult? Function(_StateEmitter value)? updateFromStream,
   }) {
     return fetchMoreConversationHistory?.call(this);
   }
@@ -863,14 +476,11 @@ class _$FetchMoreConversationHistoryImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
+    TResult Function(_StateEmitter value)? updateFromStream,
     required TResult orElse(),
   }) {
     if (fetchMoreConversationHistory != null) {
@@ -893,9 +503,7 @@ abstract class _$$StateEmitterImplCopyWith<$Res> {
     $Res Function(_$StateEmitterImpl) then,
   ) = __$$StateEmitterImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({ConversationHistory state});
-
-  $ConversationHistoryCopyWith<$Res> get state;
+  $Res call({List<Conversation> conversations});
 }
 
 /// @nodoc
@@ -911,39 +519,35 @@ class __$$StateEmitterImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? state = null}) {
+  $Res call({Object? conversations = null}) {
     return _then(
       _$StateEmitterImpl(
-        null == state
-            ? _value.state
-            : state // ignore: cast_nullable_to_non_nullable
-                  as ConversationHistory,
+        null == conversations
+            ? _value._conversations
+            : conversations // ignore: cast_nullable_to_non_nullable
+                  as List<Conversation>,
       ),
     );
-  }
-
-  /// Create a copy of ConversationHistoryEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ConversationHistoryCopyWith<$Res> get state {
-    return $ConversationHistoryCopyWith<$Res>(_value.state, (value) {
-      return _then(_value.copyWith(state: value));
-    });
   }
 }
 
 /// @nodoc
 
 class _$StateEmitterImpl implements _StateEmitter {
-  const _$StateEmitterImpl(this.state);
+  const _$StateEmitterImpl(final List<Conversation> conversations)
+    : _conversations = conversations;
 
+  final List<Conversation> _conversations;
   @override
-  final ConversationHistory state;
+  List<Conversation> get conversations {
+    if (_conversations is EqualUnmodifiableListView) return _conversations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_conversations);
+  }
 
   @override
   String toString() {
-    return 'ConversationHistoryEvent.stateEmitter(state: $state)';
+    return 'ConversationHistoryEvent.updateFromStream(conversations: $conversations)';
   }
 
   @override
@@ -951,11 +555,17 @@ class _$StateEmitterImpl implements _StateEmitter {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$StateEmitterImpl &&
-            (identical(other.state, state) || other.state == state));
+            const DeepCollectionEquality().equals(
+              other._conversations,
+              _conversations,
+            ));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, state);
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_conversations),
+  );
 
   /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -969,41 +579,36 @@ class _$StateEmitterImpl implements _StateEmitter {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() getConversationHistory,
-    required TResult Function() getConversationHistoryLocal,
-    required TResult Function(List<Chat> listChats) sortUsers,
     required TResult Function() refreshConversationHistory,
     required TResult Function() fetchMoreConversationHistory,
-    required TResult Function(ConversationHistory state) stateEmitter,
+    required TResult Function(List<Conversation> conversations)
+    updateFromStream,
   }) {
-    return stateEmitter(state);
+    return updateFromStream(conversations);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getConversationHistory,
-    TResult? Function()? getConversationHistoryLocal,
-    TResult? Function(List<Chat> listChats)? sortUsers,
     TResult? Function()? refreshConversationHistory,
     TResult? Function()? fetchMoreConversationHistory,
-    TResult? Function(ConversationHistory state)? stateEmitter,
+    TResult? Function(List<Conversation> conversations)? updateFromStream,
   }) {
-    return stateEmitter?.call(state);
+    return updateFromStream?.call(conversations);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getConversationHistory,
-    TResult Function()? getConversationHistoryLocal,
-    TResult Function(List<Chat> listChats)? sortUsers,
     TResult Function()? refreshConversationHistory,
     TResult Function()? fetchMoreConversationHistory,
-    TResult Function(ConversationHistory state)? stateEmitter,
+    TResult Function(List<Conversation> conversations)? updateFromStream,
     required TResult orElse(),
   }) {
-    if (stateEmitter != null) {
-      return stateEmitter(state);
+    if (updateFromStream != null) {
+      return updateFromStream(conversations);
     }
     return orElse();
   }
@@ -1013,60 +618,51 @@ class _$StateEmitterImpl implements _StateEmitter {
   TResult map<TResult extends Object?>({
     required TResult Function(_GetConversationHistory value)
     getConversationHistory,
-    required TResult Function(_GetConversationHistoryLocal value)
-    getConversationHistoryLocal,
-    required TResult Function(_SortUsers value) sortUsers,
     required TResult Function(_RefreshConversationHistory value)
     refreshConversationHistory,
     required TResult Function(_FetchMoreConversationHistory value)
     fetchMoreConversationHistory,
-    required TResult Function(_StateEmitter value) stateEmitter,
+    required TResult Function(_StateEmitter value) updateFromStream,
   }) {
-    return stateEmitter(this);
+    return updateFromStream(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetConversationHistory value)? getConversationHistory,
-    TResult? Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult? Function(_SortUsers value)? sortUsers,
     TResult? Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult? Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult? Function(_StateEmitter value)? stateEmitter,
+    TResult? Function(_StateEmitter value)? updateFromStream,
   }) {
-    return stateEmitter?.call(this);
+    return updateFromStream?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetConversationHistory value)? getConversationHistory,
-    TResult Function(_GetConversationHistoryLocal value)?
-    getConversationHistoryLocal,
-    TResult Function(_SortUsers value)? sortUsers,
     TResult Function(_RefreshConversationHistory value)?
     refreshConversationHistory,
     TResult Function(_FetchMoreConversationHistory value)?
     fetchMoreConversationHistory,
-    TResult Function(_StateEmitter value)? stateEmitter,
+    TResult Function(_StateEmitter value)? updateFromStream,
     required TResult orElse(),
   }) {
-    if (stateEmitter != null) {
-      return stateEmitter(this);
+    if (updateFromStream != null) {
+      return updateFromStream(this);
     }
     return orElse();
   }
 }
 
 abstract class _StateEmitter implements ConversationHistoryEvent {
-  const factory _StateEmitter(final ConversationHistory state) =
+  const factory _StateEmitter(final List<Conversation> conversations) =
       _$StateEmitterImpl;
 
-  ConversationHistory get state;
+  List<Conversation> get conversations;
 
   /// Create a copy of ConversationHistoryEvent
   /// with the given fields replaced by the non-null parameter values.

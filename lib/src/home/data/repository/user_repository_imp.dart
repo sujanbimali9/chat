@@ -30,8 +30,16 @@ class UserRepositoryImp with ExceptionHandlerMixin implements UserRepository {
   Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUsers({
     required int limit,
     required int offset,
+    bool local = false,
   }) async {
     return await handleException(() async {
+      if (local) {
+        final res = await _userLocalDataSource.getAllUser(
+          limit: limit,
+          offset: offset,
+        );
+        return res;
+      }
       final users = await _userRemoteDataSource.getAllUsers(
         limit: limit,
         offset: offset,
@@ -43,12 +51,23 @@ class UserRepositoryImp with ExceptionHandlerMixin implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, ApiResponse<Conversation, UserPagination>>>
-  getConversationHistory({required int limit, required int offset}) async {
+  Future<Either<Failure, ApiResponse<Conversation, ConversationPagination>>>
+  getConversationHistory({
+    required int limit,
+    required int? lastInteractedAt,
+    bool local = false,
+  }) async {
     return await handleException(() async {
+      if (local) {
+        final res = await _userLocalDataSource.getConversationHistory(
+          limit: limit,
+          lastInteractedAt: lastInteractedAt,
+        );
+        return res;
+      }
       final users = await _userRemoteDataSource.getConversationHistory(
         limit: limit,
-        offset: offset,
+        lastInteractedAt: lastInteractedAt,
       );
       await _userLocalDataSource.saveConversationsHistory(users.data);
       return users;
@@ -131,19 +150,5 @@ class UserRepositoryImp with ExceptionHandlerMixin implements UserRepository {
       await _userLocalDataSource.saveUser(res);
       return res;
     }, context: 'getCurretUser');
-  }
-
-  @override
-  Future<Either<Failure, ApiResponse<User, UserPagination>>> getAllUserLocal({
-    required int limit,
-    required int offset,
-  }) async {
-    return await handleException(() async {
-      final res = await _userLocalDataSource.getAllUser(
-        limit: limit,
-        offset: offset,
-      );
-      return res;
-    }, context: 'getAllUserLocal');
   }
 }

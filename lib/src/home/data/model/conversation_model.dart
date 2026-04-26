@@ -7,7 +7,7 @@ part 'conversation_model.g.dart';
 part 'conversation_model.freezed.dart';
 
 @freezed
-class ConversationModel with _$ConversationModel implements Conversation {
+class ConversationModel extends Conversation with _$ConversationModel {
   const factory ConversationModel({
     required final ChatModel chat,
     required final UserModel user,
@@ -15,5 +15,14 @@ class ConversationModel with _$ConversationModel implements Conversation {
     required final int unreadCount,
   }) = _ConversationHistoryModel;
 
-  factory ConversationModel.fromJson(json) => _$ConversationModelFromJson(json);
+  factory ConversationModel.fromJson(dynamic json) =>
+      _$ConversationModelFromJson(json);
+
+  factory ConversationModel.fromConversation(Conversation conversation) =>
+      ConversationModel(
+        chat: ChatModel.fromChat(conversation.chat),
+        user: UserModel.fromUser(conversation.user),
+        lastInteractionAt: conversation.lastInteractionAt,
+        unreadCount: conversation.unreadCount,
+      );
 }

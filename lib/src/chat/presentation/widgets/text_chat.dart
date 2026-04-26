@@ -16,6 +16,19 @@ class TextChat extends StatelessWidget {
   final Chat chat;
   final BorderRadius borderRadius;
 
+  List<Color> getColors(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    if (isUser) {
+      return brightness == Brightness.dark
+          ? TColors.userMessageBoxColorDark
+          : TColors.userMessageBoxColor;
+    } else {
+      return brightness == Brightness.dark
+          ? TColors.otherMessageBoxColorDark
+          : TColors.otherMessageBoxColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -24,26 +37,24 @@ class TextChat extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: size.width * 0.7),
         child: ClipRRect(
-            borderRadius: borderRadius,
-            child: CustomPaint(
-              painter: GradientChatPainter(
-                context: context,
-                scrollableState: Scrollable.of(context),
-                colors: isUser
-                    ? TColors.userMessageBoxColor
-                    : TColors.otherMessageBoxColor,
+          borderRadius: borderRadius,
+          child: CustomPaint(
+            painter: GradientChatPainter(
+              context: context,
+              scrollableState: Scrollable.of(context),
+              colors: getColors(context),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+              child: Text(
+                chat.msg,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontSize: 16),
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                child: Text(
-                  chat.msg,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 16,
-                      ),
-                ),
-              ),
-            )),
+            ),
+          ),
+        ),
       ),
     );
   }
